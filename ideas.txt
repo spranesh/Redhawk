@@ -1,0 +1,43 @@
+* How is this different from
+  * ctags - heuristic regex based "parser"
+  * cscope - works only for C/C++ (and uses a fuzzy parser)
+
+* Build Value Attribute parse tree
+  + using
+    - ANTLR
+    - sparse, other parsers
+    - llvm, gcc (?)
+      > debug options (?)
+      > col, row?
+  + store as
+    - XML
+    - JSON
+    - Simple node tree (value attribute)
+  + can we
+
+
+* Use tree for editor commands
+  + uses
+    - navigation
+    - finding variable names
+    - scopes
+      > parent, child
+      > sibling
+    - function callers, callees
+  + navigation
+    - column?
+    - heuristics?
+
+
+* Web GUI navigation JavaScript
+  + zoom in on click
+  + Target C first
+    - look for a main, explore from there
+    - store old things being seen in a stack
+  + User Interface
+    - mouse only
+    - search driven interface
+  + Other features
+    - inheritance tree if C++
+    - structures with href linking
+    - explore function arguments, callers, callees
