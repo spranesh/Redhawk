@@ -3,6 +3,14 @@
 import sys
 import pycparser
 
+def ObjectToString(a):
+  s = ""
+  for name in dir(a):
+    if name[:2] != "__":
+      if name not in "name type children show coord".split():
+        s += " '(%s %s)"%(name, str(getattr(a, name)))
+  return s
+
 def GetNodeTypeShorthand(node):
   cparser_type = ""
   if hasattr(node, 'type'):
@@ -35,7 +43,9 @@ def NodeToString(node):
   if name:
     name = " '" + name
 
-  return "%s%s"%(str(GetNodeTypeShorthand(node)).lower(), name)
+  s = "%s%s%s"%(str(GetNodeTypeShorthand(node)).lower(), name,
+      ObjectToString(node))
+  return s
 
 def PrintTree(tree, indent_level = 0, fp=sys.stdout):
 
