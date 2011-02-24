@@ -27,7 +27,7 @@ class CTreeConverter:
     n = N.Node('define-function', position=ConvertCoordinates(tree.coord))
     decl = tree.decl
     return_type = self.ConvertTree(decl.type.type)
-    n.AddProperty('return-type', return_type)
+    n.AddProperty('type', return_type)
     # Some of these must be made tags?
     n.AddPropertiesFrom(decl, 
         ["name", "bitsize", "quals", "init", "storage", "funcspec"])
