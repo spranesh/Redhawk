@@ -7,12 +7,13 @@ def GetNodeTypeShorthand(node):
   cparser_type = ""
   if hasattr(node, 'type'):
     cparser_type = str(node.type).split(' ')[0].rsplit('.')[-1]
-  python_type = str(type(node)).split('.')[-1][:-2]  
+  # python_type = str(type(node)).split('.')[-1][:-2]  
+  python_type = node.__class__.__name__
   if python_type and cparser_type:
-    return "%s-%s"%(python_type, cparser_type)
+    return "p%s-c%s"%(python_type, cparser_type)
   if python_type:
-    return python_type
-  return cparser_type
+    return "p"+python_type
+  return "c"+cparser_type
 
 def GetNodeName(node):
   name = ''

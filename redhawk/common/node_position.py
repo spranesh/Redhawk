@@ -7,9 +7,18 @@ class NodePosition:
     self.column = column
     return
 
+  def GetFile(self):
+    return self.file
+
+  def GetLine(self):
+    return self.line
+
+  def GetColumn(self):
+    return self.column
+
   def __repr__(self):
     return "[%s:%4d:%3d]"%(self.file, self.line, self.column)
   
   def __str__(self):
-    return self.__repr__
+    return self.__repr__()
 
