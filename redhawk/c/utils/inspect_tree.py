@@ -24,4 +24,7 @@ except IndexError, e:
 tree = pycparser.parse_file(filename, use_cpp = True, cpp_path='cpp', cpp_args='-Ifake_libc_include')
 body = tree.children()
 program = open(filename).read()
-StartShell()
+if "show" in sys.argv:
+  tree.show()
+else:
+  StartShell()

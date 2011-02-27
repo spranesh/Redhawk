@@ -81,7 +81,7 @@ class Node:
       s += self.properties['name'] + " "
     s += "'("
     for p in self.properties:
-      if p in "type storage".split():
+      if p in "type storage op value".split():
         s += "(%s %s)"%(p, self.properties[p])
     s += ")"
 
