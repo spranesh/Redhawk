@@ -34,7 +34,7 @@ class CTreeConverter:
     """ Converts Type Declarations. These are base type declarations, and
     have declname, quals, and an IdentifierType child (which we deal
     with in this function itself)."""
-    n = N.Node('declare-type-of', position=ConvertCoordinates(tree.coord))
+    n = N.Node('type', position=ConvertCoordinates(tree.coord))
     n.AddProperty('name', tree.declname)
     n.AddProperty('quals', tree.quals)
     n.AddProperty('type', tree.type.names[0])
@@ -75,6 +75,7 @@ class CTreeConverter:
         n.AddChild(self.ConvertTree(arg))
 
     type_property = self.ConvertTree(tree.type)
+    # Do not store the type here. Instead store return type as type.
     n.AddProperty('type', type_property)
     n.AddProperty('name', type_property.GetProperty('name'))
     return n
@@ -130,9 +131,9 @@ class CTreeConverter:
     n = N.Node('define-function', position=ConvertCoordinates(tree.coord))
     decl = tree.decl
     ast_func_decl = self.ConvertTree(decl.type)
-    n.AddProperty('return-type', ast_func_decl.GetProperty('type'))
+    n.AddProperty('type', ast_func_decl.GetProperty('type'))
     # TODO(spranesh): Rename function-type to type?
-    n.AddProperty('function-type', ast_func_decl)
+    # n.AddProperty('function-type', ast_func_decl)
 
     # Some of these must be made tags?
     n.AddPropertiesFrom(decl, 

@@ -77,11 +77,18 @@ class Node:
   def ConvertToString(self, leading_whitespace=0):
     s = " "*leading_whitespace
     s += "(" + self.type + " "
+
+    # Handle Name
     if self.properties.has_key('name'):
       s += self.properties['name'] + " "
+
+    # Handle Type
+    if self.properties.has_key('type'):
+      s += "@%s "%(str(self.properties['type']))
+
     s += "'("
     for p in self.properties:
-      if p in "type storage op value".split():
+      if p in "return-type storage op value".split():
         s += "(%s %s)"%(p, self.properties[p])
     s += ")"
 
