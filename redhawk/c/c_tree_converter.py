@@ -27,12 +27,14 @@ class CTreeConverter:
     return N.Constant(GetCoords(tree), tree.value, T.BaseType(tree.type))
 
   def ConvertId(self, tree):
+    #TODO(spranesh): Is this assert always true?
     assert(tree.name == 'NULL')
     return N.Constant(GetCoords(tree), 
         value = tree.name, 
         type = T.Pointer(T.BaseType('NULL')))
 
   def ConvertDecl(self, tree):
+    # TODO(spranesh): Handle quals, storage, etc..
     return N.DefineVariable(GetCoords(tree), 
       name = tree.name, 
       init = self.ConvertTree(tree.init),
@@ -43,10 +45,12 @@ class CTreeConverter:
     return T.BaseType(tree.type.names[0])
 
   def ConvertPtrdecl(self, tree):
+    # TODO(spranesh): Handle quals (such as constants)
     """ Returns Type Object """
     return T.Pointer(self.ConvertTree(tree.type))
 
   def ConvertArraydecl(self, tree):
+    # TODO(spranesh): Handle array dimensions.
     """ Returns Type Object """
     return T.Array(self.ConvertTree(tree.type))
 
