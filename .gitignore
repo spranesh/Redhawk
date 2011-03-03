@@ -4,3 +4,4 @@ lextab.py
 yacctab.py
 *.xml
 *.json
+.noseids

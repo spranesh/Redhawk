@@ -37,10 +37,10 @@ def TestDeclaration5():
   t = test_utils.SetUp("prog007.c")
   return test_utils.ConvertTree(t.children()[4])
 
-# def TestDeclaration5():
-#   """ Test `int foo(int a, int b)` """
-#   t = test_utils.SetUp("prog007.c")
-#   return test_utils.ConvertTree(t.children()[4])
+def TestDeclaration6():
+  """ Test `int foo(int a, int b)` """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t.children()[5])
 
 
 # def Test002(): ConvertProgram("prog002.c")

@@ -35,10 +35,15 @@ class CTreeConverter:
 
   def ConvertDecl(self, tree):
     # TODO(spranesh): Handle quals, storage, etc..
-    return N.DefineVariable(GetCoords(tree), 
-      name = tree.name, 
-      init = self.ConvertTree(tree.init),
-      type = self.ConvertTree(tree.type))
+    t = self.ConvertTree(tree.type)
+    if isinstance(t, N.DeclareFunction):
+      t.name = tree.name
+      return t
+    else: 
+      return N.DefineVariable(GetCoords(tree), 
+        name = tree.name, 
+        init = self.ConvertTree(tree.init),
+        type = t)
 
   def ConvertTypedecl(self, tree):
     """ Returns Type Object """
@@ -57,3 +62,12 @@ class CTreeConverter:
   def ConvertNonetype(self, tree):
     """ To handle cases when children might be none."""
     return None
+
+  def ConvertFuncdecl(self, tree):
+    return N.DeclareFunction(
+        position = GetCoords(tree),
+        name = None,
+        arguments = map(self.ConvertTree, tree.args.params),
+        return_type = self.ConvertTree(tree.type))
+
+

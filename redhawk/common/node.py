@@ -21,6 +21,7 @@ class Node:
     whitespace argument using a function decorator."""
     raise NotImplementedError("Not implemented for the Base Node Class.")
 
+
 class Constant(Node):
   def __init__(self, position, value, type=None):
     self.value = value
@@ -30,7 +31,8 @@ class Constant(Node):
   
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level=0):
-    return ["constant", str(self.value), ":type", self.type]
+    return ["constant", str(self.value), [":type", self.type]]
+
 
 class Return(Node):
   def __init__(self, position, expr):
@@ -41,6 +43,7 @@ class Return(Node):
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level=0):
     return ["return", self.return_expression]
+
 
 class DefineVariable(Node):
   def __init__(self, position, name, init = None, type = None):
@@ -53,7 +56,28 @@ class DefineVariable(Node):
   def ToStr(self, indent_level=0):
     li = ["define-variable", self.name]
     if self.init:
-      li += [":init", self.init]
+      li.append([":init", self.init])
     if self.type:
-      li += [":type", self.type]
+      li.append([":type", self.type])
+    return li
+
+
+class DeclareFunction(Node):
+  def __init__(self, position, name, arguments, return_type):
+    """ Name is a string, arguments a list of variable declarations, and
+    return_type a type object. """
+    assert(type(arguments) is list)
+    self.position = position
+    self.name = name
+    self.arguments = arguments
+    self.return_type = return_type
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level=0):
+    li = ["declare-function", self.name]
+    if len(self.arguments) is not 0:
+      li.append(["arguments"] + self.arguments)
+    if self.return_type:
+      li.append([":return-type", self.return_type])
     return li

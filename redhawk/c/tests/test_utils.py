@@ -5,12 +5,13 @@ import pycparser
 import sys
 
 def SetUp(filename, rel_path="c/tests/"):
+  filename = rel_path + filename
   try:
-    tree = pycparser.parse_file(rel_path + filename)
+    tree = pycparser.parse_file(filename)
   except StandardError, e:
     sys.stderr.write(str(e))
     assert(False)
-
+  print open(filename).read()
   return tree
 
 
