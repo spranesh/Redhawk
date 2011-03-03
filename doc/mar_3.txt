@@ -1,0 +1,133 @@
+----------------------------------
+return 0;
+----------------------------------
+
+Return: 
+  Constant: int, 0
+    
+    -------
+
+(return 
+  (constant 0 
+    (:type 
+      (base-type int)))) 
+----------------------------------
+int a;
+----------------------------------
+
+Decl: a, [], [], []
+  TypeDecl: a, []
+    IdentifierType: ['int']
+    
+    -------
+
+(define-variable a 
+  (:type 
+    (base-type int))) 
+
+----------------------------------
+int *b;
+----------------------------------
+
+Decl: b, [], [], []
+  PtrDecl: []
+    TypeDecl: b, []
+      IdentifierType: ['int']
+    
+    -------
+
+(define-variable b 
+  (:type 
+    (pointer-to 
+      (base-type int)))) 
+
+----------------------------------
+char *c[];
+----------------------------------
+
+Decl: c, [], [], []
+  ArrayDecl: 
+    PtrDecl: []
+      TypeDecl: c, []
+        IdentifierType: ['char']
+    
+    -------
+
+(define-variable c 
+  (:type 
+    (array-of 
+      (pointer-to 
+        (base-type char))))) 
+
+----------------------------------
+void* d = NULL;
+----------------------------------
+
+Decl: d, [], [], []
+  PtrDecl: []
+    TypeDecl: d, []
+      IdentifierType: ['void']
+  ID: NULL
+    
+    -------
+
+(define-variable d 
+  (:init 
+    (constant NULL 
+      (:type 
+        (pointer-to 
+          (base-type NULL))))) 
+  (:type 
+    (pointer-to 
+      (base-type void)))) 
+
+----------------------------------
+int e = 0;
+----------------------------------
+
+Decl: e, [], [], []
+  TypeDecl: e, []
+    IdentifierType: ['int']
+  Constant: int, 0
+    
+    -------
+
+(define-variable e 
+  (:init 
+    (constant 0 
+      (:type 
+        (base-type int)))) 
+  (:type 
+    (base-type int))) 
+
+----------------------------------
+int foo(int a, int b);
+----------------------------------
+
+Decl: foo, [], [], []
+  FuncDecl: 
+    ParamList: 
+      Decl: a, [], [], []
+        TypeDecl: a, []
+          IdentifierType: ['int']
+      Decl: b, [], [], []
+        TypeDecl: b, []
+          IdentifierType: ['int']
+    TypeDecl: foo, []
+      IdentifierType: ['int']
+    
+    -------
+
+(declare-function foo 
+  (arguments 
+    (define-variable a 
+      (:type 
+        (base-type int))) 
+    (define-variable b 
+      (:type 
+        (base-type int)))) 
+  (:return-type 
+    (base-type int))) 
+----------------------------------
+
+
