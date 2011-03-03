@@ -1,0 +1,20 @@
+int f(int, int);
+// Declaration without name.
+FileAST: 
+  Decl: f, [], [], []
+    FuncDecl: 
+      ParamList: 
+        Typename: []
+          TypeDecl: None, []
+            IdentifierType: ['int']
+        Typename: []
+          TypeDecl: None, []
+            IdentifierType: ['int']
+      TypeDecl: f, []
+        IdentifierType: ['int']
+
+(declare-function f 
+  :return-type int
+  (arguments 
+    (:type int)
+    (:type int)))

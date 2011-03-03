@@ -1,0 +1,25 @@
+int f(int a)
+{
+  return 0;
+}
+FileAST: 
+  FuncDef: 
+    Decl: f, [], [], []
+      FuncDecl: 
+        ParamList: 
+          Decl: a, [], [], []
+            TypeDecl: a, []
+              IdentifierType: ['int']
+        TypeDecl: f, []
+          IdentifierType: ['int']
+    Compound: 
+      Return: 
+        Constant: int, 0
+
+(define-function f 
+  :return-type int
+  (arguments 
+    (a :type int))
+  (compound
+    (return
+      (constant 0 :type int))))

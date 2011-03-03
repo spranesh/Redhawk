@@ -1,0 +1,20 @@
+int f(int a, int b);
+// Only a declaration
+FileAST: 
+  Decl: f, [], [], []
+    FuncDecl: 
+      ParamList: 
+        Decl: a, [], [], []
+          TypeDecl: a, []
+            IdentifierType: ['int']
+        Decl: b, [], [], []
+          TypeDecl: b, []
+            IdentifierType: ['int']
+      TypeDecl: f, []
+        IdentifierType: ['int']
+
+(declare-function f 
+  :return-type int
+  (arguments 
+    (a :type int)
+    (b :type int)))

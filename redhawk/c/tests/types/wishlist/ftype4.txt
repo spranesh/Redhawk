@@ -1,0 +1,32 @@
+int f(int argc, char *argv[])
+{
+  return 0;
+}
+// A slightly more complex argument declaration
+FileAST: 
+  FuncDef: 
+    Decl: f, [], [], []
+      FuncDecl: 
+        ParamList: 
+          Decl: argc, [], [], []
+            TypeDecl: argc, []
+              IdentifierType: ['int']
+          Decl: argv, [], [], []
+            ArrayDecl: 
+              PtrDecl: []
+                TypeDecl: argv, []
+                  IdentifierType: ['char']
+        TypeDecl: f, []
+          IdentifierType: ['int']
+    Compound: 
+      Return: 
+        Constant: int, 0
+
+(define-function f 
+  :return-type int
+  (arguments 
+    (a :type int)
+    (b :type (array-of (pointer-to char))))
+  (compound
+    (return
+      (constant 0 :type int))))

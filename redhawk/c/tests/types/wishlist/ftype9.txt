@@ -1,0 +1,22 @@
+typedef int(*foo)(int, int);
+// Typedef without name.
+FileAST: 
+  Typedef: foo, [], ['typedef']
+    PtrDecl: []
+      FuncDecl: 
+        ParamList: 
+          Typename: []
+            TypeDecl: None, []
+              IdentifierType: ['int']
+          Typename: []
+            TypeDecl: None, []
+              IdentifierType: ['int']
+        TypeDecl: foo, []
+          IdentifierType: ['int']
+
+(declare-type f
+  (lambda-function
+    :return-type int
+    (arguments 
+      (a :type int)
+      (b :type int)))))
