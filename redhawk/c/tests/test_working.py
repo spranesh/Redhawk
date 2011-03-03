@@ -9,7 +9,7 @@ import pycparser
 
 import sys
 
-def ConvertProgram(filename, rel_path="c/tests/"):
+def SetUp(filename, rel_path="c/tests/"):
   try:
     tree = pycparser.parse_file(rel_path + filename)
   except StandardError, e:
@@ -17,14 +17,24 @@ def ConvertProgram(filename, rel_path="c/tests/"):
     assert(False)
 
   converter = C.CTreeConverter()
+  return (converter, tree)
 
-  t = converter.ConvertTree(tree)
 
-  print t
+def ConvertProgram(filename):
+  (c, t) = SetUp(filename)
+  ast = c.ConvertTree(t)
+  print ast
   return
 
-def Test001(): ConvertProgram("prog001.c")
-def Test002(): ConvertProgram("prog002.c")
-def Test003(): ConvertProgram("prog003.c")
-def Test004(): ConvertProgram("prog004.c")
+def TestReturnConstant(): 
+  (c, t) = SetUp("prog001.c")
+  main = t.children()[0]
+  return_node = main.body.block_items[0]
+  ast = c.ConvertTree(return_node)
+  print ast
+  return
+
+# def Test002(): ConvertProgram("prog002.c")
+# def Test003(): ConvertProgram("prog003.c")
+# def Test004(): ConvertProgram("prog004.c")
 

@@ -1,100 +1,43 @@
 """ The Node Class. """
 
+import util
+
 import copy
 
 class Node:
   """ Signifies a node in the parse tree."""
-  def __init__(self, 
-      type, 
-      properties=None, 
-      children=None, 
-      tags=None, 
-      position=None):
+  def __init__(self):
+    raise NotImplementedError("Node is an Abstract Class.")
+    return
 
-    if properties is None: properties = {}
-    if tags is None: tags = []
-    if children is None: children = []
+  def __repr__(self):
+    return self.ToStr()
+
+  def __str__(self):
+    return self.ToStr()
+
+  def ToStr(self):
+    """ Should return a list of lines, which will be indented by the
+    whitespace argument using a function decorator."""
+    raise NotImplementedError("Not implemented for the Base Node Class.")
+
+class Constant(Node):
+  def __init__(self, position, value, type=None):
+    self.value = value
     self.type = type
-    self.properties = properties
-    self.children = children
-    self.tags = tags
     self.position = position
     return
+  
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level=0):
+    return ["constant", str(self.value), self.type]
 
-  def __repr__(self):
-    return self.ConvertToString()
-
-  def __repr__(self):
-    return self.ConvertToString()
-
-  def GetChildren(self):
-    return self.children
-
-  def GetCopy(self):
-    return copy.deepcopy(self)
-
-  def GetPosition(self):
-    return self.position
-
-  def GetProperty(self, key):
-    return self.properties[key]
-
-  def GetProperties(self):
-    return self.properties
-
-  def GetTags(self):
-    return self.tags
-
-  def GetType(self):
-    return self.type
-
-  def AddChild(self, n):
-    self.children.append(n)
+class Return(Node):
+  def __init__(self, position, expr):
+    self.position = position
+    self.return_expression = expr
     return
 
-  def AddChildren(self, li):
-    for n in li:
-      self.AddChild(n)
-    return
-
-  def AddProperty(self, attr, value):
-    self.properties[attr] = value
-    return
-
-  def AddPropertiesFrom(self, obj, attrs):
-    for attr in attrs:
-      self.AddProperty(attr, getattr(obj, attr))
-
-  def AddTag(self, tag):
-    self.tags.append(tag)
-    return
-
-  def AddTags(self, tags):
-    for tag in tags:
-      self.tags.append(tag)
-    return
-
-  def ConvertToString(self, leading_whitespace=0):
-    s = " "*leading_whitespace
-    s += "(" + self.type + " "
-
-    # Handle Name
-    if self.properties.has_key('name'):
-      s += self.properties['name'] + " "
-
-    # Handle Type
-    if self.properties.has_key('type'):
-      s += "@%s "%(str(self.properties['type']))
-
-    s += "'("
-    for p in self.properties:
-      if p in "return-type storage op value".split():
-        s += "(%s %s)"%(p, self.properties[p])
-    s += ")"
-
-    for c in self.children:
-      s+="\n"
-      s+=c.ConvertToString(leading_whitespace+2)
-    s+=")"
-    return s
-
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level=0):
+    return ["return", self.return_expression]
