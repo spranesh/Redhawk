@@ -3,36 +3,45 @@
 """ Tests whether all the transformations are in place to convert the
 programs. """
 
-import redhawk.c.c_tree_converter as C
-
-import pycparser
-
-import sys
-
-def SetUp(filename, rel_path="c/tests/"):
-  try:
-    tree = pycparser.parse_file(rel_path + filename)
-  except StandardError, e:
-    sys.stderr.write(str(e))
-    assert(False)
-
-  converter = C.CTreeConverter()
-  return (converter, tree)
-
-
-def ConvertProgram(filename):
-  (c, t) = SetUp(filename)
-  ast = c.ConvertTree(t)
-  print ast
-  return
+import test_utils
 
 def TestReturnConstant(): 
-  (c, t) = SetUp("prog001.c")
+  """ Test `return 0`"""
+  t = test_utils.SetUp("prog001.c")
   main = t.children()[0]
   return_node = main.body.block_items[0]
-  ast = c.ConvertTree(return_node)
-  print ast
-  return
+  return test_utils.ConvertTree(return_node)
+
+def TestDeclaration1():
+  """ Test `int a` """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t.children()[0])
+
+def TestDeclaration2():
+  """ Test `int *b` """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t.children()[1])
+
+def TestDeclaration3():
+  """ Test `char *c` """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t.children()[2])
+
+def TestDeclaration4():
+  """ Test `void *d = NULL` """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t.children()[3])
+
+def TestDeclaration5():
+  """ Test `int e = 0` """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t.children()[4])
+
+# def TestDeclaration5():
+#   """ Test `int foo(int a, int b)` """
+#   t = test_utils.SetUp("prog007.c")
+#   return test_utils.ConvertTree(t.children()[4])
+
 
 # def Test002(): ConvertProgram("prog002.c")
 # def Test003(): ConvertProgram("prog003.c")

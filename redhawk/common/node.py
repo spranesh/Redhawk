@@ -30,7 +30,7 @@ class Constant(Node):
   
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level=0):
-    return ["constant", str(self.value), self.type]
+    return ["constant", str(self.value), ":type", self.type]
 
 class Return(Node):
   def __init__(self, position, expr):
@@ -41,3 +41,19 @@ class Return(Node):
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level=0):
     return ["return", self.return_expression]
+
+class DefineVariable(Node):
+  def __init__(self, position, name, init = None, type = None):
+    self.position = position
+    self.type = type
+    self.name = name
+    self.init = init
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level=0):
+    li = ["define-variable", self.name]
+    if self.init:
+      li += [":init", self.init]
+    if self.type:
+      li += [":type", self.type]
+    return li

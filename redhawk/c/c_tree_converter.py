@@ -3,7 +3,7 @@
 
 import redhawk.common.node as N
 import redhawk.common.node_position as NP
-import redhawk.common.node_types as NT
+import redhawk.common.types as T
 
 def GetCoords(t):
   assert(t is not None)
@@ -24,4 +24,32 @@ class CTreeConverter:
     return N.Return(GetCoords(tree), self.ConvertTree(tree.expr))
 
   def ConvertConstant(self, tree):
-    return N.Constant(GetCoords(tree), tree.value, tree.type)
+    return N.Constant(GetCoords(tree), tree.value, T.BaseType(tree.type))
+
+  def ConvertId(self, tree):
+    assert(tree.name == 'NULL')
+    return N.Constant(GetCoords(tree), 
+        value = tree.name, 
+        type = T.Pointer(T.BaseType('NULL')))
+
+  def ConvertDecl(self, tree):
+    return N.DefineVariable(GetCoords(tree), 
+      name = tree.name, 
+      init = self.ConvertTree(tree.init),
+      type = self.ConvertTree(tree.type))
+
+  def ConvertTypedecl(self, tree):
+    """ Returns Type Object """
+    return T.BaseType(tree.type.names[0])
+
+  def ConvertPtrdecl(self, tree):
+    """ Returns Type Object """
+    return T.Pointer(self.ConvertTree(tree.type))
+
+  def ConvertArraydecl(self, tree):
+    """ Returns Type Object """
+    return T.Array(self.ConvertTree(tree.type))
+
+  def ConvertNonetype(self, tree):
+    """ To handle cases when children might be none."""
+    return None
