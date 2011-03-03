@@ -1,0 +1,99 @@
+## Wishful Thinking
+
+What are the structures most programming langauges have?
+
+**Remember that we are not going to EXECUTE code.**
+
+* Function Defintions
+    + name (nameless => lambda)
+    + arguments (normal, keyword, variable arguments, defaults)
+    + body (a list of statements)
+
+* Function Declarations (no body)
+  + name
+  + arguments
+
+* Variable Definitions (or Declaration)
+  + name
+  + type (optional)
+
+* Structure (Class) Defintions
+  + name
+  + list of members
+
+* Constants
+  + value
+  + type (optional)
+
+* Function Calls
+  + name
+  + arguments passed (normal, keyword, variable arguments)
+
+* Variable/Structure Reference
+  + name
+
+* Assignment Statements
+  + left value
+  + right value
+
+* Expressions
+  + Operator
+  + List of Operands
+
+* If Statements
+  + Condition
+  + If clause
+  + Else clause
+
+* For Loops
+  + init
+  + test
+  + increment
+  + body
+
+* While Loops
+  + test
+  + body
+
+* ForEach
+  + variable
+  + iterable/container
+
+* Switch
+  + switch_on_variable
+  + list of condition, statement pairs
+
+* Miscellaneous Statements
+  + return / yield
+    - Expression
+  + continue
+  + break
+  + assert
+  + default
+  + goto
+  + Yield
+  + print
+
+* Cast
+  + to_type
+  + expression
+
+* Comprehensions (list/dict/set):
+  + list of expressions
+  + list of (target_expression, iterable, if condition)
+
+Other stuff to handle in C:
+
++ Enumerators
++ Unions
++ Ellipsis Param
++ named initialisers
+ 
+
+Stuff to handle in Python:
+
++ Imports
++ Exceptions
+
+
+Lots of munging is required, to get it into this format.

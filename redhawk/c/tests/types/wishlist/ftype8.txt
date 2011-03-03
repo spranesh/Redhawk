@@ -16,5 +16,5 @@ FileAST:
 (declare-function f 
   :return-type int
   (arguments 
-    (:type int)
-    (:type int)))
+    (define-variable :type int)
+    (define-variable :type int)))

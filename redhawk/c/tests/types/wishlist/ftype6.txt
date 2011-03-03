@@ -18,5 +18,5 @@ FileAST:
     (lambda-function
       :return-type int
       (arguments 
-        (a :type int)
-        (b :type int)))))
+        (define-variable a :type int)
+        (define-variable b :type int)))))

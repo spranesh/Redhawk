@@ -25,8 +25,8 @@ FileAST:
 (define-function f 
   :return-type int
   (arguments 
-    (a :type int)
-    (b :type (array-of (pointer-to char))))
+    ((define-variable argc :type int)
+    ((define-variable argv :type (array-of (pointer-to char))))
   (compound
     (return
       (constant 0 :type int))))

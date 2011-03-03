@@ -19,7 +19,7 @@ FileAST:
 (define-function f 
   :return-type int
   (arguments 
-    (a :type int))
+    ((define-variable a :type int))
   (compound
     (return
       (constant 0 :type int))))
