@@ -45,16 +45,19 @@ class CTreeConverter:
         type = T.Pointer(T.BaseType('NULL')))
 
   def ConvertDecl(self, tree):
-    # TODO(spranesh): Handle quals, storage, etc..
     t = self.ConvertTree(tree.type)
     if isinstance(t, N.DeclareFunction):
       t.name = tree.name
+      t.storage = tree.storage
+      t.quals = tree.quals
       return t
     else: 
       return N.DefineVariable(GetCoords(tree), 
         name = tree.name, 
         init = self.ConvertTree(tree.init),
-        type = t)
+        type = t,
+        storage = tree.storage,
+        quals = tree.quals)
 
   def ConvertTypename(self, tree):
     #TODO(spranesh): Handle quals.
@@ -65,7 +68,11 @@ class CTreeConverter:
 
   def ConvertTypedecl(self, tree):
     """ Returns Type Object """
-    return T.BaseType(base_type = tree.type.names[0])
+    try:
+      return T.BaseType(base_type = tree.type.names[0])
+    except IndexError, e:
+      # Default type is int in C
+      return T.BaseType(base_type = 'int')
 
   def ConvertPtrdecl(self, tree):
     # TODO(spranesh): Handle quals (such as constants)
@@ -106,7 +113,9 @@ class CTreeConverter:
         name = func_decl.name,
         arguments = func_decl.arguments,
         body = body,
-        return_type = func_decl.return_type)
+        return_type = func_decl.return_type,
+        storage = func_decl.storage,
+        quals = func_decl.quals)
 
   def ConvertCompound(self, tree):
     return N.Compound(position = GetCoords(tree),

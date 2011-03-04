@@ -38,14 +38,24 @@ def TestDeclaration5():
   return test_utils.ConvertTree(t.children()[4])
 
 def TestDeclaration6():
-  """ Test `int foo(int a, int b)` """
+  """ Test `static const char * p;` """
   t = test_utils.SetUp("prog007.c")
   return test_utils.ConvertTree(t.children()[5])
 
 def TestDeclaration7():
-  """ Test `int foo(int, int)` """
+  """ Test `int foo(int a, int b)` """
   t = test_utils.SetUp("prog007.c")
   return test_utils.ConvertTree(t.children()[6])
+
+def TestDeclaration8():
+  """ Test `int foo(int, int)` """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t.children()[7])
+
+def TestDeclaration9():
+  """ Test `static foo (int, int)` """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t.children()[8])
 
 def TestFileAST1():
   """ Test a FileAST with a single declaration, `int a;`"""
@@ -55,6 +65,14 @@ def TestFileAST1():
 def TestFunctionDefinition1():
   t = test_utils.SetUp("prog001.c")
   return test_utils.ConvertTree(t.children()[0])
+
+def TestProgram1():
+  t = test_utils.SetUp("prog001.c")
+  return test_utils.ConvertTree(t)
+
+def TestProgram2():
+  t = test_utils.SetUp("prog002.c")
+  return test_utils.ConvertTree(t)
 
 # def Test002(): ConvertProgram("prog002.c")
 # def Test003(): ConvertProgram("prog003.c")

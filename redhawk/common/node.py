@@ -55,11 +55,14 @@ class Return(Node):
 
 
 class DefineVariable(Node):
-  def __init__(self, position, name, init = None, type = None):
+  def __init__(self, position, name, init = None, type = None, quals = None,
+      storage = None):
     self.position = position
     self.type = type
     self.name = name
     self.init = init
+    self.quals = quals
+    self.storage = storage
 
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level=0):
@@ -68,6 +71,10 @@ class DefineVariable(Node):
       li.append([":init", self.init])
     if self.type:
       li.append([":type", self.type])
+    if self.quals:
+      li.append([":quals", self.quals])
+    if self.storage:
+      li.append([":storage", self.storage])
     return li
 
 
@@ -80,6 +87,8 @@ class DeclareFunction(Node):
     self.name = name
     self.arguments = arguments
     self.return_type = return_type
+    self.storage = None
+    self.quals = None
     return
 
   # This has been separated to make avoid duplicating work in DefineFunction
@@ -89,6 +98,10 @@ class DeclareFunction(Node):
       li.append(["arguments"] + self.arguments)
     if self.return_type:
       li.append([":return-type", self.return_type])
+    if self.storage:
+      li.append([":storage", self.storage])
+    if self.quals:
+      li.append([":quals", self.quals])
     return li
 
   @util.ConvertToStringWithIndent
@@ -100,9 +113,12 @@ class DeclareFunction(Node):
 
 # Is inheriting from DeclareFunction a good thing to be doing?
 class DefineFunction(DeclareFunction):
-  def __init__(self, position, name, arguments, body, return_type):
+  def __init__(self, position, name, arguments, body, return_type, 
+      storage = None, quals = None):
     DeclareFunction.__init__(self, position, name, arguments, return_type)
     self.body = body
+    self.storage = storage
+    self.quals = quals
     return
 
   @util.ConvertToStringWithIndent
