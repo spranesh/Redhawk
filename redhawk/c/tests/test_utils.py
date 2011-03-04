@@ -11,13 +11,13 @@ def SetUp(filename, rel_path="c/tests/"):
   except StandardError, e:
     sys.stderr.write(str(e))
     assert(False)
-  print open(filename).read()
+  # print open(filename).read()
   return tree
 
 
 def ConvertTree(t):
-  c = C.CTreeConverter()
   t.show()
+  c = C.CTreeConverter()
   ast = c.ConvertTree(t)
   print ast, "\n\n"
   return

@@ -24,7 +24,6 @@ def CreateStringFromList(words, level_space, indent_level):
       stream.write(s)
 
     else:
-      stream.write(leading_whitespace)
       stream.write(str(w))
     stream.write(" ")
 

@@ -45,6 +45,13 @@ class CTreeConverter:
         init = self.ConvertTree(tree.init),
         type = t)
 
+  def ConvertTypename(self, tree):
+    #TODO(spranesh): Handle quals.
+    t = self.ConvertTree(tree.type)
+    return N.DefineVariable(None, # No coords for Typename
+        name = tree.name,
+        type = t)
+
   def ConvertTypedecl(self, tree):
     """ Returns Type Object """
     return T.BaseType(tree.type.names[0])
