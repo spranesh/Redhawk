@@ -44,9 +44,9 @@ class Constant(Node):
 
 
 class Return(Node):
-  def __init__(self, position, expr):
+  def __init__(self, position, return_expression):
     self.position = position
-    self.return_expression = expr
+    self.return_expression = return_expression
     return
 
   @util.ConvertToStringWithIndent

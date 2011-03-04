@@ -8,9 +8,9 @@ class Type(node.Node):
 
 
 class BaseType(Type):
-  def __init__(self, s):
-    assert(type(s) is str)
-    self.type = s
+  def __init__(self, base_type):
+    assert(type(base_type) is str)
+    self.type = base_type
     return
 
   @util.ConvertToStringWithIndent
@@ -19,9 +19,9 @@ class BaseType(Type):
 
 
 class Array(Type):
-  def __init__(self, t):
-    assert(isinstance(t, Type))
-    self.type = t
+  def __init__(self, array_type):
+    assert(isinstance(array_type, Type))
+    self.type = array_type
     return
 
   @util.ConvertToStringWithIndent
@@ -30,9 +30,9 @@ class Array(Type):
 
 
 class Pointer(Type):
-  def __init__(self, t):
-    assert(isinstance(t, Type))
-    self.type = t
+  def __init__(self, ptr_type):
+    assert(isinstance(ptr_type, Type))
+    self.type = ptr_type
     return
 
   @util.ConvertToStringWithIndent
