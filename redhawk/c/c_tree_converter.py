@@ -13,7 +13,7 @@ def GetCoords(t):
 
 class CTreeConverter:
   def __init__(self, filename=None):
-    self.filename = None
+    self.filename = filename
     return
 
   def ThrowNotImplementedError(self, tree):
