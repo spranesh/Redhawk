@@ -12,6 +12,10 @@ def GetCoords(t):
   return NP.NodePosition(c.file, c.line, c.column)
 
 class CTreeConverter:
+  def __init__(self, filename=None):
+    self.filename = None
+    return
+
   def ThrowNotImplementedError(self, tree):
     raise NotImplementedError("Convert%s not implemented."%(tree.__class__.__name__.capitalize()))
 
@@ -19,6 +23,11 @@ class CTreeConverter:
     method = "Convert" + tree.__class__.__name__.capitalize()
     visitor = getattr(self, method, self.ThrowNotImplementedError)
     return visitor(tree)
+
+  def ConvertFileast(self, tree):
+    position = NP.NodePosition(self.filename, 0, 0)
+    return N.Module(position,
+        children = map(self.ConvertTree, tree.children()))
 
   def ConvertReturn(self, tree):
     return N.Return(GetCoords(tree), self.ConvertTree(tree.expr))

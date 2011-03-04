@@ -21,6 +21,15 @@ class Node:
     whitespace argument using a function decorator."""
     raise NotImplementedError("Not implemented for the Base Node Class.")
 
+class Module(Node):
+  def __init__(self, position, children):
+    self.position = position
+    self.children = children
+    self.filename = position.GetFile()
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level=0):
+    return ["define-module", self.filename, self.children]
 
 class Constant(Node):
   def __init__(self, position, value, type=None):

@@ -9,7 +9,7 @@ def CreateStringFromList(words, level_space, indent_level):
   leading_whitespace = " " * (level_space * indent_level)
   stream.write(leading_whitespace)
   stream.write("(")
-  for w in words:
+  for (i, w) in enumerate(words):
     if type(w) is str:
       stream.write(w)
 
@@ -19,8 +19,11 @@ def CreateStringFromList(words, level_space, indent_level):
         indent_level+1))
 
     elif isinstance(w, N.Node):
-      s = w.ToStr(indent_level+1)
-      stream.write("\n")
+      if i is not 0:
+        s = w.ToStr(indent_level+1)
+        stream.write("\n")
+      else:
+        s = w.ToStr()
       stream.write(s)
 
     else:

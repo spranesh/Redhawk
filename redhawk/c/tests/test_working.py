@@ -47,6 +47,11 @@ def TestDeclaration7():
   t = test_utils.SetUp("prog007.c")
   return test_utils.ConvertTree(t.children()[6])
 
+def TestFileAST1():
+  """ Test a FileAST with a single declaration, `int a;`"""
+  t = test_utils.SetUp("simple_declaration.c")
+  return test_utils.ConvertTree(t, "simple_declaration.c")
+
 
 # def Test002(): ConvertProgram("prog002.c")
 # def Test003(): ConvertProgram("prog003.c")

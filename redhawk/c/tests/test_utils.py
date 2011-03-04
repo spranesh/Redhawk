@@ -15,9 +15,9 @@ def SetUp(filename, rel_path="c/tests/"):
   return tree
 
 
-def ConvertTree(t):
+def ConvertTree(t, filename=None):
   t.show()
-  c = C.CTreeConverter()
+  c = C.CTreeConverter(filename)
   ast = c.ConvertTree(t)
   print ast, "\n\n"
   return
