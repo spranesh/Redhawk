@@ -52,6 +52,9 @@ def TestFileAST1():
   t = test_utils.SetUp("simple_declaration.c")
   return test_utils.ConvertTree(t, "simple_declaration.c")
 
+def TestFunctionDefinition1():
+  t = test_utils.SetUp("prog001.c")
+  return test_utils.ConvertTree(t.children()[0])
 
 # def Test002(): ConvertProgram("prog002.c")
 # def Test003(): ConvertProgram("prog003.c")

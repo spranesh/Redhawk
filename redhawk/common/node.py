@@ -82,11 +82,43 @@ class DeclareFunction(Node):
     self.return_type = return_type
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level=0):
-    li = ["declare-function", self.name]
+  # This has been separated to make avoid duplicating work in DefineFunction
+  def GetNodeContentsAsList(self):
+    li = [self.name]
     if len(self.arguments) is not 0:
       li.append(["arguments"] + self.arguments)
     if self.return_type:
       li.append([":return-type", self.return_type])
     return li
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level=0):
+    li = self.GetNodeContentsAsList()
+    li.insert(0, "declare-function")
+    return li
+
+
+# Is inheriting from DeclareFunction a good thing to be doing?
+class DefineFunction(DeclareFunction):
+  def __init__(self, position, name, arguments, body, return_type):
+    DeclareFunction.__init__(self, position, name, arguments, return_type)
+    self.body = body
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    li = self.GetNodeContentsAsList()
+    li.append(self.body)
+    li.insert(0, "define-function")
+    return li
+
+
+class Compound(Node):
+  def __init__(self, position, compound_items):
+    self.position = position
+    self.compound_items = compound_items
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    return ["compound"] + self.compound_items

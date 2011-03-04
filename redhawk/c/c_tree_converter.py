@@ -78,14 +78,37 @@ class CTreeConverter:
     return T.Array(array_type = self.ConvertTree(tree.type))
 
   def ConvertNonetype(self, tree):
-    """ To handle cases when children might be none."""
+    """ Handle cases when children are none."""
     return None
 
   def ConvertFuncdecl(self, tree):
+    """ Handle Function Declarations."""
+    try:
+      arguments = map(self.ConvertTree, tree.args.params)
+    except AttributeError, e:
+      arguments = []
+
     return N.DeclareFunction(
         position = GetCoords(tree),
         name = None,
-        arguments = map(self.ConvertTree, tree.args.params),
+        arguments = arguments,
         return_type = self.ConvertTree(tree.type))
 
+  def ConvertFuncdef(self, tree):
+    """ Handle Function Declarations. Consists of body, and decl.
+        body is a compound statement, and decl is a Declaration."""
+    #TODO(spranesh): Handle param_decls, (K&R style of arguments)
+    # int main(a)
+    # char a;
+    func_decl = self.ConvertTree(tree.decl)
+    body = self.ConvertTree(tree.body)
+    return N.DefineFunction(position = GetCoords(tree),
+        name = func_decl.name,
+        arguments = func_decl.arguments,
+        body = body,
+        return_type = func_decl.return_type)
+
+  def ConvertCompound(self, tree):
+    return N.Compound(position = GetCoords(tree),
+        compound_items = map(self.ConvertTree, tree.block_items))
 
