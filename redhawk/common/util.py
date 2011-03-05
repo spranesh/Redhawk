@@ -5,8 +5,10 @@ import functools
 import cStringIO
 
 def CreateStringFromList(words, level_space, indent_level):
-  stream = cStringIO.StringIO()
   leading_whitespace = " " * (level_space * indent_level)
+  if type(words) is str:
+    return leading_whitespace + words
+  stream = cStringIO.StringIO()
   stream.write(leading_whitespace)
   stream.write("(")
   for (i, w) in enumerate(words):
