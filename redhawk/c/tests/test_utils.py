@@ -7,7 +7,7 @@ import sys
 def SetUp(filename, rel_path="c/tests/"):
   filename = rel_path + filename
   try:
-    tree = pycparser.parse_file(filename)
+    tree = pycparser.parse_file(filename, use_cpp = True)
   except StandardError, e:
     sys.stderr.write(str(e))
     assert(False)
