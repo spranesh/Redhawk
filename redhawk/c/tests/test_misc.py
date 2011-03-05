@@ -12,12 +12,12 @@ def TestReturnConstant():
   return test_utils.ConvertTree(return_node)
 
 def TestFileAST1():
-  """ Test a FileAST with a single declaration, `int a;`"""
+  """ Test FileAST """
   t = test_utils.SetUp("simple_declaration.c")
   return test_utils.ConvertTree(t, "simple_declaration.c")
 
 def TestFunctionDefinition1():
-  """ Test simple function definition."""
+  """ Test Function Definition."""
   t = test_utils.SetUp("prog001.c")
   return test_utils.ConvertTree(t.children()[0])
 
