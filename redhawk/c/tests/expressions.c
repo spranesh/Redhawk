@@ -11,4 +11,16 @@ void f()
   (a < b) && (c <= d) || (e > f) && (g > h);
   (a == b);
   (a != b);
+  (!(a == b));
+  (-a);
+  (+a);
+  &a; // Address of a
+  *ptr;
+  ++a;
+  a++;
+  --a;
+  a--;
+  sizeof(char);
+  ~a;
+  (a++) * (*(ptr + 4)); // A combination of unary and binary operators.
 }

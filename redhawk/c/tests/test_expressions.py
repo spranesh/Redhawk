@@ -51,3 +51,57 @@ def TestExpression10():
 def TestExpression11():
   """ Test a != b; """
   return GetNthExpressionInFirstFunction(11)
+
+def TestExpression12():
+  """ Test Unary Expression !(a == b); """
+  return GetNthExpressionInFirstFunction(12)
+
+
+# ------------- Test Unary Operators.
+
+def TestUnaryMinus():
+  """ Test Unary Expression (-a);"""
+  return GetNthExpressionInFirstFunction(13)
+
+def TestUnaryPlus():
+  """ Test Unary Expression (+a);"""
+  return GetNthExpressionInFirstFunction(14)
+
+def TestAddressOf():
+  """ Test Unary Expression &a;"""
+  return GetNthExpressionInFirstFunction(15)
+
+def TestDereference():
+  """ Test Unary Expression *ptr;"""
+  return GetNthExpressionInFirstFunction(16)
+
+def TestPreIncrement():
+  """ Test Unary Expression ++a;"""
+  return GetNthExpressionInFirstFunction(17)
+
+def TestPostIncrement():
+  """ Test Unary Expression a++;"""
+  return GetNthExpressionInFirstFunction(18)
+
+def TestPreDecrement():
+  """ Test Unary Expression --a;"""
+  return GetNthExpressionInFirstFunction(19)
+
+def TestPostDecrement():
+  """ Test Unary Expression a--;"""
+  return GetNthExpressionInFirstFunction(20)
+
+def TestSizeOf():
+  """ Test sizeof(char); """
+  return GetNthExpressionInFirstFunction(21)
+
+def TestBitwiseNegate():
+  """ Test ~a; """
+  return GetNthExpressionInFirstFunction(22)
+
+
+# -------------- Test Some Combinations.
+def TestMiscCombination1():
+  """ Test (a++) * (*(ptr + 4)); """
+  return GetNthExpressionInFirstFunction(23)
+

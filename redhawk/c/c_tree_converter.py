@@ -7,29 +7,38 @@ import redhawk.common.types as T
 
 # Map C operators into the LAST operators
 BINARY_OPERATOR_CONVERSIONS = {
-      '+'  : 'ADD'
-     ,'-'  : 'MINUS'
-     ,'*'  : 'MULTIPLY'
-     ,'/'  : 'DIVIDE'
-     ,'^'  : 'BITWISE_XOR'
-     ,'|'  : 'BITWISE_OR'
-     ,'&'  : 'BITWISE_AND'
-     ,'<<' : 'LSHIFT'
-     ,'>>' : 'RSHIFT'
-     ,'%'  : 'MOD'
-     ,'<'  : 'LT'
-     ,'>'  : 'GT'
-     ,'<=' : 'LTE'
-     ,'>=' : 'GTE'
-     ,'==' : 'EQ'
-     ,'!=' : 'NOT_EQ'
-     ,'&&' : 'BOOLEAN_AND'
-     ,'||' : 'BOOLEAN_OR'
+      '+'   : 'ADD'
+     ,'-'   : 'MINUS'
+     ,'*'   : 'MULTIPLY'
+     ,'/'   : 'DIVIDE'
+     ,'^'   : 'BITWISE_XOR'
+     ,'|'   : 'BITWISE_OR'
+     ,'&'   : 'BITWISE_AND'
+     ,'<<'  : 'LSHIFT'
+     ,'>>'  : 'RSHIFT'
+     ,'%'   : 'MOD'
+     ,'<'   : 'LT'
+     ,'>'   : 'GT'
+     ,'<='  : 'LTE'
+     ,'>='  : 'GTE'
+     ,'=='  : 'EQ'
+     ,'!='  : 'NOT_EQ'
+     ,'&&'  : 'BOOLEAN_AND'
+     ,'||'  : 'BOOLEAN_OR'
 }
 
 UNARY_OPERATOR_CONVERSIONS = {
-      '+'  : 'UNARY_PLUS'
-     ,'-'  : 'UNARY_MINUS'
+      '+'      : 'UNARY_PLUS'
+     ,'-'      : 'UNARY_MINUS'
+     ,'!'      : 'BOOLEAN_NOT'
+     ,'++'     : 'PRE_INCREMENT'
+     ,'p++'    : 'POST_INCREMENT'
+     ,'--'     : 'PRE_DECREMENT'
+     ,'p--'    : 'POST_DECREMENT'
+     ,'*'      : 'POINTER_DEREFERENCE'
+     ,'&'      : 'ADDRESS_OF'
+     ,'sizeof' : 'SIZE_OR_LEN'
+     ,'~'      : 'BITWISE_NOT'
 }
 
 
@@ -158,3 +167,8 @@ class CTreeConverter:
         operator = BINARY_OPERATOR_CONVERSIONS[tree.op],
         children = map(self.ConvertTree, [tree.left, tree.right]))
     
+  def ConvertUnaryop(self, tree):
+    assert(tree.op in UNARY_OPERATOR_CONVERSIONS)
+    return N.Expression(position = GetCoords(tree),
+        operator = UNARY_OPERATOR_CONVERSIONS[tree.op],
+        children = map(self.ConvertTree, [tree.expr]))
