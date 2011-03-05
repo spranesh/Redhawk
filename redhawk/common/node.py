@@ -4,6 +4,38 @@ import util
 
 import copy
 
+# A dictionary of allowed operators, and their arity.
+ALLOWED_OPERATORS = {
+     'MULTIPLY'     : ('*', 2)
+    ,'ADD'          : ('+', 2)
+    ,'MINUS'        : ('-', 2)
+    ,'DIVIDE'       : ('/', 2)
+    ,'FLOOR_DIVIDE' : ('//', 2)
+    ,'UNARY_MINUS'  : ('-', 1)
+    ,'UNARY_PLUS'   : ('+', 1)
+    ,'POWER'        : ('power', 2)
+    ,'MOD'          : ('mod', 2)
+    ,'LSHIFT'       : ('lshift', 2)
+    ,'RSHIFT'       : ('rshift', 2)
+    ,'BITWISE_OR'   : ('bitwise-or', 2)
+    ,'BITWISE_XOR'  : ('bitwise-xor', 2)
+    ,'BITWISE_AND'  : ('bitwise-and', 2)
+    ,'BOOLEAN_AND' : ('and', 2)
+    ,'BOOLEAN_OR'   : ('or', 2)
+    ,'BOOLEAN_NOT'  : ('not', 1)
+    ,'EQ'           : ('=', 2)
+    ,'NOT_EQ'       : ('!=', 2)
+    ,'IS'           : ('is', 2)
+    ,'IN'           : ('in', 2)
+    ,'LT'           : ('<', 2)
+    ,'LTE'          : ('<=', 2)
+    ,'GT'           : ('>', 2)
+    ,'GTE'          : ('>=', 2)
+    # TODO(spranesh): Should we make this an if-else?
+    ,'TERNARY_IF'   : ('ternary-if', 3) 
+}
+
+
 class Node:
   """ Signifies a node in the parse tree."""
   def __init__(self):
@@ -138,3 +170,27 @@ class Compound(Node):
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level = 0):
     return ["compound"] + self.compound_items
+
+
+class Expression(Node):
+  def __init__(self, position, operator, children):
+    assert(operator in ALLOWED_OPERATORS)
+    assert(len(children) is ALLOWED_OPERATORS[operator][1])
+    self.position = position
+    self.operator = operator
+    self.children = children
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    operator_str = ALLOWED_OPERATORS[self.operator][0]
+    return [operator_str] + self.children
+
+
+class VariableReference(Node):
+  def __init__(self, position, name):
+    self.position = position
+    self.name = name
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    return self.name

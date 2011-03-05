@@ -5,6 +5,34 @@ import redhawk.common.node as N
 import redhawk.common.node_position as NP
 import redhawk.common.types as T
 
+# Map C operators into the LAST operators
+BINARY_OPERATOR_CONVERSIONS = {
+      '+'  : 'ADD'
+     ,'-'  : 'MINUS'
+     ,'*'  : 'MULTIPLY'
+     ,'/'  : 'DIVIDE'
+     ,'^'  : 'BITWISE_XOR'
+     ,'|'  : 'BITWISE_OR'
+     ,'&'  : 'BITWISE_AND'
+     ,'<<' : 'LSHIFT'
+     ,'>>' : 'RSHIFT'
+     ,'%'  : 'MOD'
+     ,'<'  : 'LT'
+     ,'>'  : 'GT'
+     ,'<=' : 'LTE'
+     ,'>=' : 'GTE'
+     ,'==' : 'EQ'
+     ,'!=' : 'NOT_EQ'
+     ,'&&' : 'BOOLEAN_AND'
+     ,'||' : 'BOOLEAN_OR'
+}
+
+UNARY_OPERATOR_CONVERSIONS = {
+      '+'  : 'UNARY_PLUS'
+     ,'-'  : 'UNARY_MINUS'
+}
+
+
 def GetCoords(t):
   assert(t is not None)
   c = t.coord
@@ -39,10 +67,13 @@ class CTreeConverter:
 
   def ConvertId(self, tree):
     #TODO(spranesh): Is this assert always true?
-    assert(tree.name == 'NULL')
-    return N.Constant(GetCoords(tree), 
-        value = tree.name, 
-        type = T.Pointer(T.BaseType('NULL')))
+    if tree.name == 'NULL':
+      return N.Constant(GetCoords(tree), 
+          value = tree.name, 
+          type = T.Pointer(T.BaseType('NULL')))
+    else:
+      return N.VariableReference(GetCoords(tree), 
+          name = tree.name)
 
   def ConvertDecl(self, tree):
     t = self.ConvertTree(tree.type)
@@ -121,3 +152,9 @@ class CTreeConverter:
     return N.Compound(position = GetCoords(tree),
         compound_items = map(self.ConvertTree, tree.block_items))
 
+  def ConvertBinaryop(self, tree):
+    assert(tree.op in BINARY_OPERATOR_CONVERSIONS)
+    return N.Expression(position = GetCoords(tree),
+        operator = BINARY_OPERATOR_CONVERSIONS[tree.op],
+        children = map(self.ConvertTree, [tree.left, tree.right]))
+    
