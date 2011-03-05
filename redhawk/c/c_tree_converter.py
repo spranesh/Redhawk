@@ -190,3 +190,8 @@ class CTreeConverter:
           lvalue = self.ConvertTree(tree.lvalue),
           rvalue = rvalue)
 
+  def ConvertFunccall(self, tree):
+    return N.CallFunction(position = GetCoords(tree),
+        function = self.ConvertTree(tree.name),
+        arguments = map(self.ConvertTree, tree.args.exprs))
+

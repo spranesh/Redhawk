@@ -223,3 +223,19 @@ class Assignment(Node):
   def ToStr(self, indent_level = 0):
     return ["assign", self.lvalue, self.rvalue]
 
+class CallFunction(Node):
+  def __init__(self, position, function, arguments):
+    # TODO(spranesh): function is currently a tree, and not just a name.
+    # Is there any way to sort this out?
+    # Right now, we will have to search for CallFunction, and then go down
+    # till we hit a ReferVariable node
+    self.position = position
+    self.function = function
+    self.arguments = arguments
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    return [self.function] + self.arguments
+
+
