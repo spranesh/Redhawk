@@ -11,10 +11,12 @@ class TestNodePosition:
     return
 
   def TestInit(self):
+    """ Test NodePosition's init method."""
     assert(self.a!=None)
     return
 
   def TestNodePositionGetAttributes(self):
+    """ Test NodePosition's GetFile, GetLine, GetColumn methods."""
     assert(self.a.GetFile() == "a")
     assert(self.a.GetLine() == 10)
     assert(self.a.GetColumn() == 20)
