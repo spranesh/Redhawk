@@ -72,7 +72,7 @@ class CTreeConverter:
           value = tree.name, 
           type = T.Pointer(T.BaseType('NULL')))
     else:
-      return N.VariableReference(GetCoords(tree), 
+      return N.ReferVariable(GetCoords(tree), 
           name = tree.name)
 
   def ConvertDecl(self, tree):

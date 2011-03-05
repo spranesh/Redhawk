@@ -186,7 +186,7 @@ class Expression(Node):
     return [operator_str] + self.children
 
 
-class VariableReference(Node):
+class ReferVariable(Node):
   def __init__(self, position, name):
     self.position = position
     self.name = name
