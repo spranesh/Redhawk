@@ -33,3 +33,8 @@ def TestProgram6():
   """ Test prog006.c """
   t = test_utils.SetUp("prog006.c")
   return test_utils.ConvertTree(t)
+
+def TestProgram7():
+  """ Test prog007.c """
+  t = test_utils.SetUp("prog007.c")
+  return test_utils.ConvertTree(t)

@@ -48,6 +48,7 @@ ALLOWED_OPERATORS = {
 }
 
 
+
 class Node:
   """ Signifies a node in the parse tree."""
   def __init__(self):
@@ -59,6 +60,9 @@ class Node:
 
   def __str__(self):
     return self.ToStr()
+
+  def MakeCopy(self):
+    return copy.deepcopy(self)
 
   def ToStr(self):
     """ Should return a list of lines, which will be indented by the
@@ -206,3 +210,16 @@ class ReferVariable(Node):
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level = 0):
     return self.name
+
+
+class Assignment(Node):
+  def __init__(self, position, lvalue, rvalue):
+    self.position = position
+    self.lvalue = lvalue
+    self.rvalue = rvalue
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    return ["assign", self.lvalue, self.rvalue]
+

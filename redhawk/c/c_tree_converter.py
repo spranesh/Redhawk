@@ -172,3 +172,21 @@ class CTreeConverter:
     return N.Expression(position = GetCoords(tree),
         operator = UNARY_OPERATOR_CONVERSIONS[tree.op],
         children = map(self.ConvertTree, [tree.expr]))
+
+  def ConvertAssignment(self, tree):
+    op = tree.op
+    if len(op) is not 1:
+      aux_op = op[:-1]
+      #TODO(spranesh): Not make any transformations to the += like operators?
+      assert(aux_op in BINARY_OPERATOR_CONVERSIONS)
+
+      rvalue = N.Expression(position = GetCoords(tree.rvalue),
+          operator = BINARY_OPERATOR_CONVERSIONS[aux_op],
+          children = map(self.ConvertTree, [tree.lvalue, tree.rvalue]))
+    else:
+      rvalue = self.ConvertTree(tree.rvalue)
+
+    return N.Assignment(position = GetCoords(tree),
+          lvalue = self.ConvertTree(tree.lvalue),
+          rvalue = rvalue)
+
