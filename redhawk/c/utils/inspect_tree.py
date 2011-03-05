@@ -25,6 +25,6 @@ tree = pycparser.parse_file(filename, use_cpp = True, cpp_path='cpp', cpp_args='
 body = tree.children()
 program = open(filename).read()
 if "show" in sys.argv:
-  tree.show()
+  tree.show(attrnames=True)
 else:
   StartShell()
