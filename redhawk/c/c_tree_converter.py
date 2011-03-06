@@ -25,6 +25,9 @@ BINARY_OPERATOR_CONVERSIONS = {
      ,'!='  : 'NOT_EQ'
      ,'&&'  : 'BOOLEAN_AND'
      ,'||'  : 'BOOLEAN_OR'
+
+     ,'.'   : 'ATTRIBUTE_INDEX'
+     ,'->'  : 'ARROW' # TODO(spranesh): Bad Name?
 }
 
 UNARY_OPERATOR_CONVERSIONS = {
@@ -224,3 +227,9 @@ class CTreeConverter:
           name = tree.name,
           members = map(self.ConvertTree, tree.decls))
          
+  def ConvertStructref(self, tree):
+    op = tree.type  # a.b or a->b
+    assert(op in BINARY_OPERATOR_CONVERSIONS)
+    return N.Expression(position = GetCoords(tree),
+        operator = BINARY_OPERATOR_CONVERSIONS[op],
+        children = map(self.ConvertTree, [tree.name, tree.field]))

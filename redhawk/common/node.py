@@ -45,6 +45,9 @@ ALLOWED_OPERATORS = {
     ,'POST_DECREMENT'      : ('post-decrement', 1)
     ,'ADDRESS_OF'          : ('addr-of', 1)
     ,'POINTER_DEREFERENCE' : ('dereference-ptr', 1)
+
+    ,'ATTRIBUTE_INDEX'     : ('.', 2)
+    ,'ARROW'               : ('->', 2)
 }
 
 
