@@ -1,55 +1,25 @@
 #!/usr/bin/env python
 
-""" Tests converstion of full programs. """
+""" Tests conversion of full programs. """
 
 import test_utils
 
-def TestProgram1():
-  """ Test prog001.c (Function to return 0)"""
-  t = test_utils.SetUp("prog001.c")
+tests = [("prog001.c", "Function to return 0")
+        ,("prog002.c", "Static function to return 0")
+        ,("prog003.c", "An expression")
+        ,("prog004.c", "Variable Declaration")
+        ,("prog005.c", "Pointer Declaration")
+        ,("prog006.c", "Point to array of chars")
+        ,("prog007.c", "Assignment Statements")
+        ,("prog008.c", "Function Call")
+        ,("prog009.c", "Linked List Structure")
+        ,("prog010.c", "Fibonacci Function")]
+
+def ConvertFile(filename):
+  t = test_utils.SetUp(filename)
   return test_utils.ConvertTree(t)
 
-def TestProgram2():
-  """ Test prog002.c (Static function to return 0)"""
-  t = test_utils.SetUp("prog002.c")
-  return test_utils.ConvertTree(t)
-
-def TestProgram3():
-  """ Test prog003.c (An expression)"""
-  t = test_utils.SetUp("prog003.c")
-  return test_utils.ConvertTree(t)
-
-def TestProgram4():
-  """ Test prog004.c (Variable Declaration)"""
-  t = test_utils.SetUp("prog004.c")
-  return test_utils.ConvertTree(t)
-
-def TestProgram5():
-  """ Test prog005.c (Pointer Declaration)"""
-  t = test_utils.SetUp("prog005.c")
-  return test_utils.ConvertTree(t)
-
-def TestProgram6():
-  """ Test prog006.c (Point to array of chars)"""
-  t = test_utils.SetUp("prog006.c")
-  return test_utils.ConvertTree(t)
-
-def TestProgram7():
-  """ Test prog007.c (Assignment Statements)"""
-  t = test_utils.SetUp("prog007.c")
-  return test_utils.ConvertTree(t)
-
-def TestProgram8():
-  """ Test prog008.c (Function Call) """
-  t = test_utils.SetUp("prog008.c")
-  return test_utils.ConvertTree(t)
-
-def TestProgram9():
-  """ Test prog009.c (Linked List Structure) """
-  t = test_utils.SetUp("prog009.c")
-  return test_utils.ConvertTree(t)
-
-def TestProgram10():
-  """ Test prog010.c (Fibonacci Function) """
-  t = test_utils.SetUp("prog10.c")
-  return test_utils.ConvertTree(t)
+def TestPrograms():
+  for (filename, description) in tests:
+    ConvertFile.description = "Test %s (%s)"%(filename, description)
+    yield ConvertFile, "prog00%d.c"%3
