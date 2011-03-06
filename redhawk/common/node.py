@@ -223,6 +223,7 @@ class Assignment(Node):
   def ToStr(self, indent_level = 0):
     return ["assign", self.lvalue, self.rvalue]
 
+
 class CallFunction(Node):
   def __init__(self, position, function, arguments):
     # TODO(spranesh): function is currently a tree, and not just a name.
@@ -239,3 +240,20 @@ class CallFunction(Node):
     return [self.function] + self.arguments
 
 
+class Structure(Node):
+  def __init__(self, position, name, members, storage = None, quals = None):
+    self.position = position
+    self.name = name
+    self.members = members
+    self.storage = storage
+    self.quals = quals
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    li = ["define-structure", self.name, self.members]
+    if self.storage:
+      li.append([":storage", self.storage])
+    if self.quals:
+      li.append([":quals", self.quals])
+    return li

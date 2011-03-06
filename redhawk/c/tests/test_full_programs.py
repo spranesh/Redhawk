@@ -40,6 +40,11 @@ def TestProgram7():
   return test_utils.ConvertTree(t)
 
 def TestProgram8():
-  """ Test prog008.c (function call) """
+  """ Test prog008.c (Function Call) """
   t = test_utils.SetUp("prog008.c")
+  return test_utils.ConvertTree(t)
+
+def TestProgram9():
+  """ Test prog009.c (Linked List Structure) """
+  t = test_utils.SetUp("prog009.c")
   return test_utils.ConvertTree(t)

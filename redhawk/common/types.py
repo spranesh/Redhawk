@@ -40,13 +40,12 @@ class Pointer(Type):
     return ["pointer-to", self.type]
 
 
-class Structure(Type):
-  def __init__(self, types):
-    for i in types:
-      assert(isinstance(i, Type))
-    self.types = types
+class StructureType(Type):
+  def __init__(self, structure_type):
+    assert(type(structure_type) is str)
+    self.structure_type = structure_type
     return
 
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level = 0):
-    return ["structure-of"].extend(self.types)
+    return ["struct", self.structure_type]

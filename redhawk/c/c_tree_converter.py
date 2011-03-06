@@ -85,9 +85,17 @@ class CTreeConverter:
           name = tree.name)
 
   def ConvertDecl(self, tree):
+    # We have to check if the child is a 
+    #   a. a function declaration
+    #   b. a structure declaration
+    # Otherwise it is a normal declaration
     t = self.ConvertTree(tree.type)
     if isinstance(t, N.DeclareFunction):
       t.name = tree.name
+      t.storage = tree.storage
+      t.quals = tree.quals
+      return t
+    if isinstance(t, N.Structure):
       t.storage = tree.storage
       t.quals = tree.quals
       return t
@@ -106,13 +114,20 @@ class CTreeConverter:
         name = tree.name,
         type = t)
 
-  def ConvertTypedecl(self, tree):
+  def ConvertIdentifiertype(self, tree):
     """ Returns Type Object """
     try:
-      return T.BaseType(base_type = tree.type.names[0])
+      return T.BaseType(base_type = tree.names[0])
     except IndexError, e:
       # Default type is int in C
       return T.BaseType(base_type = 'int')
+
+  def ConvertTypedecl(self, tree):
+    """ Returns Type Object """
+    # child is either an IdentifierType or a Struct
+    t = self.ConvertTree(tree.type)
+    assert(isinstance(t, T.BaseType) or isinstance(t, T.StructureType))
+    return t
 
   def ConvertPtrdecl(self, tree):
     # TODO(spranesh): Handle quals (such as constants)
@@ -195,3 +210,17 @@ class CTreeConverter:
         function = self.ConvertTree(tree.name),
         arguments = map(self.ConvertTree, tree.args.exprs))
 
+  def ConvertStruct(self, tree):
+    # If the pycparser's structure's decls is None, 
+    #     the structure is being referred to.
+    # Else
+    #     it is a structure declaration.
+    # TODO(spranesh): Is pyparser a crazy hack or is something wrong with my
+    # understanding?
+    if tree.decls is None:
+      return T.StructureType(structure_type = tree.name)
+    else:
+      return N.Structure(position = GetCoords(tree),
+          name = tree.name,
+          members = map(self.ConvertTree, tree.decls))
+         
