@@ -14,7 +14,10 @@ tests = [("prog001.c", "Function to return 0")
         ,("prog008.c", "Function Call")
         ,("prog009.c", "Linked List Structure")
         ,("prog010.c", "If Else - Rec. Fibonacci")
-        ,("prog011.c", "For Loop - Iter. Fibonacci")]
+        ,("prog011.c", "For Loop - Iter. Fibonacci")
+        ,("prog012.c", "While Loop - Factorial")
+        ,("prog013.c", "Do While Loop - Factorial")]
+
 
 def ConvertFile(filename):
   t = test_utils.SetUp(filename)

@@ -246,3 +246,14 @@ class CTreeConverter:
         condition = self.ConvertTree(tree.cond),
         step = self.ConvertTree(tree.next),
         body = self.ConvertTree(tree.stmt))
+
+  def ConvertWhile(self, tree):
+    return N.While(position = GetCoords(tree),
+        condition = self.ConvertTree(tree.cond),
+        body = self.ConvertTree(tree.stmt))
+
+  def ConvertDowhile(self, tree):
+    return N.While(position = GetCoords(tree),
+        condition = self.ConvertTree(tree.cond),
+        body = self.ConvertTree(tree.stmt),
+        do_while = True)

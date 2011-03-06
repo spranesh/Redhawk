@@ -296,3 +296,22 @@ class For(Node):
       li.append(self.body)
     return li
 
+
+class While(Node):
+  def __init__(self, position, condition, body, do_while=False):
+    self.position = position
+    self.condition = condition
+    self.body = body
+    self.do_while = do_while
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    if self.do_while:
+      li = ["do-while"]
+    else:
+      li = ["while"]
+    
+    li.extend([self.condition, self.body])
+    return li
+
