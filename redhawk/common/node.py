@@ -278,3 +278,21 @@ class IfElse(Node):
     if self.if_false:
       li.append(self.if_false)
     return li
+
+
+class For(Node):
+  def __init__(self, position, init, condition, step, body):
+    self.position = position
+    self.init = init
+    self.condition = condition
+    self.step = step
+    self.body = body
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    li = ["for", [self.init, self.condition, self.step]]
+    if self.body:
+      li.append(self.body)
+    return li
+

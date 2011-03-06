@@ -239,3 +239,10 @@ class CTreeConverter:
         condition = self.ConvertTree(tree.cond),
         if_true = self.ConvertTree(tree.iftrue),
         if_false = self.ConvertTree(tree.iffalse))
+
+  def ConvertFor(self, tree):
+    return N.For(position = GetCoords(tree),
+        init = self.ConvertTree(tree.init),
+        condition = self.ConvertTree(tree.cond),
+        step = self.ConvertTree(tree.next),
+        body = self.ConvertTree(tree.stmt))
