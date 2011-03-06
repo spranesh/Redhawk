@@ -260,3 +260,21 @@ class Structure(Node):
     if self.quals:
       li.append([":quals", self.quals])
     return li
+
+
+class IfElse(Node):
+  def __init__(self, position, condition, if_true, if_false=None):
+    assert(condition is not None)
+    assert(if_true is not None)
+    self.position = position
+    self.condition = condition
+    self.if_true = if_true
+    self.if_false = if_false
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    li = ["if", self.condition, self.if_true]
+    if self.if_false:
+      li.append(self.if_false)
+    return li

@@ -233,3 +233,9 @@ class CTreeConverter:
     return N.Expression(position = GetCoords(tree),
         operator = BINARY_OPERATOR_CONVERSIONS[op],
         children = map(self.ConvertTree, [tree.name, tree.field]))
+
+  def ConvertIf(self, tree):
+    return N.IfElse(position = GetCoords(tree),
+        condition = self.ConvertTree(tree.cond),
+        if_true = self.ConvertTree(tree.iftrue),
+        if_false = self.ConvertTree(tree.iffalse))

@@ -48,3 +48,8 @@ def TestProgram9():
   """ Test prog009.c (Linked List Structure) """
   t = test_utils.SetUp("prog009.c")
   return test_utils.ConvertTree(t)
+
+def TestProgram10():
+  """ Test prog010.c (Fibonacci Function) """
+  t = test_utils.SetUp("prog10.c")
+  return test_utils.ConvertTree(t)
