@@ -176,8 +176,18 @@ class CTreeConverter:
         quals = func_decl.quals)
 
   def ConvertCompound(self, tree):
+    # The Case Node is screwed up. We need to flesh out the
+    # case node's stmt, and put it up one level higher.
+    compound_items = []
+    for t in tree.block_items:
+      ct = self.ConvertTree(t)
+      compound_items.append(ct)
+
+      if isinstance(ct, N.Case):
+        compound_items.append(self.ConvertTree(t.stmt))
+
     return N.Compound(position = GetCoords(tree),
-        compound_items = map(self.ConvertTree, tree.block_items))
+        compound_items = compound_items)
 
   def ConvertBinaryop(self, tree):
     assert(tree.op in BINARY_OPERATOR_CONVERSIONS)
@@ -257,3 +267,12 @@ class CTreeConverter:
         condition = self.ConvertTree(tree.cond),
         body = self.ConvertTree(tree.stmt),
         do_while = True)
+
+  def ConvertSwitch(self, tree):
+    return N.Switch(position = GetCoords(tree),
+        switch_on = self.ConvertTree(tree.cond),
+        body = self.ConvertTree(tree.stmt))
+
+  def ConvertCase(self, tree):
+    return N.Case(position = GetCoords(tree),
+        condition = self.ConvertTree(tree.expr))

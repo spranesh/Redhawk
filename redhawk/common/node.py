@@ -315,3 +315,26 @@ class While(Node):
     li.extend([self.condition, self.body])
     return li
 
+
+class Switch(Node):
+  def __init__(self, position, switch_on, body):
+    self.position = position
+    self.switch_on = switch_on
+    self.body = body
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    return ["switch", self.switch_on, self.body]
+
+
+class Case(Node):
+  def __init__(self, position, condition):
+    self.position = position
+    self.condition = condition
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    return ["case", self.condition]
+
