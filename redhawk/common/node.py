@@ -328,13 +328,17 @@ class Switch(Node):
     return ["switch", self.switch_on, self.body]
 
 
-class Case(Node):
-  def __init__(self, position, condition):
+class CaseDefault(Node):
+  def __init__(self, position, condition=None):
+    # Condition is None => default
     self.position = position
     self.condition = condition
     return
 
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level = 0):
-    return ["case", self.condition]
+    if self.condition is None:
+      return ["default", self.condition]
+    else:
+      return ["case", self.condition]
 

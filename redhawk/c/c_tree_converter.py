@@ -183,8 +183,11 @@ class CTreeConverter:
       ct = self.ConvertTree(t)
       compound_items.append(ct)
 
-      if isinstance(ct, N.Case):
-        compound_items.append(self.ConvertTree(t.stmt))
+      # We could have a case of case of case of ...
+      while isinstance(ct, N.CaseDefault):
+        t = t.stmt
+        ct = self.ConvertTree(t)
+        compound_items.append(ct)
 
     return N.Compound(position = GetCoords(tree),
         compound_items = compound_items)
@@ -274,5 +277,9 @@ class CTreeConverter:
         body = self.ConvertTree(tree.stmt))
 
   def ConvertCase(self, tree):
-    return N.Case(position = GetCoords(tree),
+    return N.CaseDefault(position = GetCoords(tree),
         condition = self.ConvertTree(tree.expr))
+    # Condition is None => default
+
+  def ConvertDefault(self, tree):
+    return N.CaseDefault(position = GetCoords(tree))

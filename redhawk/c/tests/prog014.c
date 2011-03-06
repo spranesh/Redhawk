@@ -1,15 +1,15 @@
 int isspace(char c)
 {
+  int temp = 0;
   switch(c)
   {
     case ' ': 
-      return 1;
     case '\t':
-      2 + 3;
-      return 1;
     case '\n':
+      temp = 1; // DEBUG
       return 1;
+    default:
+      return 0;
   }
 
-  return 0;
 }
