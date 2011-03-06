@@ -13,7 +13,7 @@ tests = [("prog001.c", "Function to return 0")
         ,("prog007.c", "Assignment Statements")
         ,("prog008.c", "Function Call")
         ,("prog009.c", "Linked List Structure")
-        ,("prog010.c", "Fibonacci Function")]
+        ,("prog010.c", "If Else - Rec. Fibonacci")]
 
 def ConvertFile(filename):
   t = test_utils.SetUp(filename)
@@ -22,4 +22,4 @@ def ConvertFile(filename):
 def TestPrograms():
   for (filename, description) in tests:
     ConvertFile.description = "Test %s (%s)"%(filename, description)
-    yield ConvertFile, "prog00%d.c"%3
+    yield ConvertFile, filename
