@@ -48,6 +48,7 @@ ALLOWED_OPERATORS = {
 
     ,'ATTRIBUTE_INDEX'     : ('.', 2)
     ,'ARROW'               : ('->', 2)
+    ,'TYPE_CAST'           : ('cast', 2)
 }
 
 
@@ -341,4 +342,3 @@ class CaseDefault(Node):
       return ["default", self.condition]
     else:
       return ["case", self.condition]
-

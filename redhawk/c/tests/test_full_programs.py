@@ -17,7 +17,8 @@ tests = [("prog001.c", "Function to return 0")
         ,("prog011.c", "For Loop - Iter. Fibonacci")
         ,("prog012.c", "While Loop - Factorial")
         ,("prog013.c", "Do While Loop - Factorial")
-        ,("prog014.c", "Switch Case - isspace")]
+        ,("prog014.c", "Switch Case - isspace")
+        ,("prog015.c", "Cast - To Char *")]
 
 def ConvertFile(filename):
   t = test_utils.SetUp(filename)

@@ -283,3 +283,9 @@ class CTreeConverter:
 
   def ConvertDefault(self, tree):
     return N.CaseDefault(position = GetCoords(tree))
+
+  def ConvertCast(self, tree):
+    return N.Expression(position = None,
+        operator = 'TYPE_CAST',
+        children = [self.ConvertTree(tree.to_type).type,
+                    self.ConvertTree(tree.expr)])
