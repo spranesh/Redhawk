@@ -129,7 +129,8 @@ class CTreeConverter:
     """ Returns Type Object """
     # child is either an IdentifierType or a Struct
     t = self.ConvertTree(tree.type)
-    assert(isinstance(t, T.BaseType) or isinstance(t, T.StructureType))
+    assert(isinstance(t, T.BaseType) or isinstance(t, T.StructureType) or
+        isinstance(t, N.Structure))
     return t
 
   def ConvertPtrdecl(self, tree):
@@ -289,3 +290,8 @@ class CTreeConverter:
         operator = 'TYPE_CAST',
         children = [self.ConvertTree(tree.to_type).type,
                     self.ConvertTree(tree.expr)])
+
+  def ConvertTypedef(self, tree):
+    return N.DefineType(position = GetCoords(tree),
+        name = tree.name,
+        type = self.ConvertTree(tree.type))

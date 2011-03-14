@@ -342,3 +342,14 @@ class CaseDefault(Node):
       return ["default", self.condition]
     else:
       return ["case", self.condition]
+
+class DefineType(Node):
+  def __init__(self, position, name, type):
+    self.position = position
+    self.name = name
+    self.type = type
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    return ["define-type", self.name, self.type]
