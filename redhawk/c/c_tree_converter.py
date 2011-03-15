@@ -295,3 +295,8 @@ class CTreeConverter:
     return N.DefineType(position = GetCoords(tree),
         name = tree.name,
         type = self.ConvertTree(tree.type))
+
+  def ConvertExprlist(self, tree):
+    return N.List(position = GetCoords(tree),
+        values = map(self.ConvertTree, tree.exprs))
+

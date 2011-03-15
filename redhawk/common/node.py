@@ -343,6 +343,7 @@ class CaseDefault(Node):
     else:
       return ["case", self.condition]
 
+
 class DefineType(Node):
   def __init__(self, position, name, type):
     self.position = position
@@ -353,3 +354,15 @@ class DefineType(Node):
   @util.ConvertToStringWithIndent
   def ToStr(self, indent_level = 0):
     return ["define-type", self.name, self.type]
+
+
+class List(Node):
+  def __init__(self, position, values):
+    self.position = position
+    self.values = values
+    assert(type(self.values) is list)
+    return
+
+  @util.ConvertToStringWithIndent
+  def ToStr(self, indent_level = 0):
+    return self.values

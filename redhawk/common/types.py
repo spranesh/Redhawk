@@ -31,7 +31,7 @@ class Array(Type):
 
 class Pointer(Type):
   def __init__(self, ptr_type):
-    assert(isinstance(ptr_type, Type))
+    assert(isinstance(ptr_type, Type) or isinstance(ptr_type, node.DeclareFunction))
     self.type = ptr_type
     return
 

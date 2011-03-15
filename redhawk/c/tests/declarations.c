@@ -7,3 +7,4 @@ static const char *p;
 int foo(int a, int b);
 int foo(int, int);
 static foo (int, int);
+static void (*const ft[2][2])(int) = { {f, f}, {exit, exit} };

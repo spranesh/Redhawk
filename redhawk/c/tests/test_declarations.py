@@ -53,3 +53,8 @@ def TestDeclaration9():
   t = test_utils.SetUp("declarations.c")
   return test_utils.ConvertTree(t.children()[8])
 
+def TestDeclaration10():
+  """ Test `static void (*const ft[2])(int) = { f, exit };` """
+  t = test_utils.SetUp("declarations.c")
+  return test_utils.ConvertTree(t.children()[9])
+
