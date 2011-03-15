@@ -8,53 +8,14 @@
 
 import test_utils
 
-def TestDeclaration1():
-  """ Test `int a` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[0])
+TEST_FILE = "declarations.c"
 
-def TestDeclaration2():
-  """ Test `int *b` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[1])
+test_descriptions = open("%s/%s"%(test_utils.RELATIVE_TEST_PATH, TEST_FILE)).readlines()
 
-def TestDeclaration3():
-  """ Test `char *c` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[2])
+ConvertDeclaration = test_utils.ConvertTree
 
-def TestDeclaration4():
-  """ Test `void *d = NULL` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[3])
-
-def TestDeclaration5():
-  """ Test `int e = 0` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[4])
-
-def TestDeclaration6():
-  """ Test `static const char * p;` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[5])
-
-def TestDeclaration7():
-  """ Test `int foo(int a, int b)` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[6])
-
-def TestDeclaration8():
-  """ Test `int foo(int, int)` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[7])
-
-def TestDeclaration9():
-  """ Test `static foo (int, int)` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[8])
-
-def TestDeclaration10():
-  """ Test `static void (*const ft[2])(int) = { f, exit };` """
-  t = test_utils.SetUp("declarations.c")
-  return test_utils.ConvertTree(t.children()[9])
-
+def TestDeclarations():
+  t = test_utils.SetUp(TEST_FILE)
+  for (i, description) in enumerate(test_descriptions):
+    ConvertDeclaration.description = "Test `%s`"%(description.strip())
+    yield ConvertDeclaration, t.children()[i]

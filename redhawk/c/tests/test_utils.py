@@ -4,7 +4,9 @@ import pycparser
 
 import sys
 
-def SetUp(filename, rel_path="c/tests/"):
+RELATIVE_TEST_PATH = "c/tests/"
+
+def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
   filename = rel_path + filename
   try:
     tree = pycparser.parse_file(filename, use_cpp = True)
