@@ -1,0 +1,15 @@
+Module:
+  super: Node
+  docstring : "Represents a file or module."
+  args: filename, children
+  children: children
+  sexp: ['define-module', filename, children]
+  xml: ['define-module', filename]
+
+Constant:
+  args: position, value
+  optargs: type
+  children : value
+  sexp : ["constant", value, [_type, type]]
+    
+
