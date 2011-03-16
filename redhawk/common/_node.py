@@ -83,7 +83,7 @@ class Node:
     for x in dir(self):
       if 'a' <= x[0] <= 'z':
         d[x] = getattr(self, x)
-    return d
+    return (self.__name__.__class__, d)
 
   def GetXMLAttributes(self):
     return self.GetAttributes()
@@ -138,6 +138,6 @@ class Module(Node):
     d['tags'] = []
     d['tags'].append('define-module')
     d[filename] = self.filename
-    return d
+    return (self.__class__.__name__, d)
 
 

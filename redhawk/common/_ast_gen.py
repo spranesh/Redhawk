@@ -115,7 +115,7 @@ def WriteAttributeMethod(c, name, li, args):
       c.WriteLine("d[%s] = self.%s"%(x, x))
     else:
       c.WriteLine("d['tags'].append('%s')"%(x))
-  c.WriteLine("return d")
+  c.WriteLine("return (self.__class__.__name__, d)")
   c.Dedent()
   c.NewLine()
   return
