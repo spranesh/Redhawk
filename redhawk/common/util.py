@@ -11,6 +11,10 @@ def AssertWithError(condition, error):
     sys.stderr.write(error + "\n")
     sys.exit(1)
 
+def LogWarning(s):
+  sys.stderr.write("[WARNING]: %s\n"%(s))
+  return
+
 class CodeGeneratorBackend:
   """ A class to help code generation by managing indents."""
   def __init__(self, tab="  "):

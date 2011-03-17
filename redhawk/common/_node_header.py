@@ -1,4 +1,9 @@
-""" The Node Class. """
+""" Node Classes.
+
+    This file is AUTO GENERATED from
+      node_cfg.yaml using _ast_gen.py
+    The header is stored in node_header.py
+"""
 
 import copy
 import pprint
@@ -51,6 +56,25 @@ ALLOWED_OPERATORS = {
 }
 
 
+def ExpandList(li, f):
+  """ Recursively expands a list li as follows:
+        For element e in the list, li:
+          * If e is a list, call ExpandList(li, f) recursively.
+          * If e is a Node, expand it (into a list),
+              by calling ExpandList(f(e), f)"""
+  if type(li) is not list:
+    return
+
+  for (i, e) in enumerate(li):
+    if type(e) is list:
+      li[i] = ExpandList(li[i], f)
+    elif isinstance(e, Node):
+      li[i] = f(e)
+      if type(li[i]) is list:
+        li[i] = ExpandList(li[i], f)
+  return li
+
+
 class Node:
   """A Parse Tree Node."""
   def __init__(self):
@@ -69,11 +93,14 @@ class Node:
   def GetChildren(self):
     raise NotImplementedError("Base Node Class!")
 
-  def ToStr():
-    return pprint.pformat(self.GetSExp())
+  def ToStr(self):
+    return str(self.GetRecursiveSExp())
 
   def GetSExp(self):
     raise NotImplementedError("Base Node Class!")
+
+  def GetRecursiveSExp(self):
+    return ExpandList(self.GetSExp(), lambda x: x.GetSExp())
 
   def GetAttributes(self):
     """ Return the attributes of the class as a 
@@ -93,4 +120,5 @@ class Node:
 
   def GetDotAttributes(self):
     return self.GetAttributes()
+
 

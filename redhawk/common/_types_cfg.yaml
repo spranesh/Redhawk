@@ -1,0 +1,47 @@
+# YAML markup for generating the types classes.
+# Each node must be a subclass of Type.
+# The output classes generated are in alphabetical order.
+#
+# The following attributes are allowed (the sexp attribute is compulsory, all
+# others optional). The defaults are as show in the square brackets.)
+#   * sexp              (a yaml list)
+#   * super [Node]      (a single class to inherit from)
+#   * docstring ['']    (a single line doc string)
+#   * args ['']         (a cs-list)
+#   * children ['']     (a cs-list)
+#   * xml ['']          (a yaml list)
+#   * json ['']         (a yaml list)
+#   * dot ['']          (a yaml list)
+#   * optargs ['']      (a cs-list)
+#
+# A cs-list is a comma+space separated list like as follows
+#   this, is, a, comma, separated, list
+# This has been introduced only to make entry easier.
+
+BaseType:
+  super: Type
+  docstring: "Represents a base type (stored as a string)."
+  args: base_type
+  sexp: ["base-type", base_type]
+
+Array:
+  super: Type
+  docstring: "Represents an array type."
+  args: array_type
+  children: array_type
+  sexp: ["array-of", array_type]
+
+
+Pointer:
+  super: Type
+  docstring: "Represents a Pointer-to type."
+  args: ptr_type
+  children: ptr_type
+  sexp: ["pointer-to", ptr_type]
+
+StructureType:
+  super: Type
+  docstring: "Represents a Structure type."
+  args: structure_type
+  children: structure_type
+  sexp: ["structure-to", structure_type]

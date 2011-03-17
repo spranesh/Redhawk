@@ -1,8 +1,12 @@
-""" The Node Class. """
+""" Node Classes.
 
-import util
+    This file is AUTO GENERATED from
+      node_cfg.yaml using _ast_gen.py
+    The header is stored in node_header.py
+"""
 
 import copy
+import pprint
 
 # A dictionary of allowed operators, and their arity.
 ALLOWED_OPERATORS = {
@@ -52,9 +56,27 @@ ALLOWED_OPERATORS = {
 }
 
 
+def ExpandList(li, f):
+  """ Recursively expands a list li as follows:
+        For element e in the list, li:
+          * If e is a list, call ExpandList(li, f) recursively.
+          * If e is a Node, expand it (into a list),
+              by calling ExpandList(f(e), f)"""
+  if type(li) is not list:
+    return
+
+  for (i, e) in enumerate(li):
+    if type(e) is list:
+      li[i] = ExpandList(li[i], f)
+    elif isinstance(e, Node):
+      li[i] = f(e)
+      if type(li[i]) is list:
+        li[i] = ExpandList(li[i], f)
+  return li
+
 
 class Node:
-  """ Signifies a node in the parse tree."""
+  """A Parse Tree Node."""
   def __init__(self):
     raise NotImplementedError("Node is an Abstract Class.")
     return
@@ -68,220 +90,245 @@ class Node:
   def MakeCopy(self):
     return copy.deepcopy(self)
 
+  def GetChildren(self):
+    raise NotImplementedError("Base Node Class!")
+
   def ToStr(self):
-    """ Should return a list of lines, which will be indented by the
-    whitespace argument using a function decorator."""
-    raise NotImplementedError("Not implemented for the Base Node Class.")
+    return str(self.GetRecursiveSExp())
 
-class Module(Node):
-  def __init__(self, position, children):
-    self.position = position
-    self.children = children
-    self.filename = position.GetFile()
+  def GetSExp(self):
+    raise NotImplementedError("Base Node Class!")
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level=0):
-    return ["define-module", self.filename, self.children]
+  def GetRecursiveSExp(self):
+    return ExpandList(self.GetSExp(), lambda x: x.GetSExp())
 
-class Constant(Node):
-  def __init__(self, position, value, type=None):
-    self.value = value
-    self.type = type
-    self.position = position
-    return
-  
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level=0):
-    return ["constant", str(self.value), [":type", self.type]]
+  def GetAttributes(self):
+    """ Return the attributes of the class as a 
+    pair - (class-name, dictionary-of-attributes). """
+    d = {}
+    d['tags'] = []
+    for x in dir(self):
+      if 'a' <= x[0] <= 'z':
+        d[x] = getattr(self, x)
+    return (self.__name__.__class__, d)
 
+  def GetXMLAttributes(self):
+    return self.GetAttributes()
 
-class Return(Node):
-  def __init__(self, position, return_expression):
-    self.position = position
-    self.return_expression = return_expression
-    return
+  def GetJSONAttributes(self):
+    return self.GetAttributes()
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level=0):
-    return ["return", self.return_expression]
+  def GetDotAttributes(self):
+    return self.GetAttributes()
 
-
-class DefineVariable(Node):
-  def __init__(self, position, name, init = None, type = None, quals = None,
-      storage = None):
-    self.position = position
-    self.type = type
-    self.name = name
-    self.init = init
-    self.quals = quals
-    self.storage = storage
-
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level=0):
-    li = ["define-variable", self.name]
-    if self.init:
-      li.append([":init", self.init])
-    if self.type:
-      li.append([":type", self.type])
-    if self.quals:
-      li.append([":quals", self.quals])
-    if self.storage:
-      li.append([":storage", self.storage])
-    return li
-
-
-class DeclareFunction(Node):
-  def __init__(self, position, name, arguments, return_type):
-    """ Name is a string, arguments a list of variable declarations, and
-    return_type a type object. """
-    assert(type(arguments) is list)
-    self.position = position
-    self.name = name
-    self.arguments = arguments
-    self.return_type = return_type
-    self.storage = None
-    self.quals = None
-    return
-
-  # This has been separated to make avoid duplicating work in DefineFunction
-  def GetNodeContentsAsList(self):
-    li = [self.name]
-    if len(self.arguments) is not 0:
-      li.append(["arguments"] + self.arguments)
-    if self.return_type:
-      li.append([":return-type", self.return_type])
-    if self.storage:
-      li.append([":storage", self.storage])
-    if self.quals:
-      li.append([":quals", self.quals])
-    return li
-
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level=0):
-    li = self.GetNodeContentsAsList()
-    li.insert(0, "declare-function")
-    return li
-
-
-# Is inheriting from DeclareFunction a good thing to be doing?
-class DefineFunction(DeclareFunction):
-  def __init__(self, position, name, arguments, body, return_type, 
-      storage = None, quals = None):
-    DeclareFunction.__init__(self, position, name, arguments, return_type)
-    self.body = body
-    self.storage = storage
-    self.quals = quals
-    return
-
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    li = self.GetNodeContentsAsList()
-    li.append(self.body)
-    li.insert(0, "define-function")
-    return li
-
-
-class Compound(Node):
-  def __init__(self, position, compound_items):
-    self.position = position
-    self.compound_items = compound_items
-    return
-
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    return ["compound"] + self.compound_items
-
-
-class Expression(Node):
-  def __init__(self, position, operator, children):
-    assert(operator in ALLOWED_OPERATORS)
-    assert(len(children) is ALLOWED_OPERATORS[operator][1])
-    self.position = position
-    self.operator = operator
-    self.children = children
-
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    operator_str = ALLOWED_OPERATORS[self.operator][0]
-    return [operator_str] + self.children
-
-
-class ReferVariable(Node):
-  def __init__(self, position, name):
-    self.position = position
-    self.name = name
-
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    return self.name
 
 
 class Assignment(Node):
+  """An assignment `lvalue = rvalue`"""
   def __init__(self, position, lvalue, rvalue):
     self.position = position
     self.lvalue = lvalue
     self.rvalue = rvalue
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    return ["assign", self.lvalue, self.rvalue]
+  def GetSExp(self):
+    li = []
+    li.append('assign')
+    li.append(self.lvalue)
+    li.append(self.rvalue)
+    return li
+
 
 
 class CallFunction(Node):
+  """A function call. (position, function, arguments), where the function itself is a tree (with a refer variable node)."""
   def __init__(self, position, function, arguments):
-    # TODO(spranesh): function is currently a tree, and not just a name.
-    # Is there any way to sort this out?
-    # Right now, we will have to search for CallFunction, and then go down
-    # till we hit a ReferVariable node
     self.position = position
     self.function = function
     self.arguments = arguments
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    return [self.function] + self.arguments
+  def GetSExp(self):
+    li = []
+    li.append(self.function)
+    li.extend(self.arguments)
+    return li
 
 
-class Structure(Node):
-  def __init__(self, position, name, members, storage = None, quals = None):
+
+class CaseDefault(Node):
+  """A case or default statement."""
+  def __init__(self, position, condition = None):
+    self.position = position
+    self.condition = condition
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('default-or-case')
+    if self.condition:
+      li.append([':condition', 'case', self.condition])
+    return li
+
+
+
+class Compound(Node):
+  """A compond list of items"""
+  def __init__(self, position, compound_items):
+    self.position = position
+    self.compound_items = compound_items
+    return
+
+  def GetChildren(self):
+    return self.compound_items
+
+  def GetSExp(self):
+    li = []
+    li.append('compound')
+    li.extend(self.compound_items)
+    return li
+
+
+
+class Constant(Node):
+  """Represents A Constant."""
+  def __init__(self, position, value, type = None):
+    self.position = position
+    self.value = value
+    self.type = type
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.value)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('constant')
+    li.append(self.value)
+    if self.type:
+      li.append([':type', self.type])
+    return li
+
+
+
+class DeclareFunction(Node):
+  """A Function Declaration Node."""
+  def __init__(self, position, name, arguments, return_type = None, storage = None, quals = None):
     self.position = position
     self.name = name
-    self.members = members
+    self.arguments = arguments
+    self.return_type = return_type
     self.storage = storage
     self.quals = quals
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    li = ["define-structure", self.name, self.members]
-    if self.storage:
-      li.append([":storage", self.storage])
+  def GetSExp(self):
+    li = []
+    li.append('declare-function')
+    li.append(self.name)
+    li.append(self.arguments)
+    if self.return_type:
+      li.append([':return_type', self.return_type])
     if self.quals:
-      li.append([":quals", self.quals])
+      li.append([':quals', self.quals])
+    if self.storage:
+      li.append([':storage', self.storage])
     return li
 
 
-class IfElse(Node):
-  def __init__(self, position, condition, if_true, if_false=None):
-    assert(condition is not None)
-    assert(if_true is not None)
+
+class DefineFunction(Node):
+  """A Function Definition Node."""
+  def __init__(self, position, name, arguments, body, return_type = None, storage = None, quals = None):
     self.position = position
-    self.condition = condition
-    self.if_true = if_true
-    self.if_false = if_false
+    self.name = name
+    self.arguments = arguments
+    self.body = body
+    self.return_type = return_type
+    self.storage = storage
+    self.quals = quals
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    li = ["if", self.condition, self.if_true]
-    if self.if_false:
-      li.append(self.if_false)
+  def GetSExp(self):
+    li = []
+    li.append('define-function')
+    li.append(self.name)
+    li.append(self.arguments)
+    li.append(self.body)
+    if self.return_type:
+      li.append([':return_type', self.return_type])
+    if self.quals:
+      li.append([':quals', self.quals])
+    if self.storage:
+      li.append([':storage', self.storage])
     return li
+
+
+
+class DefineType(Node):
+  """A Type Definition."""
+  def __init__(self, position, name, type):
+    self.position = position
+    self.name = name
+    self.type = type
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('define-type')
+    li.append(self.name)
+    li.append(self.type)
+    return li
+
+
+
+class DefineVariable(Node):
+  """A Variable Definition Node."""
+  def __init__(self, position, name, init = None, type = None, quals = None, storage = None):
+    self.position = position
+    self.name = name
+    self.init = init
+    self.type = type
+    self.quals = quals
+    self.storage = storage
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('define-variable')
+    li.append(self.name)
+    if self.init:
+      li.append([':init', self.init])
+    if self.type:
+      li.append([':type', self.type])
+    if self.quals:
+      li.append([':quals', self.quals])
+    if self.storage:
+      li.append([':storage', self.storage])
+    return li
+
+
+
+class Expression(Node):
+  """An expression Node."""
+  def __init__(self, position, operator, children):
+    self.position = position
+    self.operator = operator
+    self.children = children
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append(ALLOWED_OPERATORS[self.operator][0])
+    li.extend(self.children)
+    return li
+
 
 
 class For(Node):
+  """A For Loop."""
   def __init__(self, position, init, condition, step, body):
     self.position = position
     self.init = init
@@ -290,79 +337,160 @@ class For(Node):
     self.body = body
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    li = ["for", [self.init, self.condition, self.step]]
-    if self.body:
-      li.append(self.body)
+  def GetSExp(self):
+    li = []
+    li.append('for')
+    li.append([self.init, self.condition, self.step])
+    li.append(self.body)
     return li
 
 
-class While(Node):
-  def __init__(self, position, condition, body, do_while=False):
+
+class IfElse(Node):
+  """An If Else Node."""
+  def __init__(self, position, condition, if_true, if_false = None):
     self.position = position
     self.condition = condition
-    self.body = body
-    self.do_while = do_while
+    self.if_true = if_true
+    self.if_false = if_false
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    if self.do_while:
-      li = ["do-while"]
-    else:
-      li = ["while"]
-    
-    li.extend([self.condition, self.body])
+  def GetSExp(self):
+    li = []
+    li.append('if')
+    li.append(self.condition)
+    li.append(self.if_true)
+    li.append(self.if_false)
     return li
+
+
+
+class List(Node):
+  """A List."""
+  def __init__(self, position, values):
+    self.position = position
+    self.values = values
+    return
+
+  def GetSExp(self):
+    return self.values
+
+
+
+class Module(Node):
+  """Represents a file or module."""
+  def __init__(self, filename, children):
+    self.filename = filename
+    self.children = children
+    return
+
+  def GetChildren(self):
+    return self.children
+
+  def GetSExp(self):
+    li = []
+    li.append('define-module')
+    li.append(self.filename)
+    li.append(self.children)
+    return li
+
+  def GetXMLAttributes(self):
+    d = {}
+    d['tags'] = []
+    d['tags'].append('define-module')
+    d[filename] = self.filename
+    return (self.__class__.__name__, d)
+
+
+
+class ReferVariable(Node):
+  """A variable reference."""
+  def __init__(self, position, name):
+    self.position = position
+    self.name = name
+    return
+
+  def GetSExp(self):
+    return self.name
+
+
+
+class Return(Node):
+  """Represents a Return Statement."""
+  def __init__(self, position, return_expression):
+    self.position = position
+    self.return_expression = return_expression
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.return_expression)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('return')
+    li.append(self.return_expression)
+    return li
+
+
+
+class Structure(Node):
+  """A structure type"""
+  def __init__(self, position, name, members, storage = None, quals = None):
+    self.position = position
+    self.name = name
+    self.members = members
+    self.storage = storage
+    self.quals = quals
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('define-structure')
+    li.append(self.name)
+    li.append(self.members)
+    if self.storage:
+      li.append([':storage', self.storage])
+    if self.quals:
+      li.append([':quals', self.quals])
+    return li
+
 
 
 class Switch(Node):
+  """A Swith Case Statement"""
   def __init__(self, position, switch_on, body):
     self.position = position
     self.switch_on = switch_on
     self.body = body
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    return ["switch", self.switch_on, self.body]
+  def GetSExp(self):
+    li = []
+    li.append('switch')
+    li.append(self.switch_on)
+    li.append(self.body)
+    return li
 
 
-class CaseDefault(Node):
-  def __init__(self, position, condition=None):
-    # Condition is None => default
+
+class While(Node):
+  """Represents a While Loop."""
+  def __init__(self, position, condition, body, do_while = None):
     self.position = position
     self.condition = condition
+    self.body = body
+    self.do_while = do_while
     return
 
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    if self.condition is None:
-      return ["default", self.condition]
-    else:
-      return ["case", self.condition]
+  def GetSExp(self):
+    li = []
+    li.append('while')
+    if self.do_while:
+      li.append([':do_while', 'true'])
+    li.append(self.condition)
+    li.append(self.body)
+    return li
 
 
-class DefineType(Node):
-  def __init__(self, position, name, type):
-    self.position = position
-    self.name = name
-    self.type = type
-    return
-
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    return ["define-type", self.name, self.type]
-
-
-class List(Node):
-  def __init__(self, position, values):
-    self.position = position
-    self.values = values
-    assert(type(self.values) is list)
-    return
-
-  @util.ConvertToStringWithIndent
-  def ToStr(self, indent_level = 0):
-    return self.values

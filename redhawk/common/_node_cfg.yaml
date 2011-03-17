@@ -1,15 +1,131 @@
+# YAML markup for generating the node classes.
+# Each node must be a subclass of Node (default)
+# The output classes generated are in alphabetical order.
+#
+# The following attributes are allowed (the sexp attribute is compulsory, all
+# others optional). The defaults are as show in the square brackets.)
+#   * sexp              (a yaml list)
+#   * super [Node]      (a single class to inherit from)
+#   * docstring ['']    (a single line doc string)
+#   * args ['']         (a cs-list)
+#   * children ['']     (a cs-list)
+#   * xml ['']          (a yaml list)
+#   * json ['']         (a yaml list)
+#   * dot ['']          (a yaml list)
+#   * optargs ['']      (a cs-list)
+#
+# A cs-list is a comma+space separated list like as follows
+#   this, is, a, comma, separated, list
+# This has been introduced only to make entry easier.
+
+
 Module:
-  super: Node
   docstring : "Represents a file or module."
   args: filename, children
-  children: children
-  sexp: ['define-module', filename, children]
-  xml: ['define-module', filename]
+  children: '*children'
+  sexp: ["define-module", filename, children]
+  xml: ["define-module", filename]
 
 Constant:
+  docstring: "Represents A Constant."
   args: position, value
   optargs: type
   children : value
   sexp : ["constant", value, [_type, type]]
-    
 
+Return:
+  docstring: "Represents a Return Statement."
+  args: position, return_expression
+  children: return_expression
+  sexp: ["return", return_expression]
+
+DefineVariable:
+  docstring: "A Variable Definition Node."
+  args: position, name
+  optargs: init, type, quals, storage
+  sexp: ["define-variable", name, [_init, init], [_type, type], [_quals, quals], [_storage, storage]]
+  
+DeclareFunction:
+  docstring: "A Function Declaration Node."
+  args: position, name, arguments
+  optargs: return_type, storage, quals
+  sexp: ["declare-function", name, arguments, [_return_type, return_type], [_quals, quals], [_storage, storage]]
+
+DefineFunction:
+  docstring: "A Function Definition Node."
+  args: position, name, arguments, body
+  optargs: return_type, storage, quals
+  sexp: ["define-function", name, arguments, body, [_return_type, return_type], [_quals, quals], [_storage, storage]]
+
+Compound:
+  docstring: "A compond list of items"
+  args: position, compound_items
+  children: '*compound_items'
+  sexp: ['compound', '*compound_items']
+
+Expression:
+  docstring: "An expression Node."
+  args: position, operator, children
+  sexp: ['`ALLOWED_OPERATORS[self.operator][0]`', '*children']
+
+ReferVariable:
+  docstring: "A variable reference."
+  args: position, name
+  sexp: ['*name']
+
+Assignment:
+  docstring: "An assignment `lvalue = rvalue`"
+  args: position, lvalue, rvalue
+  sexp: ["assign", lvalue, rvalue]
+
+CallFunction:
+  docstring: "A function call. (position, function, arguments), where the function itself is a tree (with a refer variable node)."
+  args: position, function, arguments
+  sexp: [function, '*arguments']
+
+Structure:
+  docstring: "A structure type"
+  args: position, name, members
+  optargs: storage, quals
+  sexp: ["define-structure", name, members, [_storage, storage], [_quals, quals]]
+
+IfElse:
+  docstring: "An If Else Node."
+  args: position, condition, if_true
+  optargs: if_false
+  sexp: ["if", condition, if_true, if_false]
+
+For:
+  docstring: "A For Loop."
+  args: position, init, condition, step, body
+  sexp: ["for", [init, condition, step], body]
+
+While:
+  docstring: "Represents a While Loop."
+  args: position, condition, body
+  optargs: do_while
+  sexp: ["while", [_do_while, 'true'], condition, body]
+
+Switch:
+  docstring: "A Swith Case Statement"
+  args: position, switch_on, body
+  sexp: ["switch", switch_on, body]
+
+CaseDefault:
+  docstring: "A case or default statement."
+  args: position
+  optargs: condition
+  sexp: ["default-or-case", [_condition, 'case', condition]]
+
+DefineType:
+  docstring: "A Type Definition."
+  args: position, name, type
+  sexp: ["define-type", name, type]
+
+List:
+  docstring: "A List."
+  args: position, values
+  sexp: ['*values']
+  
+
+ 

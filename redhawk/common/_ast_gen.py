@@ -3,15 +3,15 @@ import util
 import pprint
 import yaml
 
-FILES = [("_node_cfg.yaml", "_node.py", "_node_header.py")
-#       ,("_type_cfg.yaml", "_type.py", "_type_header.py")
-        ]
+FILES = [# (input config file, out file, header file)
+           ("_node_cfg.yaml", "node.py", "_node_header.py")
+          ,("_types_cfg.yaml", "types.py", "_types_header.py")]
 
 def GetClasses(file_body):
   """ Get a generator of classes, given the string of the body.
       This function guarantees that each class returned has the following
       attributes:
-        * string
+        * sexp
         * args
         * children
         * xml
@@ -24,10 +24,16 @@ def GetClasses(file_body):
   nodes = yaml.load(file_body).items()
   nodes.sort()
   for (name, c) in nodes:
-    util.AssertWithError(c.has_key('sexp'), "%s does not have string"%name)
-    util.AssertWithError(c.has_key('args'), "%s does not have args"%name)
+    util.AssertWithError(c.has_key('sexp'), "%s does not have sexp"%name)
+
+    # Print appropriate warnings
+    for w_key in "docstring args".split():
+      if not c.has_key(w_key):
+        util.LogWarning('%s does not have %s'%(name, w_key))
+
 
     default_fields = {'docstring' : 'Represents a %s construct'%name
+                     ,'args': ''
                      ,'children' : ''
                      ,'optargs' : ''
                      ,'super': 'Node'
@@ -50,7 +56,7 @@ def GetClasses(file_body):
 def WriteMethodDeclaration(c, name, args, optargs):
   """ Write a method declaration:
     def name(self, args, optargs):
-    in `c`"""
+    in `c` """
   # Function Definition
   c.Write("def %s(self"%(name))
   for a in args:
@@ -65,7 +71,7 @@ def WriteMethodDeclaration(c, name, args, optargs):
 def WriteList(c, li, prefix=None):
   """ Write a list in `c`"""
   if prefix:
-    li2 = [prefix + x for x in li]
+    li = [prefix + x for x in li]
   c.Write("[")
   c.Write(", ".join(li))
   c.Write("]")
@@ -75,27 +81,54 @@ def WriteList(c, li, prefix=None):
 def WriteSExpMethod(c, name, li, args):
   """ Write the SExp method into `c`."""
   WriteMethodDeclaration(c, name, [], [])
+  if len(li) == 1 and li[0][0] == '*':
+    c.Indent()
+    c.WriteLine("return self.%s"%(li[0][1:]))
+    c.Dedent()
+    c.NewLine()
+    return
+
   c.Indent()
   c.WriteLine("li = []")
   for a in li:
     if type(a) is str:
-      if a in args:
-        c.WriteLine("li.append(self.%s)"%(a))
+      if a[0] == '`':
+        util.AssertWithError(a[-1] == '`', "No closing backquote found at %s"%a)
+        c.WriteLine("li.append(%s)"%(a[1:-1]))
       else:
-        c.WriteLine("li.append('%s')"%(a))
+        method, value = "append", a
+        if a[0] == '*':
+          method, value = "extend", a[1:]
+        if value in args:
+          c.WriteLine("li.%s(self.%s)"%(method, value))
+        else:
+          c.WriteLine("li.%s('%s')"%(method, value))
 
     elif type(a) is list:
       if a[0][0] is '_':
-        c.WriteLine("if %s:"%(a[0][1:]))
+        c.WriteLine("if self.%s:"%(a[0][1:]))
         c.Indent()
         c.Write("li.append(")
-        WriteList(c, ["':%s'"%a[0][1:]] + a[1:], prefix='self.')
+
+        # Write the list to append
+        c.Write("[':%s'"%a[0][1:])
+        variables = []
+        for x in a[1:]:
+          if x in args:
+            variables.append('self.' + x)
+          else:
+            variables.append("'%s'"%(x))
+        if variables is not []:
+          c.Write(", " + ", ".join(variables))
+        c.Write("]")
+        # End of list to append
+
         c.Write(")")
         c.NewLine()
         c.Dedent()
       else:
         c.Write("li.append(")
-        WriteList(c, a)
+        WriteList(c, a, prefix="self.")
         c.Write(")")
         c.NewLine()
   
@@ -140,13 +173,15 @@ def GenerateClass(name, attrs):
 
 
   # Write GetChildren
-  WriteMethodDeclaration(c, "GetChildren", [], [])
-  c.Indent()
-  c.Write("return ")
-  WriteList(c, attrs['children'], prefix='self.')
-  c.NewLine()
-  c.Dedent()
-  c.NewLine()
+  # WriteMethodDeclaration(c, "GetChildren", [], [])
+  # c.Indent()
+  # c.Write("return ")
+  # WriteList(c, attrs['children'], prefix='self.')
+  # c.NewLine()
+  # c.Dedent()
+  # c.NewLine()
+  if attrs['children']:
+    WriteSExpMethod(c, 'GetChildren', attrs['children'], args)
 
   WriteSExpMethod(c, 'GetSExp', attrs['sexp'], args)
 
