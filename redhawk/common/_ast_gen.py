@@ -19,10 +19,11 @@ def GetClasses(file_body):
         * dot
         * optargs
         * docstring
-      All attributes except the docstring is a list."""
-        
+      All attributes except the docstring is a list.
+  """
   nodes = yaml.load(file_body).items()
   nodes.sort()
+
   for (name, c) in nodes:
     util.AssertWithError(c.has_key('sexp'), "%s does not have sexp"%name)
 
@@ -53,10 +54,11 @@ def GetClasses(file_body):
     # pprint.pprint((name, c))
     yield (name, c)
 
+
 def WriteMethodDeclaration(c, name, args, optargs):
   """ Write a method declaration:
     def name(self, args, optargs):
-    in `c` """
+    in c """
   # Function Definition
   c.Write("def %s(self"%(name))
   for a in args:
@@ -68,19 +70,40 @@ def WriteMethodDeclaration(c, name, args, optargs):
   return
 
 
-def WriteList(c, li, prefix=None):
-  """ Write a list in `c`"""
-  if prefix:
-    li = [prefix + x for x in li]
+def WriteList(c, li, prefix=None, frame=None, start_of_list=None):
+  """ Write a list, li, into c.
+
+      1) Add the Prefix prefix to every element of the list that is a
+         variable (and present in the frame).
+      2) Depending on whether the element is in the frame or not,
+         add the string or the variable.
+      3) Add start_of_list to the start of the list without making
+      any modifications.
+  """
+
+  start_of_list = start_of_list or []
+  prefix = prefix or ''
+
+  elements = []
+  for x in li:
+    if (not frame) or (frame and x in frame):
+        elements.append(prefix + x)
+    else:
+      elements.append("'%s'"%(x))
+
   c.Write("[")
-  c.Write(", ".join(li))
+  c.Write(", ".join(start_of_list + elements))
   c.Write("]")
   return
 
 
-def WriteSExpMethod(c, name, li, args):
-  """ Write the SExp method into `c`."""
+def WriteListReturnMethod(c, name, li, args):
+  """ Write methods that return lists.
+      The sexp type lists given can only be nested upto a depth
+      of 2."""
   WriteMethodDeclaration(c, name, [], [])
+
+  # If there is only one variable, and it starts with a *
   if len(li) == 1 and li[0][0] == '*':
     c.Indent()
     c.WriteLine("return self.%s"%(li[0][1:]))
@@ -90,11 +113,17 @@ def WriteSExpMethod(c, name, li, args):
 
   c.Indent()
   c.WriteLine("li = []")
+
   for a in li:
     if type(a) is str:
+
+      # If a starts and ends with backquotes, we copy it verbatim.
       if a[0] == '`':
         util.AssertWithError(a[-1] == '`', "No closing backquote found at %s"%a)
         c.WriteLine("li.append(%s)"%(a[1:-1]))
+
+      # Otherwise, we check to see if it begins with a '*', and take
+      # appropriate action
       else:
         method, value = "append", a
         if a[0] == '*':
@@ -105,36 +134,35 @@ def WriteSExpMethod(c, name, li, args):
           c.WriteLine("li.%s('%s')"%(method, value))
 
     elif type(a) is list:
+      # If the first letter of the first variable is an underscore (a condition)
+      # we write:
+      # if self.condition:
+      #   li.append(['a[1]', rest of list])
       if a[0][0] is '_':
-        c.WriteLine("if self.%s:"%(a[0][1:]))
+        condition = a[0][1:]
+        util.AssertWithError(condition in args, "%s not in %s, %s, %s"%(condition,
+          name, li, args))
+
+        c.WriteLine("if self.%s:"%(condition))
         c.Indent()
         c.Write("li.append(")
-
-        # Write the list to append
-        c.Write("[':%s'"%a[0][1:])
-        variables = []
-        for x in a[1:]:
-          if x in args:
-            variables.append('self.' + x)
-          else:
-            variables.append("'%s'"%(x))
-        if variables is not []:
-          c.Write(", " + ", ".join(variables))
-        c.Write("]")
-        # End of list to append
-
+        WriteList(c, a[1:], 
+            prefix='self.', 
+            frame=args, 
+            start_of_list=["'%s'"%(':' + condition)])
         c.Write(")")
         c.NewLine()
         c.Dedent()
       else:
         c.Write("li.append(")
-        WriteList(c, a, prefix="self.")
+        WriteList(c, a, prefix="self.", frame=args)
         c.Write(")")
         c.NewLine()
   
   c.WriteLine("return li")
   c.Dedent()
   c.NewLine()
+  return
 
 
 def WriteAttributeMethod(c, name, li, args):
@@ -155,6 +183,7 @@ def WriteAttributeMethod(c, name, li, args):
 
 
 def GenerateClass(name, attrs):
+  """ Generate class `name` given attributes `attrs`."""
   c = util.CodeGeneratorBackend()
   c.WriteLine("class %s(%s):"%(name, attrs['super']))
   c.Indent()
@@ -171,32 +200,20 @@ def GenerateClass(name, attrs):
   c.Dedent()
   c.NewLine()
 
-
-  # Write GetChildren
-  # WriteMethodDeclaration(c, "GetChildren", [], [])
-  # c.Indent()
-  # c.Write("return ")
-  # WriteList(c, attrs['children'], prefix='self.')
-  # c.NewLine()
-  # c.Dedent()
-  # c.NewLine()
   if attrs['children']:
-    WriteSExpMethod(c, 'GetChildren', attrs['children'], args)
+    WriteListReturnMethod(c, 'GetChildren', attrs['children'], args)
 
-  WriteSExpMethod(c, 'GetSExp', attrs['sexp'], args)
+  WriteListReturnMethod(c, 'GetSExp', attrs['sexp'], args)
 
-  if attrs['xml']:
-    WriteAttributeMethod(c, 'GetXMLAttributes', attrs['xml'], args)
+  attribute_list = "xml json dot".split()
+  function_list = "GetXMLAttributes GetJSONAttributes, GetDotAttributes".split()
+  for (a, f) in zip(attribute_list, function_list):
+    if attrs[a]:
+      WriteAttributeMethod(c, f, attrs[a], args)
 
-  if attrs['json']:
-    WriteAttributeMethod(c, 'GetJSONAttributes', attrs['json'], args)
-
-  if attrs['json']:
-    WriteAttributeMethod(c, 'GetDotAttributes', attrs['dot'], args)
   c.Dedent()
   c.NewLine()
 
-  c.GetCode()
   return c.GetCode()
 
 
