@@ -1,8 +1,8 @@
-import util
+import code_generator_backend as C
 
 class TestCodeGeneratorBackend:
   def setUp(self):
-    self.c = util.CodeGeneratorBackend()
+    self.c = C.CodeGeneratorBackend()
 
   def TestWrite(self):
     self.c.Write("a")

@@ -8,7 +8,6 @@
 """
 
 import node
-import util
 
 class Type(node.Node):
   """ The Base Type class."""

@@ -1,18 +1,6 @@
 #!/usr/bin/env python
 
-import cStringIO
-import sys
-
-def AssertWithError(condition, error):
-  if callable(condition):
-    condition = condition()
-  if not condition:
-    sys.stderr.write(error + "\n")
-    sys.exit(1)
-
-def LogWarning(s):
-  sys.stderr.write("[WARNING]: %s\n"%(s))
-  return
+""" Implementation of the CodeGeneratorBacked class."""
 
 class CodeGeneratorBackend:
   """ A class to help code generation by managing indents."""
