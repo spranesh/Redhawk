@@ -5,6 +5,8 @@
     The header is stored in node_header.py
 """
 
+import writers.scheme_writer as S
+
 import copy
 import pprint
 
@@ -94,7 +96,7 @@ class Node:
     raise NotImplementedError("Base Node Class!")
 
   def ToStr(self):
-    return str(self.GetRecursiveSExp())
+    return S.WriteToScheme(self)
 
   def GetSExp(self):
     raise NotImplementedError("Base Node Class!")
