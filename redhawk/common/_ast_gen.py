@@ -47,7 +47,9 @@ def GetClasses(file_body):
     c = default_fields
 
     for m in "args children optargs".split():
-      if c[m] == '':
+      if c[m] == None:
+        c[m] = None
+      elif c[m] == '':
         c[m] = []
       else:
         c[m] = c[m].split(", ")

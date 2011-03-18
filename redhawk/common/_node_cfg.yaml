@@ -30,8 +30,8 @@ Constant:
   docstring: "Represents A Constant."
   args: position, value
   optargs: type
-  children : value
-  sexp : ["constant", value, [_type, type]]
+  sexp : ["constant", value, [_type, ':type', type]]
+  children:
 
 Return:
   docstring: "Represents a Return Statement."
@@ -44,17 +44,20 @@ DefineVariable:
   args: position, name
   optargs: init, type, quals, storage
   sexp: ["define-variable", name, [_init, init], [_type, type], [_quals, quals], [_storage, storage]]
+  children:
   
 DeclareFunction:
   docstring: "A Function Declaration Node."
   args: position, name, arguments
   optargs: return_type, storage, quals
+  children: arguments
   sexp: ["declare-function", name, arguments, [_return_type, return_type], [_quals, quals], [_storage, storage]]
 
 DefineFunction:
   docstring: "A Function Definition Node."
   args: position, name, arguments, body
   optargs: return_type, storage, quals
+  children: arguments, body
   sexp: ["define-function", name, arguments, body, [_return_type, return_type], [_quals, quals], [_storage, storage]]
 
 Compound:
@@ -66,66 +69,76 @@ Compound:
 Expression:
   docstring: "An expression Node."
   args: position, operator, children
+  children: '*children'
   sexp: ['`ALLOWED_OPERATORS[self.operator][0]`', '*children']
 
 ReferVariable:
   docstring: "A variable reference."
   args: position, name
   sexp: ['*name']
+  children:
 
 Assignment:
   docstring: "An assignment `lvalue = rvalue`"
   args: position, lvalue, rvalue
   sexp: ["assign", lvalue, rvalue]
+  children: lvalue, rvalue
 
 CallFunction:
   docstring: "A function call. (position, function, arguments), where the function itself is a tree (with a refer variable node)."
   args: position, function, arguments
   sexp: [function, '*arguments']
+  children: function, arguments
 
 Structure:
   docstring: "A structure type"
   args: position, name, members
   optargs: storage, quals
   sexp: ["define-structure", name, members, [_storage, storage], [_quals, quals]]
+  children: members
 
 IfElse:
   docstring: "An If Else Node."
   args: position, condition, if_true
   optargs: if_false
   sexp: ["if", condition, if_true, if_false]
+  children: condition, if_true, if_false
 
 For:
   docstring: "A For Loop."
   args: position, init, condition, step, body
   sexp: ["for", [init, condition, step], body]
+  children: init, condition, step, body
 
 While:
   docstring: "Represents a While Loop."
   args: position, condition, body
   optargs: do_while
   sexp: ["while", [_do_while, 'true'], condition, body]
+  children: condition, body
 
 Switch:
   docstring: "A Swith Case Statement"
   args: position, switch_on, body
   sexp: ["switch", switch_on, body]
+  children: switch_on, body
 
 CaseDefault:
   docstring: "A case or default statement."
   args: position
   optargs: condition
   sexp: ["default-or-case", [_condition, 'case', condition]]
+  children: condition
 
 DefineType:
   docstring: "A Type Definition."
   args: position, name, type
   sexp: ["define-type", name, type]
+  children: type
 
 List:
   docstring: "A List."
   args: position, values
   sexp: ['*values']
-  
-
+  children: '*values'
  

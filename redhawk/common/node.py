@@ -93,7 +93,7 @@ class Node:
     return copy.deepcopy(self)
 
   def GetChildren(self):
-    raise NotImplementedError("Base Node Class!")
+    return None
 
   def ToStr(self):
     return S.WriteToScheme(self)
@@ -133,6 +133,12 @@ class Assignment(Node):
     self.rvalue = rvalue
     return
 
+  def GetChildren(self):
+    li = []
+    li.append(self.lvalue)
+    li.append(self.rvalue)
+    return li
+
   def GetSExp(self):
     li = []
     li.append('assign')
@@ -150,6 +156,12 @@ class CallFunction(Node):
     self.arguments = arguments
     return
 
+  def GetChildren(self):
+    li = []
+    li.append(self.function)
+    li.append(self.arguments)
+    return li
+
   def GetSExp(self):
     li = []
     li.append(self.function)
@@ -164,6 +176,11 @@ class CaseDefault(Node):
     self.position = position
     self.condition = condition
     return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.condition)
+    return li
 
   def GetSExp(self):
     li = []
@@ -200,17 +217,12 @@ class Constant(Node):
     self.type = type
     return
 
-  def GetChildren(self):
-    li = []
-    li.append(self.value)
-    return li
-
   def GetSExp(self):
     li = []
     li.append('constant')
     li.append(self.value)
     if self.type:
-      li.append([':type', self.type])
+      li.append([':type', ':type', self.type])
     return li
 
 
@@ -225,6 +237,11 @@ class DeclareFunction(Node):
     self.storage = storage
     self.quals = quals
     return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.arguments)
+    return li
 
   def GetSExp(self):
     li = []
@@ -253,6 +270,12 @@ class DefineFunction(Node):
     self.quals = quals
     return
 
+  def GetChildren(self):
+    li = []
+    li.append(self.arguments)
+    li.append(self.body)
+    return li
+
   def GetSExp(self):
     li = []
     li.append('define-function')
@@ -276,6 +299,11 @@ class DefineType(Node):
     self.name = name
     self.type = type
     return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.type)
+    return li
 
   def GetSExp(self):
     li = []
@@ -321,6 +349,9 @@ class Expression(Node):
     self.children = children
     return
 
+  def GetChildren(self):
+    return self.children
+
   def GetSExp(self):
     li = []
     li.append(ALLOWED_OPERATORS[self.operator][0])
@@ -338,6 +369,14 @@ class For(Node):
     self.step = step
     self.body = body
     return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.init)
+    li.append(self.condition)
+    li.append(self.step)
+    li.append(self.body)
+    return li
 
   def GetSExp(self):
     li = []
@@ -357,6 +396,13 @@ class IfElse(Node):
     self.if_false = if_false
     return
 
+  def GetChildren(self):
+    li = []
+    li.append(self.condition)
+    li.append(self.if_true)
+    li.append(self.if_false)
+    return li
+
   def GetSExp(self):
     li = []
     li.append('if')
@@ -373,6 +419,9 @@ class List(Node):
     self.position = position
     self.values = values
     return
+
+  def GetChildren(self):
+    return self.values
 
   def GetSExp(self):
     return self.values
@@ -447,6 +496,11 @@ class Structure(Node):
     self.quals = quals
     return
 
+  def GetChildren(self):
+    li = []
+    li.append(self.members)
+    return li
+
   def GetSExp(self):
     li = []
     li.append('define-structure')
@@ -468,6 +522,12 @@ class Switch(Node):
     self.body = body
     return
 
+  def GetChildren(self):
+    li = []
+    li.append(self.switch_on)
+    li.append(self.body)
+    return li
+
   def GetSExp(self):
     li = []
     li.append('switch')
@@ -485,6 +545,12 @@ class While(Node):
     self.body = body
     self.do_while = do_while
     return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.condition)
+    li.append(self.body)
+    return li
 
   def GetSExp(self):
     li = []

@@ -93,7 +93,7 @@ class Node:
     return copy.deepcopy(self)
 
   def GetChildren(self):
-    raise NotImplementedError("Base Node Class!")
+    return None
 
   def ToStr(self):
     return S.WriteToScheme(self)

@@ -23,6 +23,7 @@ BaseType:
   docstring: "Represents a base type (stored as a string)."
   args: base_type
   sexp: ["base-type", base_type]
+  children:
 
 Array:
   super: Type
