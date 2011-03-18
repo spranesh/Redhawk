@@ -44,5 +44,5 @@ StructureType:
   super: Type
   docstring: "Represents a Structure type."
   args: structure_type
-  children: structure_type
+  children: 
   sexp: ["structure-to", structure_type]

@@ -6,7 +6,7 @@ import glob
 
 def ConvertCProgram(filename):
   t = CU.GetCASTFromDatabaseOrFile(filename)
-  return CU.ConvertTree(t)
+  return CU.ConvertTree(t, verbose=False)
 
 def ConvertPythonProgram(filename):
   pass

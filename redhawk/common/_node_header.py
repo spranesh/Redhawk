@@ -84,16 +84,19 @@ class Node:
     return
 
   def __repr__(self):
-    return self.ToStr()
+    return self.GetName()
 
   def __str__(self):
-    return self.ToStr()
+    return self.GetName()
+
+  def GetName(self):
+    return self.__class__.__name__
 
   def MakeCopy(self):
     return copy.deepcopy(self)
 
   def GetChildren(self):
-    return None
+    return []
 
   def ToStr(self):
     return S.WriteToScheme(self)
@@ -113,7 +116,7 @@ class Node:
     for x in dir(self):
       if 'a' <= x[0] <= 'z':
         d[x] = getattr(self, x)
-    return (self.__name__.__class__, d)
+    return (self.__class__.__name__, d)
 
   def GetXMLAttributes(self):
     return self.GetAttributes()

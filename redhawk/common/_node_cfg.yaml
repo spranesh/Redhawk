@@ -95,7 +95,7 @@ Structure:
   args: position, name, members
   optargs: storage, quals
   sexp: ["define-structure", name, members, [_storage, storage], [_quals, quals]]
-  children: members
+  children: '*members'
 
 IfElse:
   docstring: "An If Else Node."

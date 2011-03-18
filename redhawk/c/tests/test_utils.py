@@ -12,12 +12,14 @@ def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
   """ SetUp returns a parsed C Program."""
   return GetCASTFromDatabaseOrFile(rel_path + filename)
 
-def ConvertTree(t, filename=None):
+def ConvertTree(t, filename=None, verbose=True):
   """ Convert the C-AST into the L-AST."""
-  t.show()
+  if verbose:
+    t.show()
   c = C.CTreeConverter(filename)
   ast = c.ConvertTree(t)
-  print ast, "\n\n"
+  if verbose:
+    print ast.ToStr(), "\n\n"
   return ast
 
 def GetCASTFromDatabaseOrFile(filename):

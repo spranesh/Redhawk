@@ -73,11 +73,6 @@ class StructureType(Type):
     self.structure_type = structure_type
     return
 
-  def GetChildren(self):
-    li = []
-    li.append(self.structure_type)
-    return li
-
   def GetSExp(self):
     li = []
     li.append('structure-to')

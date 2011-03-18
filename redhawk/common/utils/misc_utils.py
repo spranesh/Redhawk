@@ -28,7 +28,6 @@ def ExtractASTFromDatabase(filename, pickle_file, parser=None):
   if parser is None:
     return None
 
-  print filename
   parsed_data[basefile_name] = parser(filename)
   fp = open(pickle_file, "w")
   P.dump(parsed_data, fp)
