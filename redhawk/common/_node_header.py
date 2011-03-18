@@ -105,8 +105,9 @@ class Node:
     return ExpandList(self.GetSExp(), lambda x: x.GetSExp())
 
   def GetAttributes(self):
-    """ Return the attributes of the class as a 
+    """ Return the lower case attributes of the class as a 
     pair - (class-name, dictionary-of-attributes). """
+    #TODO(spranesh): Any extra attributes we are missing?
     d = {}
     d['tags'] = []
     for x in dir(self):
