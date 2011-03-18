@@ -1,32 +1,17 @@
 import redhawk.c.c_tree_converter as C
+import redhawk.common.utils.misc_utils as U
 
 import pycparser
 
-import os.path
-import pickle as P
 import sys
 
 RELATIVE_TEST_PATH = "c/tests/c_files/"
 PICKLE_FILE = "c/tests/c_parsed.pickle"
 
 def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
-  filename = rel_path + filename
-  try:
-    fp = open(PICKLE_FILE)
-    parsed_data = P.load(fp)
-    fp.close()
-  except (IOError, EOFError):
-    parsed_data = {}
-
-  basefile_name = os.path.basename(filename)
-  if parsed_data.has_key(basefile_name):
-    return parsed_data[basefile_name]
-
-  parsed_data[basefile_name] = ParseC(filename)
-  fp = open(PICKLE_FILE, "w")
-  P.dump(parsed_data, fp)
-  fp.close()
-  return parsed_data[basefile_name]
+  return U.ExtractASTFromDatabase(rel_path + filename,
+                                  PICKLE_FILE,
+                                  ParseC)
   
 
 def ParseC(filename):
