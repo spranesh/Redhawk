@@ -5,7 +5,7 @@ import redhawk.c.tests.test_utils as CU
 import glob
 
 def ConvertCProgram(filename):
-  t = CU.SetUp(filename, rel_path = '')
+  t = CU.GetCASTFromDatabaseOrFile(filename)
   return CU.ConvertTree(t)
 
 def ConvertPythonProgram(filename):

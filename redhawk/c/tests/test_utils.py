@@ -7,12 +7,25 @@ import sys
 
 RELATIVE_TEST_PATH = "c/tests/c_files/"
 PICKLE_FILE = "c/tests/c_parsed.pickle"
-
+  
 def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
-  return U.ExtractASTFromDatabase(rel_path + filename,
+  """ SetUp returns a parsed C Program."""
+  return GetCASTFromDatabaseOrFile(rel_path + filename)
+
+def ConvertTree(t, filename=None):
+  """ Convert the C-AST into the L-AST."""
+  t.show()
+  c = C.CTreeConverter(filename)
+  ast = c.ConvertTree(t)
+  print ast, "\n\n"
+  return ast
+
+def GetCASTFromDatabaseOrFile(filename):
+  """ Gets the parsed AST from either the pickle database or by parsing the
+      file."""
+  return U.ExtractASTFromDatabase(filename,
                                   PICKLE_FILE,
                                   ParseC)
-  
 
 def ParseC(filename):
   """ Parse the file using pycparser and return the parsed AST."""
@@ -23,11 +36,3 @@ def ParseC(filename):
     assert(False)
   return tree
 
-
-def ConvertTree(t, filename=None):
-  """ Convert the C-AST into the L-AST."""
-  t.show()
-  c = C.CTreeConverter(filename)
-  ast = c.ConvertTree(t)
-  print ast, "\n\n"
-  return ast
