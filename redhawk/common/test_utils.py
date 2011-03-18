@@ -22,6 +22,7 @@ def GetAllLASTs():
       yield f(filename)
 
 def TestGetAllLASTs():
+  """ Test the GetALLASTs function."""
   count = 0
   for i in GetAllLASTs():
     count += 1

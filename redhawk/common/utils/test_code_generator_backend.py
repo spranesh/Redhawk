@@ -5,27 +5,32 @@ class TestCodeGeneratorBackend:
     self.c = C.CodeGeneratorBackend()
 
   def TestWrite(self):
+    """ Test CodeGeneratorBackend.Write."""
     self.c.Write("a")
     self.c.Write(" = ")
     self.c.Write("b")
     assert(self.c.GetCode() == "a = b")
 
   def TestGetCode(self):
+    """ Test CodeGeneratorBackend.TestGetCode"""
     self.c.Write("a")
     assert(self.c.GetCode() == "a")
 
   def TestWriteLine(self):
+    """ Test CodeGeneratorBackend.TestWriteLine"""
     self.c.WriteLine("print")
     self.c.WriteLine("print")
     assert(self.c.GetCode() == "print\nprint\n")
 
   def TestIndent(self):
+    """ Test CodeGeneratorBackend.TestIndent"""
     self.c.WriteLine("def Blah():")
     self.c.Indent()
     self.c.WriteLine("a = 2")
     assert(self.c.GetCode() == "def Blah():\n  a = 2\n")
 
   def TestDedent(self):
+    """ Test CodeGeneratorBackend.TestDedent"""
     self.c.Indent()
     self.c.WriteLine("a = 2")
     self.c.Dedent()
@@ -33,6 +38,7 @@ class TestCodeGeneratorBackend:
     assert(self.c.GetCode() == "  a = 2\nreturn\n")
 
   def TestEndToEnd(self):
+    """ Test CodeGeneratorBackend.TestEndToEnd"""
     self.c.WriteLine("def Blah():")
     self.c.Indent()
     self.c.WriteLine("for i in range(3):")
