@@ -3,6 +3,8 @@
 import redhawk.common.writers.dot_writer as D
 import redhawk.common.test_utils as T
 
+import nose.tools
+
 import random
 import itertools
 import tempfile
@@ -35,4 +37,14 @@ def TestGenerator():
     c.FunctionTestDot.im_func.description = "Test Random AST (%d) with Dot Writer."%(r_index)
     yield c.FunctionTestDot, all_asts[r_index]
 
+
+# Disable the test by default.
+@nose.tools.nottest
+def TestAllPrograms():
+  """ Testing Dot Writer (all programs) """
+  c = TestDotWriter()
+  all_asts = list(T.GetAllLASTs())
+  for (i, ast) in enumerate(all_asts):
+    c.FunctionTestDot.im_func.description = "Testing AST (%d) with Dot Writer."%(i)
+    yield c.FunctionTestDot, ast
 
