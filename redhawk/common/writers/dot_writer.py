@@ -17,7 +17,6 @@ def WriteToImage(tree, fmt='png', filename=None):
   s.Draw(path=filename, fmt=fmt)
   return
 
-# node [ shape=box, color=gray, fontname="Sans", fontsize=10 ]
 class DotWriter(writer.Writer):
   def __init__(self):
     self.node_name_counter = itertools.count(0)
@@ -57,7 +56,11 @@ class DotWriter(writer.Writer):
     label = [name]
     label += ["%s: %s"%(k, v) for (k, v) in attrs.items() if type(v) is str]
 
-    return self.__CreateGraphNode(label = ", ".join(label))
+    return self.__CreateGraphNode(label = ", ".join(label)
+                                 ,shape = "box"
+                                 ,color = "gray"
+                                 ,fontname = "Sans"
+                                 ,fontsize = "10")
 
 
   def __CreateEmptyGraphNode(self):
