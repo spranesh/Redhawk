@@ -17,7 +17,10 @@ class NodePosition:
     return self.column
 
   def __repr__(self):
-    return "[%s:%4s:%3s]"%(self.file, self.line, self.column)
+    if self.column:
+      return "[%s:%4s:%3s]"%(self.file, self.line, self.column)
+    else:
+      return "[%s:%4s]"%(self.file, self.line)
   
   def __str__(self):
     return self.__repr__()
