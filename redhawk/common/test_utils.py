@@ -1,25 +1,18 @@
 #!/usr/bin/env python
 
-import redhawk.c.tests.test_utils as CU
+import redhawk.utils.get_ast as G
+import redhawk.utils.parse_asts as P
 
 import glob
 
-def ConvertCProgram(filename):
-  t = CU.GetCASTFromDatabaseOrFile(filename)
-  return CU.ConvertTree(t, verbose=False)
-
-def ConvertPythonProgram(filename):
-  pass
-
-
-AST_FILES_AND_CONVERTERS = [
-    ("c/tests/c_files/*.c", ConvertCProgram)
-]
+AST_FILES = [("c/tests/c_files/*.c", 'c', 'c/tests/c_parsed.pickle')]
 
 def GetAllLASTs():
-  for (g, f) in AST_FILES_AND_CONVERTERS:
+  for (g, language, pickle_file) in AST_FILES:
     for filename in glob.glob(g):
-      yield f(filename)
+      yield P.ConvertAst(G.GetLanguageSpecificTree(filename, pickle_file, language)
+                        ,language
+                        ,filename)
 
 def TestGetAllLASTs():
   """ Test the GetALLASTs function."""

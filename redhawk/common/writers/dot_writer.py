@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import redhawk.common.node as N
-import redhawk.common.utils.misc_utils as U
+import redhawk.utils.util as U
 import writer
 
 import itertools
@@ -97,8 +97,7 @@ class DotWriter(writer.Writer):
         continue
 
       else:
-        U.AssertWithError(False, 
-          "%s's child (type: %s) was supposed to be a Node!\n %s"
+        U.ExitWithError("%s's child (type: %s) was supposed to be a Node!\n %s"
           %(ast_node.GetName(),
             type(child),
             ast_node))
