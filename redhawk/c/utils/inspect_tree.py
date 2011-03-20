@@ -26,5 +26,7 @@ body = tree.children()
 program = open(filename).read()
 if "show" in sys.argv:
   tree.show(attrnames=True)
+if "coord" in sys.argv:
+  tree.show(showcoord=True)
 else:
   StartShell()
