@@ -36,7 +36,7 @@ def GetLAst(filename, language=None):
   Agnostic AST."""
 
   return ConvertAst(ParseFile(filename, language)
-                    ,language
+                    ,language or util.GuessLanguage(filename)
                     ,filename)
 
 

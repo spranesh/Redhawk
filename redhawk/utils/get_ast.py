@@ -61,6 +61,9 @@ def ExtractTreeFromDatabase(filename, pickle_file, parser, key=None):
 
   If key is none, the basename of the file is used.
   """
+  if pickle_file is None:
+    return parser(filename)
+
   digest = util.GetHashDigest(filename)
   
   key = key or os.path.basename(filename)
