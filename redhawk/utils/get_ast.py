@@ -31,7 +31,7 @@ used to guess the language.
 import util
 import parse_asts
 
-import pickle as P
+import cPickle as P
 import os
 
 def GetLAst(filename, pickle_file, key='', language=None):
