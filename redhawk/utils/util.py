@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import hashlib
+import operator
 import os
-import traceback 
 import sys
+import traceback 
 
 
 def AssertWithError(condition, error):
@@ -13,6 +14,10 @@ def AssertWithError(condition, error):
   if not condition:
     ExitWithError(error)
 
+def Concat(li):
+  """ Concat :: [[a]] -> [a].
+      similar to Haskell's concat."""
+  return reduce(operator.concat, li)
 
 def ExitWithError(error, backtrace=True):
   if backtrace:
