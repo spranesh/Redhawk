@@ -30,7 +30,7 @@ Constant:
   docstring: "Represents A Constant."
   args: position, value
   optargs: type
-  sexp : ["constant", value, [_type, ':type', type]]
+  sexp : ["constant", value, [_type, type]]
   children:
 
 Return:

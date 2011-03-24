@@ -229,7 +229,7 @@ class Constant(Node):
     li.append('constant')
     li.append(self.value)
     if self.type:
-      li.append([':type', ':type', self.type])
+      li.append([':type', self.type])
     return li
 
 
