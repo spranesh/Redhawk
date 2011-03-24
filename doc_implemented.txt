@@ -42,10 +42,13 @@ dowhile: implemented
 ellipsisparam: []
 
 enum: [name, values*]
+enum: Implemented
 
 enumerator: [name, value*]
+enumerator: Implemented
 
 enumeratorlist: [enumerators**]
+enumeratorlist: Implemented
 
 exprlist: [exprs**]
 exprlist: implemented
