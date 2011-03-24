@@ -148,12 +148,17 @@ def WriteListReturnMethod(c, name, li, args):
 
         c.WriteLine("if self.%s:"%(condition))
         c.Indent()
-        c.Write("li.append(")
-        WriteList(c, a[1:], 
-            prefix='self.', 
-            frame=args, 
-            start_of_list=["'%s'"%(':' + condition)])
-        c.Write(")")
+        if len(a) == 2 and a[1][0] == '*':
+          extend_list = a[1][1:]
+          assert(extend_list in args)
+          c.Write("li.extend([':%s'] + self.%s)"%(extend_list, extend_list))
+        else:
+          c.Write("li.append(")
+          WriteList(c, a[1:], 
+              prefix='self.', 
+              frame=args, 
+              start_of_list=["'%s'"%(':' + condition)])
+          c.Write(")")
         c.NewLine()
         c.Dedent()
       else:

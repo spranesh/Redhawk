@@ -52,6 +52,13 @@ DefineVariable:
   optargs: init, type, quals, storage
   sexp: ["define-variable", name, [_init, init], [_type, type], [_quals, quals], [_storage, storage]]
   children:
+
+FunctionArguments:
+  docstring: "Function Arguments."
+  args: position, arguments
+  optargs: var_arguments, kwd_arguments
+  sexp: ['*arguments', [_var_arguments, '*var_arguments'], [_kwd_arguments, '*kwd_arguments']]
+  children: arguments, var_arguments, kwd_arguments
   
 DeclareFunction:
   docstring: "A Function Declaration Node."

@@ -437,6 +437,33 @@ class For(Node):
 
 
 
+class FunctionArguments(Node):
+  """Function Arguments."""
+  def __init__(self, position, arguments, var_arguments = None, kwd_arguments = None):
+    self.position = position
+    self.arguments = arguments
+    self.var_arguments = var_arguments
+    self.kwd_arguments = kwd_arguments
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.arguments)
+    li.append(self.var_arguments)
+    li.append(self.kwd_arguments)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.extend(self.arguments)
+    if self.var_arguments:
+      li.extend([':var_arguments'] + self.var_arguments)
+    if self.kwd_arguments:
+      li.extend([':kwd_arguments'] + self.kwd_arguments)
+    return li
+
+
+
 class IfElse(Node):
   """An If Else Node."""
   def __init__(self, position, condition, if_true, if_false = None):
