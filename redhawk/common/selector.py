@@ -31,8 +31,8 @@ def Combine(*selectors):
 
 
 def Compose(tree, selector1, selector2):
-  """ A composition combinator (similar to Haskell's list monad bind) for the output of
-  the select function.
+  """ A composition combinator (similar to Haskell's list monad bind) for the
+  output of the select function.
 
   This is equivalent to 
     Concat(map(selector2, Select(tree, selector1)))
