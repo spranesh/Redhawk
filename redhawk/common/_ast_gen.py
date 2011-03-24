@@ -151,7 +151,7 @@ def WriteListReturnMethod(c, name, li, args):
         if len(a) == 2 and a[1][0] == '*':
           extend_list = a[1][1:]
           assert(extend_list in args)
-          c.Write("li.extend([':%s'] + self.%s)"%(extend_list, extend_list))
+          c.Write("li.append([':%s'] + self.%s)"%(extend_list, extend_list))
         else:
           c.Write("li.append(")
           WriteList(c, a[1:], 

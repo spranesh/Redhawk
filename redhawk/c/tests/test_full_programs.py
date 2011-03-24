@@ -21,7 +21,8 @@ tests = [("prog001.c", "Function to return 0")
         ,("prog015.c", "Cast - To Char *")
         ,("prog016.c", "Test Typedefs")
         ,("prog017.c", "Test Full Programs")
-        ,("prog018.c", "Test Enum")]
+        ,("prog018.c", "Test Enum")
+        ,("prog019.c", "Test Ellipsis Parameters")]
 
 def ConvertFile(filename):
   t = test_utils.SetUp(filename)

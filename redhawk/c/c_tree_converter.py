@@ -149,12 +149,35 @@ class CTreeConverter:
     """ Handle cases when children are none."""
     return None
 
+  def ConvertParamlist(self, tree):
+    """ Handle Function Arguments. 
+        In case the last is an ellipsis param, we store it as a var_arg
+        of name va_list."""
+    try:
+      position = GetCoords(tree)
+    except AssertionError, e:
+      position = None
+
+    #TODO(spranesh): Cheap Hack?
+    if tree.params[-1].__class__.__name__ == 'EllipsisParam':
+      try:
+        va_list_position = GetCoords(tree.params[-1])
+      except AssertionError, e:
+        va_list_position = None
+
+      return N.FunctionArguments(position = position,
+          arguments = map(self.ConvertTree, tree.params[:-1]),
+          var_arguments = [N.DefineVariable(va_list_position, 'va_list')])
+
+    return N.FunctionArguments(position = position,
+         arguments = map(self.ConvertTree, tree.params))
+
   def ConvertFuncdecl(self, tree):
     """ Handle Function Declarations."""
-    try:
-      arguments = map(self.ConvertTree, tree.args.params)
-    except AttributeError, e:
-      arguments = []
+    if tree.args:
+      arguments = self.ConvertTree(tree.args)
+    else:
+      arguments = N.FunctionArguments(position = [], arguments = [])
 
     return N.DeclareFunction(
         position = GetCoords(tree),
