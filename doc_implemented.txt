@@ -1,0 +1,119 @@
+arraydecl: [type*, dim*]
+arraydecl: implemented
+
+arrayref: [name*, subscript*]
+arrayref: implemented
+
+assignment: [op, lvalue*, rvalue*]
+assignment: implemented
+
+binaryop: [op, left*, right*]
+binaryop: implemented
+
+break: []
+
+case: [expr*, stmt*]
+case: implemented
+
+cast: [to_type*, expr*]
+cast: implemented
+
+compound: [block_items**]
+compound: implemented
+
+compoundliteral: [type*, init*]
+
+constant: [type, value]
+constant: implemented
+
+continue: []
+
+decl: [name, quals, storage, funcspec, type*, init*, bitsize*]
+decl: implemented
+
+decllist: [decls**]
+
+default: [stmt*]
+default: implemented
+
+dowhile: [cond*, stmt*]
+dowhile: implemented
+
+ellipsisparam: []
+
+enum: [name, values*]
+
+enumerator: [name, value*]
+
+enumeratorlist: [enumerators**]
+
+exprlist: [exprs**]
+exprlist: implemented
+
+fileast: [ext**]
+fileast: implemented
+
+for: [init*, cond*, next*, stmt*]
+for: implemented
+
+funccall: [name*, args*]
+funccall: implemented
+
+funcdecl: [args*, type*]
+funcdecl: implemented
+
+funcdef: [decl*, param_decls**, body*]
+funcdef: implemented
+
+goto: [name]
+
+id: [name]
+id: implemented
+
+identifiertype: [names]
+identifiertype: implemented
+
+if: [cond*, iftrue*, iffalse*]
+if: implemented
+
+label: [name, stmt*]
+
+namedinitializer: [name**, expr*]
+
+nonetype: implemented
+
+paramlist: [params**]
+
+ptrdecl: [quals, type*]
+ptrdecl: implemented
+
+return: [expr*]
+return: implemented
+
+struct: [name, decls**]
+struct: implemented
+
+structref: [name*, type, field*]
+structref: implemented
+
+switch: [cond*, stmt*]
+switch: implemented
+
+ternaryop: [cond*, iftrue*, iffalse*]
+
+typedecl: [declname, quals, type*]
+typedecl: implemented
+
+typedef: [name, quals, storage, type*]
+typedef: implemented
+
+typename: [quals, type*]
+typename: implemented
+
+unaryop: [op, expr*]
+unaryop: implemented
+
+union: [name, decls**]
+
+while: [cond*, stmt*]
+while: implemented
