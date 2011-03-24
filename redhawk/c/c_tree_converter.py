@@ -299,3 +299,8 @@ class CTreeConverter:
     return N.List(position = GetCoords(tree),
         values = map(self.ConvertTree, tree.exprs))
 
+  def ConvertArrayref(self, tree):
+    return N.Expression(position = GetCoords(tree),
+        operator = 'INDEX_INTO',
+        children = [self.ConvertTree(tree.name),
+                    self.ConvertTree(tree.subscript)])

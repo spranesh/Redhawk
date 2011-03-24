@@ -55,6 +55,9 @@ ALLOWED_OPERATORS = {
     ,'ATTRIBUTE_INDEX'     : ('.', 2)
     ,'ARROW'               : ('->', 2)
     ,'TYPE_CAST'           : ('cast', 2)
+
+    # An Indexing operator (dictionaries and lists)
+    ,'INDEX_INTO'          : ('index_into', 2)
 }
 
 

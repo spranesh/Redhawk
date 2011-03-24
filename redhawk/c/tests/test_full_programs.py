@@ -19,7 +19,8 @@ tests = [("prog001.c", "Function to return 0")
         ,("prog013.c", "Do While Loop - Factorial")
         ,("prog014.c", "Switch Case - isspace")
         ,("prog015.c", "Cast - To Char *")
-        ,("prog016.c", "Test Typedefs")]
+        ,("prog016.c", "Test Typedefs")
+        ,("prog017.c", "Test Full Programs")]
 
 def ConvertFile(filename):
   t = test_utils.SetUp(filename)
