@@ -48,6 +48,20 @@ class BaseType(Type):
 
 
 
+class EnumeratorType(Type):
+  """Represents an enumerator type."""
+  def __init__(self, enumerator_type):
+    self.enumerator_type = enumerator_type
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('enum-of-type')
+    li.append(self.enumerator_type)
+    return li
+
+
+
 class Pointer(Type):
   """Represents a Pointer-to type."""
   def __init__(self, ptr_type):

@@ -265,6 +265,29 @@ class DeclareFunction(Node):
 
 
 
+class DeclareSymbol(Node):
+  """Declare a symbol (like an ENUM, or like a lisp symbol)."""
+  def __init__(self, position, name, value = None):
+    self.position = position
+    self.name = name
+    self.value = value
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.value)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('declare-constant')
+    li.append(self.name)
+    if self.value:
+      li.append([':value', self.value])
+    return li
+
+
+
 class DefineFunction(Node):
   """A Function Definition Node."""
   def __init__(self, position, name, arguments, body, return_type = None, storage = None, quals = None):
@@ -344,6 +367,26 @@ class DefineVariable(Node):
       li.append([':quals', self.quals])
     if self.storage:
       li.append([':storage', self.storage])
+    return li
+
+
+
+class Enumerator(Node):
+  """An Enumerator."""
+  def __init__(self, position, name, values):
+    self.position = position
+    self.name = name
+    self.values = values
+    return
+
+  def GetChildren(self):
+    return self.values
+
+  def GetSExp(self):
+    li = []
+    li.append('enumerator')
+    li.append(self.name)
+    li.append(self.values)
     return li
 
 

@@ -39,6 +39,13 @@ Return:
   children: return_expression
   sexp: ["return", return_expression]
 
+DeclareSymbol:
+  docstring: "Declare a symbol (like an ENUM, or like a lisp symbol)."
+  args: position, name
+  optargs: value
+  sexp: ["declare-constant", name,  [_value, value]]
+  children: value
+
 DefineVariable:
   docstring: "A Variable Definition Node."
   args: position, name
@@ -142,3 +149,8 @@ List:
   sexp: ['*values']
   children: '*values'
  
+Enumerator:
+  docstring: "An Enumerator."
+  args: position, name, values
+  sexp: ["enumerator", name, values]
+  children: '*values'

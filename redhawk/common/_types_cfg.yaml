@@ -46,3 +46,10 @@ StructureType:
   args: structure_type
   children: 
   sexp: ["structure-to", structure_type]
+
+EnumeratorType:
+  super: Type
+  docstring: "Represents an enumerator type."
+  args: enumerator_type
+  children:
+  sexp: ["enum-of-type", enumerator_type]

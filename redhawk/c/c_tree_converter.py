@@ -101,6 +101,8 @@ class CTreeConverter:
       t.storage = tree.storage
       t.quals = tree.quals
       return t
+    if isinstance(t, N.Enumerator):
+      return t
     else: 
       return N.DefineVariable(GetCoords(tree), 
         name = tree.name, 
@@ -128,8 +130,9 @@ class CTreeConverter:
     """ Returns Type Object """
     # child is either an IdentifierType or a Struct
     t = self.ConvertTree(tree.type)
-    assert(isinstance(t, T.BaseType) or isinstance(t, T.StructureType) or
-        isinstance(t, N.Structure))
+    assert(isinstance(t, T.BaseType) or
+        isinstance(t, T.StructureType) or isinstance(t, N.Structure) or
+        isinstance(t, T.EnumeratorType) or isinstance(t, N.Enumerator))
     return t
 
   def ConvertPtrdecl(self, tree):
@@ -304,3 +307,21 @@ class CTreeConverter:
         operator = 'INDEX_INTO',
         children = [self.ConvertTree(tree.name),
                     self.ConvertTree(tree.subscript)])
+
+  def ConvertEnum(self, tree):
+    # If the pycparser's Enum's values is empty:
+    #     the enumerator is being referred to.
+    # Else
+    #     it is a enumerator declaration.
+    # A crazy pycparser hack
+    if tree.values is None:
+      return T.EnumeratorType(enumerator_type = tree.name)
+    else:
+      return N.Enumerator(position = GetCoords(tree),
+          name = tree.name,
+          values = map(self.ConvertTree, tree.values.enumerators))
+
+  def ConvertEnumerator(self, tree):
+    return N.DeclareSymbol(position = GetCoords(tree),
+        name = tree.name,
+        value = self.ConvertTree(tree.value))
