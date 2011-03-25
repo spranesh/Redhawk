@@ -60,6 +60,14 @@ ALLOWED_OPERATORS = {
     ,'INDEX_INTO'          : ('index_into', 2)
 }
 
+ALLOWED_STATEMENTS = {
+     'CONTINUE'            : ('continue', 0)
+    ,'BREAK'               : ('break', 0)
+    ,'GOTO'                : ('goto', 1)
+    ,'LABEL'               : ('label', 2)
+}
+
+
 
 def ExpandList(li, f):
   """ Recursively expands a list li as follows:

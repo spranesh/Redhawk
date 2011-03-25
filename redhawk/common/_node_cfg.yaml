@@ -161,3 +161,9 @@ Enumerator:
   args: position, name, values
   sexp: ["enumerator", name, values]
   children: '*values'
+
+Statement:
+  docstring: "An Miscellaneous Statement Node."
+  args: position, name, children
+  children: '*children'
+  sexp: ['`ALLOWED_STATEMENTS[self.name][0]`', '*children']

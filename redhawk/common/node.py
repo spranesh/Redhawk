@@ -60,6 +60,14 @@ ALLOWED_OPERATORS = {
     ,'INDEX_INTO'          : ('index_into', 2)
 }
 
+ALLOWED_STATEMENTS = {
+     'CONTINUE'            : ('continue', 0)
+    ,'BREAK'               : ('break', 0)
+    ,'GOTO'                : ('goto', 1)
+    ,'LABEL'               : ('label', 2)
+}
+
+
 
 def ExpandList(li, f):
   """ Recursively expands a list li as follows:
@@ -559,6 +567,25 @@ class Return(Node):
     li = []
     li.append('return')
     li.append(self.return_expression)
+    return li
+
+
+
+class Statement(Node):
+  """An Miscellaneous Statement Node."""
+  def __init__(self, position, name, children):
+    self.position = position
+    self.name = name
+    self.children = children
+    return
+
+  def GetChildren(self):
+    return self.children
+
+  def GetSExp(self):
+    li = []
+    li.append(ALLOWED_STATEMENTS[self.name][0])
+    li.extend(self.children)
     return li
 
 

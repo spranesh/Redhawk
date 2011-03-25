@@ -348,3 +348,13 @@ class CTreeConverter:
     return N.DeclareSymbol(position = GetCoords(tree),
         name = tree.name,
         value = self.ConvertTree(tree.value))
+
+  def ConvertContinue(self, tree):
+    return N.Statement(position = GetCoords(tree),
+        name = 'CONTINUE',
+        children = [])
+
+  def ConvertBreak(self, tree):
+    return N.Statement(position = GetCoords(tree),
+        name = 'BREAK',
+        children = [])
