@@ -388,3 +388,9 @@ class CTreeConverter:
       return N.Union(position = GetCoords(tree),
           name = tree.name,
           members = map(self.ConvertTree, tree.decls))
+
+  def ConvertTernaryop(self, tree):
+    return N.Expression(position = GetCoords(tree),
+        operator = 'TERNARY_IF',
+        children = map(self.ConvertTree, [tree.cond, tree.iftrue,
+          tree.iffalse]))
