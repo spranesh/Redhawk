@@ -5,3 +5,4 @@ yacctab.py
 *.xml
 *.json
 .noseids
+*.pickle
