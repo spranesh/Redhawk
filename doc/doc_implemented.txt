@@ -40,6 +40,7 @@ dowhile: [cond*, stmt*]
 dowhile: implemented
 
 ellipsisparam: []
+ellipsisparam: implemented
 
 enum: [name, values*]
 enum: Implemented
@@ -86,6 +87,7 @@ namedinitializer: [name**, expr*]
 nonetype: implemented
 
 paramlist: [params**]
+paramlist: implemented
 
 ptrdecl: [quals, type*]
 ptrdecl: implemented
