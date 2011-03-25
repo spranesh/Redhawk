@@ -4,7 +4,7 @@
 int foo()
 {
   a = 1;
-  while(True) {
+  while(1) {
     a = f(a);
 
     if (a%2 == 0) {

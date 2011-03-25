@@ -63,8 +63,6 @@ ALLOWED_OPERATORS = {
 ALLOWED_STATEMENTS = {
      'CONTINUE'            : ('continue', 0)
     ,'BREAK'               : ('break', 0)
-    ,'GOTO'                : ('goto', 1)
-    ,'LABEL'               : ('label', 2)
 }
 
 

@@ -167,3 +167,15 @@ Statement:
   args: position, name, children
   children: '*children'
   sexp: ['`ALLOWED_STATEMENTS[self.name][0]`', '*children']
+
+Goto:
+  docstring: "The Goto construct. Considered Harmful, yea?"
+  args: position, location
+  children:
+  sexp: ['goto', location]
+
+SourceLabel:
+  docstring: "A label in the source. Like the Goto labels."
+  args: position, name, statements
+  children: statements
+  sexp: ['label', name, statements]

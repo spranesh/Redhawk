@@ -63,8 +63,6 @@ ALLOWED_OPERATORS = {
 ALLOWED_STATEMENTS = {
      'CONTINUE'            : ('continue', 0)
     ,'BREAK'               : ('break', 0)
-    ,'GOTO'                : ('goto', 1)
-    ,'LABEL'               : ('label', 2)
 }
 
 
@@ -472,6 +470,21 @@ class FunctionArguments(Node):
 
 
 
+class Goto(Node):
+  """The Goto construct. Considered Harmful, yea?"""
+  def __init__(self, position, location):
+    self.position = position
+    self.location = location
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('goto')
+    li.append(self.location)
+    return li
+
+
+
 class IfElse(Node):
   """An If Else Node."""
   def __init__(self, position, condition, if_true, if_false = None):
@@ -567,6 +580,28 @@ class Return(Node):
     li = []
     li.append('return')
     li.append(self.return_expression)
+    return li
+
+
+
+class SourceLabel(Node):
+  """A label in the source. Like the Goto labels."""
+  def __init__(self, position, name, statements):
+    self.position = position
+    self.name = name
+    self.statements = statements
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.statements)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('label')
+    li.append(self.name)
+    li.append(self.statements)
     return li
 
 

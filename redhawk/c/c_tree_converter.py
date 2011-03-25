@@ -358,3 +358,13 @@ class CTreeConverter:
     return N.Statement(position = GetCoords(tree),
         name = 'BREAK',
         children = [])
+
+  def ConvertGoto(self, tree):
+    return N.Goto(position = GetCoords(tree),
+        location = tree.name)
+
+  def ConvertLabel(self, tree):
+    return N.SourceLabel(position = GetCoords(tree),
+        name = tree.name,
+        statements = [self.ConvertTree(tree.stmt)])
+
