@@ -11,6 +11,7 @@ binaryop: [op, left*, right*]
 binaryop: implemented
 
 break: []
+break: implemented
 
 case: [expr*, stmt*]
 case: implemented
@@ -27,6 +28,7 @@ constant: [type, value]
 constant: implemented
 
 continue: []
+continue: implemented
 
 decl: [name, quals, storage, funcspec, type*, init*, bitsize*]
 decl: implemented
@@ -70,6 +72,7 @@ funcdef: [decl*, param_decls**, body*]
 funcdef: implemented
 
 goto: [name]
+goto: implemented
 
 id: [name]
 id: implemented
@@ -81,10 +84,9 @@ if: [cond*, iftrue*, iffalse*]
 if: implemented
 
 label: [name, stmt*]
+label: implemented
 
 namedinitializer: [name**, expr*]
-
-nonetype: implemented
 
 paramlist: [params**]
 paramlist: implemented
