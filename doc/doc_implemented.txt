@@ -121,6 +121,7 @@ unaryop: [op, expr*]
 unaryop: implemented
 
 union: [name, decls**]
+union: implemented
 
 while: [cond*, stmt*]
 while: implemented

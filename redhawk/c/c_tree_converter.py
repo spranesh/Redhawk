@@ -102,6 +102,10 @@ class CTreeConverter:
       t.quals = tree.quals
       return t
     if isinstance(t, N.Enumerator):
+      t.storage, t.quals = None, None
+      return t
+    if isinstance(t, N.Union):
+      t.storage, t.quals = None, None
       return t
     else: 
       return N.DefineVariable(GetCoords(tree), 
@@ -130,9 +134,13 @@ class CTreeConverter:
     """ Returns Type Object """
     # child is either an IdentifierType or a Struct
     t = self.ConvertTree(tree.type)
-    assert(isinstance(t, T.BaseType) or
-        isinstance(t, T.StructureType) or isinstance(t, N.Structure) or
-        isinstance(t, T.EnumeratorType) or isinstance(t, N.Enumerator))
+    assert(isinstance(t, T.BaseType) 
+        or isinstance(t, T.EnumeratorType) 
+        or isinstance(t, T.StructureType) 
+        or isinstance(t, T.UnionType)
+        or isinstance(t, N.Enumerator) 
+        or isinstance(t, N.Structure) 
+        or isinstance(t, N.Union))
     return t
 
   def ConvertPtrdecl(self, tree):
@@ -368,3 +376,15 @@ class CTreeConverter:
         name = tree.name,
         statements = [self.ConvertTree(tree.stmt)])
 
+  def ConvertUnion(self, tree):
+    # If the pycparser's union's decls is empty:
+    #     the union is being referred to.
+    # Else
+    #     it is a union declaration.
+    # A crazy pyparser hack
+    if tree.decls is None:
+      return T.UnionType(union_type = tree.name)
+    else:
+      return N.Union(position = GetCoords(tree),
+          name = tree.name,
+          members = map(self.ConvertTree, tree.decls))

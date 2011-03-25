@@ -45,7 +45,7 @@ StructureType:
   docstring: "Represents a Structure type."
   args: structure_type
   children: 
-  sexp: ["structure-to", structure_type]
+  sexp: ["structure-of", structure_type]
 
 EnumeratorType:
   super: Type
@@ -53,3 +53,10 @@ EnumeratorType:
   args: enumerator_type
   children:
   sexp: ["enum-of-type", enumerator_type]
+
+UnionType:
+  super: Type
+  docstring: "Represents a Union type."
+  args: union_type
+  children: 
+  sexp: ["union-of", union_type]

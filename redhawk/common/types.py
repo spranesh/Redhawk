@@ -89,8 +89,22 @@ class StructureType(Type):
 
   def GetSExp(self):
     li = []
-    li.append('structure-to')
+    li.append('structure-of')
     li.append(self.structure_type)
+    return li
+
+
+
+class UnionType(Type):
+  """Represents a Union type."""
+  def __init__(self, union_type):
+    self.union_type = union_type
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('union-of')
+    li.append(self.union_type)
     return li
 
 

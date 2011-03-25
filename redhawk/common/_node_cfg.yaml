@@ -159,7 +159,7 @@ List:
 Enumerator:
   docstring: "An Enumerator."
   args: position, name, values
-  sexp: ["enumerator", name, values]
+  sexp: ["define-enumerator", name, values]
   children: '*values'
 
 Statement:
@@ -179,3 +179,9 @@ SourceLabel:
   args: position, name, statements
   children: statements
   sexp: ['label', name, statements]
+
+Union:
+  docstring: "A union type"
+  args: position, name, members
+  sexp: ["define-union", name, members]
+  children: '*members'

@@ -674,6 +674,26 @@ class Switch(Node):
 
 
 
+class Union(Node):
+  """A union type"""
+  def __init__(self, position, name, members):
+    self.position = position
+    self.name = name
+    self.members = members
+    return
+
+  def GetChildren(self):
+    return self.members
+
+  def GetSExp(self):
+    li = []
+    li.append('define-union')
+    li.append(self.name)
+    li.append(self.members)
+    return li
+
+
+
 class While(Node):
   """Represents a While Loop."""
   def __init__(self, position, condition, body, do_while = None):
