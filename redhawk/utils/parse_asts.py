@@ -75,7 +75,12 @@ def ParseC(filename):
     U.ExitWithError(str(e))
   return tree
 
+
 def ParsePython(filename):
   """ Parse a Python file using the ast module and return the Python AST."""
-  raise NotImplementedError("Python's not been implemented yet")
-
+  print "FILENAME: ", filename
+  try:
+    tree = ast.parse(expr = open(filename).read(), filename = filename)
+  except SyntaxError, e:
+    U.ExitWithError(str(e))
+  return tree
