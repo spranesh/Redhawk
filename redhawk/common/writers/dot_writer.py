@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import redhawk.common.node as N
+import redhawk.common.types as T
 import redhawk.utils.util as U
 import writer
 
@@ -56,9 +57,17 @@ class DotWriter(writer.Writer):
     label = [name]
     label += ["%s: %s"%(k, v) for (k, v) in attrs.items() if type(v) is str]
 
+    if isinstance(ast_node, T.Type):
+      color = "gray"
+      fontcolor = "blue"
+    else:
+      color = "gray"
+      fontcolor = "black"
+
     return self.__CreateGraphNode(label = ", ".join(label)
                                  ,shape = "box"
-                                 ,color = "gray"
+                                 ,color = color
+                                 ,fontcolor = fontcolor
                                  ,fontname = "Sans"
                                  ,fontsize = "10")
 
@@ -83,7 +92,13 @@ class DotWriter(writer.Writer):
     if parent_index is not None:
       self.graph.add_edge(parent_index, node_index)
 
-    for child in ast_node.GetChildren():
+    children = ast_node.GetChildren()
+    types = [x for x in ast_node.GetAttributes()[1].values() if isinstance(x, T.Type)]
+    children = types + children
+    
+    for child in children:
+      if child is None:
+        continue
 
       if type(child) is list:
         empty_node = self.__CreateEmptyGraphNode()
@@ -93,7 +108,7 @@ class DotWriter(writer.Writer):
       elif isinstance(child, N.Node):
         self.AddASTNodeToGraph(node_index, child)
 
-      elif type(child) is type(None):
+      elif child is None:
         continue
 
       else:
