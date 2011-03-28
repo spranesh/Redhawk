@@ -6,3 +6,4 @@ yacctab.py
 *.json
 .noseids
 *.pickle
+*.html

@@ -107,6 +107,7 @@ switch: [cond*, stmt*]
 switch: implemented
 
 ternaryop: [cond*, iftrue*, iffalse*]
+ternaryop: implemented
 
 typedecl: [declname, quals, type*]
 typedecl: implemented
