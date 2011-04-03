@@ -13,6 +13,7 @@ ConvertTree = test_utils.ConvertTree
 
 def TestExpressions():
   t = test_utils.SetUp(TEST_FILE)
-  for (i, description) in enumerate(test_descriptions):
+  for i in range(len(t.body)):
+    description = test_descriptions[i]
     ConvertTree.description = "Test `%s`"%(description.strip())
     yield ConvertTree, t.body[i]
