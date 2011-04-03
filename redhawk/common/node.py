@@ -390,7 +390,7 @@ class Enumerator(Node):
 
   def GetSExp(self):
     li = []
-    li.append('enumerator')
+    li.append('define-enumerator')
     li.append(self.name)
     li.append(self.values)
     return li
