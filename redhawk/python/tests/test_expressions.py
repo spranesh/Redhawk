@@ -6,7 +6,6 @@ import test_utils
 
 TEST_FILE = "expressions.py"
 
-# Leave out the first two lines void f(),  { and the last }
 test_descriptions = open("%s/%s"%(test_utils.RELATIVE_TEST_PATH,
   TEST_FILE)).readlines()
 
