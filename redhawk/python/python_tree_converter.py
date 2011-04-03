@@ -155,3 +155,26 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         operator = UNARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
         children = [self.ConvertTree(tree.operand)])
 
+  def ConvertTuple(self, tree):
+    """ Convert the Tuple(expr* elts, expr_context ctx) node."""
+    return N.Tuple(position = self.gc.GC(tree),
+        members = map(self.ConvertTree, tree.elts))
+
+  def ConvertList(self, tree):
+    """ Convert the List(expr* elts, expr_context ctx) node."""
+    return N.List(position = self.gc.GC(tree),
+        values = map(self.ConvertTree, tree.elts))
+ 
+  def ConvertAssign(self, tree):
+    """ Convert the Assign(expr* targets, expr value) node."""
+    if len(tree.targets) > 1:
+      left = N.Tuple(position = self.gc.GC(tree.targets),
+          members = map(self.ConvertTree, tree.targets))
+    else:
+      left = self.ConvertTree(tree.targets[0])
+
+    return N.Assignment(position = self.gc.GC(tree),
+        lvalue = left,
+        rvalue = self.ConvertTree(tree.value))
+
+

@@ -155,6 +155,12 @@ List:
   args: position, values
   sexp: ['*values']
   children: '*values'
+
+Tuple:
+  docstring: "A Tuple."
+  args: position, members 
+  sexp: ['*members']
+  children: '*members'
  
 Enumerator:
   docstring: "An Enumerator."

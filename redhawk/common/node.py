@@ -675,6 +675,21 @@ class Switch(Node):
 
 
 
+class Tuple(Node):
+  """A Tuple."""
+  def __init__(self, position, members):
+    self.position = position
+    self.members = members
+    return
+
+  def GetChildren(self):
+    return self.members
+
+  def GetSExp(self):
+    return self.members
+
+
+
 class Union(Node):
   """A union type"""
   def __init__(self, position, name, members):
