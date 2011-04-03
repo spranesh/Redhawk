@@ -6,11 +6,17 @@ a << 2
 (a - 2) * (b + c) /d
 a % b
 (c >> 3) * d
-(a | b) ^ (c & d);
-# (a && b) || (c && d);
-# (a < b) && (c <= d) || (e > f) && (g > h);
-# (a == b);
-# (a != b);
-# (!(a == b));
-# (-a);
-# (+a);
+(a | b) ^ (c & d)
+(a and b) or (c and d)
+(a < b) and (c <= d) or (e > f) and (g > h)
+(a == b)
+(a != b)
+not (a == b)
+(-a)
+(+a)
+a < b < c
+a <= b > c
+a in x
+a not in y
+a is None
+b is not None

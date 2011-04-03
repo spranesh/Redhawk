@@ -7,6 +7,9 @@ import redhawk.common.tree_converter as tree_converter
 # Map Python AST operators into the L-AST operators
 # Add | Sub | Mult | Div | Mod | Pow | LShift 
 #                  | RShift | BitOr | BitXor | BitAnd | FloorDiv
+# 
+# Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
+# And | Or 
 BINARY_OPERATOR_CONVERSIONS = {
       'Add'       : 'ADD'
      ,'Sub'       : 'MINUS'
@@ -19,18 +22,33 @@ BINARY_OPERATOR_CONVERSIONS = {
      ,'RShift'    : 'RSHIFT'
      ,'Mod'       : 'MOD'
      ,'FloorDiv'  : 'FLOOR_DIVIDE'
-     # ,'<'       : 'LT'
-     # ,'>'       : 'GT'
-     # ,'<='      : 'LTE'
-     # ,'>='      : 'GTE'
-     # ,'=='      : 'EQ'
-     # ,'!='      : 'NOT_EQ'
-     # ,'&&'      : 'BOOLEAN_AND'
-     # ,'||'      : 'BOOLEAN_OR'
-
+     ,'Lt'        : 'LT'
+     ,'Gt'        : 'GT'
+     ,'LtE'       : 'LTE'
+     ,'GtE'       : 'GTE'
+     ,'Eq'        : 'EQ'
+     ,'NotEq'     : 'NOT_EQ'
+     ,'And'       : 'BOOLEAN_AND'
+     ,'Or'        : 'BOOLEAN_OR'
+     ,'Is'        : 'IS'
+     ,'In'        : 'IN'
      # ,'.'       : 'ATTRIBUTE_INDEX'
      # ,'->'      : 'ARROW' # TODO(spranesh): Bad Name?
 }
+
+NOT_BINARY_OPERATORS = {
+      'NotIn'       : 'IN'
+     ,'IsNot'       : 'IS'
+}
+
+# Invert | Not | UAdd | USub
+UNARY_OPERATOR_CONVERSIONS = {
+      'Invert' : 'BITWISE_NOT'
+     ,'Not'    : 'BOOLEAN_NOT'
+     ,'UAdd'   : 'UNARY_PLUS'
+     ,'USub'   : 'UNARY_MINUS'
+}
+                              
 
 class TransformCoord:
   """ A class to help transform coordinates from the python ast to the L-AST.
@@ -62,6 +80,10 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         type = None)
 
   def ConvertBinop(self, tree):
+    """ Convert the BinOp(expr left, operator op, expr right) node.
+
+      op\ in  Add | Sub | Mult | Div | Mod | Pow | LShift | RShift | BitOr
+            | BitXor | BitAnd | FloorDiv"""
     return N.Expression(position = self.gc.GC(tree),
         operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
         children = map(self.ConvertTree, [tree.left, tree.right]))
@@ -69,4 +91,67 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertName(self, tree):
     return N.ReferVariable(self.gc.GC(tree),
         name = tree.id)
+
+  def ConvertBoolop(self, tree):
+    """ Convert the BoolOp(boolop op, expr* values) node. (And | Or) """
+    return N.Expression(position = self.gc.GC(tree),
+        operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
+        children = map(self.ConvertTree, tree.values))
+
+  def __ConvertBinaryOperation(self, op, position, left, right):
+    """ We split the conversion into two cases - not in, is not (not
+    operators), and the rest. In the not operators case, we use the
+    NOT_BINARY_OPERATORS dictionary, and a BOOLEAN_NOT."""
+    expr = N.Expression(position = position,
+        operator = None,
+        children = map(self.ConvertTree, [left, right]))
+
+    if op in NOT_BINARY_OPERATORS:
+      expr.operator = NOT_BINARY_OPERATORS[op]
+      expr = N.Expression(position = position,
+          operator = 'BOOLEAN_NOT',
+          children = [expr])
+                          
+    else:
+      expr.operator = BINARY_OPERATOR_CONVERSIONS[op]
+
+    return expr
+
+
+  def ConvertCompare(self, tree):
+    """ Convert the Compare(expr left, cmpop* ops, expr* comparators) node.
+
+    Each of the ops are \in   Eq | NotEq | Lt | LtE | Gt | GtE | Is 
+                            | IsNot | In | NotIn
+
+    More than one comparison is possible. Like 3 < x < 4.
+    If the lenght of ops is one, then we return a simple comparison node, else
+    we return an and of comparison nodes."""
+
+    if len(tree.ops) is 1:
+      return self.__ConvertBinaryOperation(position = self.gc.GC(tree),
+          op = GetClassName(tree.ops[0]),
+          left = tree.left, 
+          right = tree.comparators[0])
+
+    comparisons = []
+    comparators = [tree.left] + tree.comparators
+    for (i, c) in enumerate(tree.ops):
+      comparisons.append(self.__ConvertBinaryOperation(
+          position = self.gc.GC(comparators[i]),
+          op = GetClassName(c),
+          left = comparators[i],
+          right = comparators[i+1]))
+
+    return N.Expression(position = self.gc.GC(tree),
+        operator = 'BOOLEAN_AND',
+        children = comparisons)
+
+
+  def ConvertUnaryop(self, tree):
+    """ Convert the UnaryOp(unaryop op, expr operand) node.
+    op \in Invert | Not | UAdd | USub """
+    return N.Expression(position = self.gc.GC(tree),
+        operator = UNARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
+        children = [self.ConvertTree(tree.operand)])
 

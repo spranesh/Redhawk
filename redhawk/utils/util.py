@@ -21,7 +21,7 @@ def Concat(li):
 
 def ExitWithError(error, backtrace=True):
   if backtrace:
-    traceback.print_tb(sys.last_traceback)
+    traceback.print_stack()
   sys.stderr.write("\n" + error + "\n")
   sys.exit(1)
 

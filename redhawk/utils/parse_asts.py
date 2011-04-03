@@ -72,7 +72,7 @@ def ParseC(filename):
   try:
     tree = pycparser.parse_file(filename, use_cpp = True)
   except StandardError, e:
-    U.ExitWithError(str(e))
+    util.ExitWithError(str(e))
   return tree
 
 
@@ -82,5 +82,5 @@ def ParsePython(filename):
   try:
     tree = ast.parse(expr = open(filename).read(), filename = filename)
   except SyntaxError, e:
-    U.ExitWithError(str(e))
+    util.ExitWithError(str(e))
   return tree

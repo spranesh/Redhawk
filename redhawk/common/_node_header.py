@@ -30,8 +30,9 @@ ALLOWED_OPERATORS = {
     ,'BITWISE_AND'         : ('bitwise-and', 2)
     ,'BITWISE_NOT'         : ('bitwise-not', 1)
 
-    ,'BOOLEAN_AND'         :('and', 2)
-    ,'BOOLEAN_OR'          : ('or', 2)
+    # 0 means infinite number of operators possible
+    ,'BOOLEAN_AND'         : ('and', 0)
+    ,'BOOLEAN_OR'          : ('or',  0)
     ,'BOOLEAN_NOT'         : ('not', 1)
     ,'EQ'                  : ('eq', 2)
     ,'NOT_EQ'              : ('not-eq', 2)
