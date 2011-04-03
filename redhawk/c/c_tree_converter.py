@@ -3,6 +3,7 @@
 
 import redhawk.common.node as N
 import redhawk.common.node_position as NP
+import redhawk.common.tree_converter as tree_converter
 import redhawk.common.types as T
 
 # Map C operators into the LAST operators
@@ -51,19 +52,7 @@ def GetCoords(t):
   assert(c is not None)
   return NP.NodePosition(c.file, c.line, c.column)
 
-class CTreeConverter:
-  def __init__(self, filename=None):
-    self.filename = filename
-    return
-
-  def ThrowNotImplementedError(self, tree):
-    raise NotImplementedError("Convert%s not implemented."%(tree.__class__.__name__.capitalize()))
-
-  def ConvertTree(self, tree):
-    method = "Convert" + tree.__class__.__name__.capitalize()
-    visitor = getattr(self, method, self.ThrowNotImplementedError)
-    return visitor(tree)
-
+class CTreeConverter(tree_converter.TreeConverter):
   def ConvertFileast(self, tree):
     return N.Module(self.filename,
         children = map(self.ConvertTree, tree.children()))
