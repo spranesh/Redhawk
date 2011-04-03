@@ -1,2 +1,7 @@
-* Num : Numbers (str-ed though)
+Num : Numbers (str-ed though)
+Name
+Unaryop
+Binop
+Boolop
+Compare
 
