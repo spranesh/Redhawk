@@ -1,4 +1,5 @@
-Num : Numbers (str-ed though)
+Num
+Str
 Name
 Unaryop
 Binop
@@ -8,3 +9,16 @@ Tuple
 List
 
 Assign
+AugAssign
+
+Todo today:
+Attribute
+Subscript
+Set
+Dict
+Comprehension
+  * List
+  * Set
+  * Dictionary
+  * Generators
+IfExp

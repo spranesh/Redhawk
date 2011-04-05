@@ -2,7 +2,7 @@
 import redhawk.common.node as N
 import redhawk.common.node_position as NP
 import redhawk.common.tree_converter as tree_converter
-# import redhawk.common.types as T
+import redhawk.common.types as T
 
 # Map Python AST operators into the L-AST operators
 # Add | Sub | Mult | Div | Mod | Pow | LShift 
@@ -77,7 +77,13 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     #TODO(spranesh): Should the value be really str-ed?
     return N.Constant(self.gc.GC(tree),
         value = str(tree.n),
-        type = None)
+        type = T.BaseType('number'))
+
+  def ConvertStr(self, tree):
+    #TODO(spranesh): Should the value be really str-ed?
+    return N.Constant(self.gc.GC(tree),
+        value = str(tree.s),
+        type = T.BaseType('string'))
 
   def ConvertBinop(self, tree):
     """ Convert the BinOp(expr left, operator op, expr right) node.

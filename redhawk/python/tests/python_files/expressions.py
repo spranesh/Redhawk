@@ -22,3 +22,5 @@ a is None
 b is not None
 (2, 3)
 [5, 6]
+"Redhawk"
+"Redhawk" != x
