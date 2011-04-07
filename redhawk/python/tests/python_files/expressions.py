@@ -24,3 +24,5 @@ b is not None
 [5, 6]
 "Redhawk"
 "Redhawk" != x
+a.x
+b.y.z

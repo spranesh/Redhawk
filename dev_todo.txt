@@ -1,0 +1,16 @@
+Python:
+Subscript
+Set
+Dict
+Comprehension
+  * List
+  * Set
+  * Dictionary
+  * Generators
+IfExp
+
+
+Cache:
+  * Fixed Size
+  * Store whole tree?
+  * LRU ?

@@ -188,11 +188,16 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     """ Convert the AugAssign(expr target, operator op, expr value) node."""
     #TODO(spranesh): Not cheat?
     rvalue = N.Expression(position = self.gc.GC(tree.value),
-                operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
-                children = map(self.ConvertTree, [tree.target, tree.value]))
+        operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
+        children = map(self.ConvertTree, [tree.target, tree.value]))
 
     return N.Assignment(position = self.gc.GC(tree),
         lvalue = self.ConvertTree(tree.target),
         rvalue = rvalue)
 
+  def ConvertAttribute(self, tree):
+    return N.Expression(position = self.gc.GC(tree),
+        operator = 'ATTRIBUTE_INDEX',
+        children = [self.ConvertTree(tree.value)
+                   ,N.ReferVariable(self.gc.GC(tree), tree.attr)])
 
