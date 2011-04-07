@@ -8,7 +8,13 @@ Compare
 Tuple
 List
 Attribute
+IfExp
 
 Assign
 AugAssign
+If
 
+
+Module
+Interactive
+Expression

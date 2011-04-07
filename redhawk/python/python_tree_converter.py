@@ -196,8 +196,39 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         rvalue = rvalue)
 
   def ConvertAttribute(self, tree):
+    """ Convert the Attribute(expr value, identifier attr, expr_context ctx)
+    node."""
     return N.Expression(position = self.gc.GC(tree),
         operator = 'ATTRIBUTE_INDEX',
         children = [self.ConvertTree(tree.value)
                    ,N.ReferVariable(self.gc.GC(tree), tree.attr)])
+ 
+  def ConvertIf(self, tree):
+    """ Convert the If(expr test, expr body, expr orelse) node."""
+    return self.ConvertIfexp(tree)
 
+  def ConvertIfexp(self, tree):
+    """ Convert the IfExp(expr test, expr body, expr orelse) node."""
+    return N.IfElse(position = self.gc.GC(tree),
+        condition = self.ConvertTree(tree.test),
+        if_true =  self.ConvertCompound(tree.body),
+        if_false = self.ConvertCompound(tree.orelse))
+
+  def ConvertCompound(self, li):
+    """ Convert a list of statements into a compound node. """
+    assert(type(li) == list)
+
+    return N.Compound(position = self.gc.GC(li[0]),
+        compound_items = map(self.ConvertTree, li))
+
+  def ConvertModule(self, tree):
+    return N.Module(self.filename,
+        children = map(self.ConvertTree, tree.body))
+
+  def ConvertInteractive(self, tree):
+    return N.Module(None,
+        children = map(self.ConvertTree, tree.body))
+
+  def ConvertExpression(self, tree):
+    return self.ConvertInteractive(tree)
+  
