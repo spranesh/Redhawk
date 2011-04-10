@@ -223,6 +223,31 @@ class Compound(Node):
 
 
 
+class Comprehension(Node):
+  """A list (or set, dict, ..) comprehension. Python/Haskell. Type is one of 'set' or 'list' or 'generator' or 'dict'"""
+  def __init__(self, position, expr, generators, type):
+    self.position = position
+    self.expr = expr
+    self.generators = generators
+    self.type = type
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.expr)
+    li.append('comprehension_generators')
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('comprehension')
+    li.append(self.type)
+    li.append(self.expr)
+    li.extend(self.generators)
+    return li
+
+
+
 class Constant(Node):
   """Represents A Constant."""
   def __init__(self, position, value, type = None):
@@ -467,6 +492,32 @@ class FunctionArguments(Node):
       li.append([':var_arguments'] + self.var_arguments)
     if self.kwd_arguments:
       li.append([':kwd_arguments'] + self.kwd_arguments)
+    return li
+
+
+
+class Generator(Node):
+  """The generator of a comprehension `for x in .. if ..` Python/Haskell. (A helper node for comprehension). Condition is a single condition"""
+  def __init__(self, position, target, generator, condition = None):
+    self.position = position
+    self.target = target
+    self.generator = generator
+    self.condition = condition
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.target)
+    li.append(self.generator)
+    li.append(self.condition)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append(self.target)
+    li.append(self.generator)
+    if self.condition:
+      li.append([':condition', self.condition])
     return li
 
 

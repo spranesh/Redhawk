@@ -28,3 +28,4 @@ b is not None
 a.x
 b.y.z
 x if condition else y
+[x for x in li if x %2 == 0 if x%3 == 0]

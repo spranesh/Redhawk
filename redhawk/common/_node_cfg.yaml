@@ -191,3 +191,16 @@ Union:
   args: position, name, members
   sexp: ["define-union", name, members]
   children: '*members'
+
+Comprehension:
+  docstring: "A list (or set, dict, ..) comprehension. Python/Haskell. Type is one of 'set' or 'list' or 'generator' or 'dict'"
+  args: position, expr, generators, type
+  sexp: ["comprehension", type, expr, '*generators']
+  children: expr, comprehension_generators
+
+Generator:
+  docstring: "The generator of a comprehension `for x in .. if ..` Python/Haskell. (A helper node for comprehension). Condition is a single condition"
+  args: position, target, generator
+  optargs: condition
+  sexp: [target, generator, [_condition, condition]]
+  children: target, generator, condition

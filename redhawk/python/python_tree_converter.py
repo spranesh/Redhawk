@@ -234,4 +234,38 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
   def ConvertExpression(self, tree):
     return self.ConvertInteractive(tree)
-  
+
+  def ConvertComprehension(self, tree):
+    """ Convert the comprehension(expr target, expr iter, expr* ifs) node into
+    a Generator.
+    
+    Note that the ifs must be combined into a single condition."""
+    condition = None
+    if tree.ifs != []:
+      condition = N.Expression(position = self.gc.GC(tree.ifs[0]),
+        operator = 'BOOLEAN_AND',
+        children = map(self.ConvertTree, tree.ifs))
+
+    return N.Generator(position = None,
+        target = self.ConvertTree(tree.target),
+        generator = self.ConvertTree(tree.iter),
+        condition = condition)
+
+
+  def __ConvertXComprehension(self, tree, elt, type):
+    """ Convert a comprehension of type elt, whose LHS can be expressed as the
+    converted expression elt. 
+    
+    (A helper function for ConvertListComprehension, ConvertDictComprehension,
+    and ConvertSetComprehension.)"""
+
+    return N.Comprehension(position = self.gc.GC(tree),
+        expr = elt,
+        type = type,
+        generators = map(self.ConvertTree, tree.generators))
+
+  def ConvertListcomp(self, tree):
+    return self.__ConvertXComprehension(tree,
+        elt = self.ConvertTree(tree.elt),
+        type = 'list')
+
