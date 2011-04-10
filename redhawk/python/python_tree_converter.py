@@ -240,6 +240,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     a Generator.
     
     Note that the ifs must be combined into a single condition."""
+
     condition = None
     if tree.ifs != []:
       condition = N.Expression(position = self.gc.GC(tree.ifs[0]),
@@ -265,7 +266,41 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         generators = map(self.ConvertTree, tree.generators))
 
   def ConvertListcomp(self, tree):
+    """ Conver the ListComp(expr elt, comprehension* generators) node.
+    Type is 'list'."""
+
     return self.__ConvertXComprehension(tree,
         elt = self.ConvertTree(tree.elt),
         type = 'list')
+
+  def ConvertGeneratorexp(self, tree):
+    return self.__ConvertXComprehension(tree,
+        elt = self.ConvertTree(tree.elt),
+        type = 'generator')
+
+  # Python 3
+  def ConvertSetcomp(self, tree):
+    """ Convert the SetComp(expr elt, comprehension* generators) node.
+    Type is 'set'."""
+
+    return self.__ConvertXComprehension(tree,
+        elt = self.ConvertTree(tree.elt),
+        type = 'set')
+
+
+  # Python 3
+  def ConvertDictcomp(self, tree):
+    """ Convert the DictComp(expr key, expr value, comprehension* generators)
+    node.
+    
+    Type is 'dict'.
+    
+    The value is stored as a pair expression."""
+    elt = N.Tuple(position = self.gc.GC(tree),
+        members = [self.ConvertTree(tree.key)
+                  ,self.ConvertTree(tree.value)])
+
+    return self.__ConvertXComprehension(tree,
+        elt = elt,
+        type = 'dict')
 

@@ -28,4 +28,6 @@ b is not None
 a.x
 b.y.z
 x if condition else y
-[x for x in li if x %2 == 0 if x%3 == 0]
+[2*x for x in li if x %2 == 0 if x%3 == 0]
+(g for g in it)
+(3*g for g in [1, 2, 3, 4])
