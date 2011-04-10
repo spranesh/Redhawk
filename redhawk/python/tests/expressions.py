@@ -27,3 +27,4 @@ b is not None
 "Redhawk" != x
 a.x
 b.y.z
+x if condition else y

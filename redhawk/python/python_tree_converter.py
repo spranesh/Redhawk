@@ -205,14 +205,17 @@ class PythonTreeConverter(tree_converter.TreeConverter):
  
   def ConvertIf(self, tree):
     """ Convert the If(expr test, expr body, expr orelse) node."""
-    return self.ConvertIfexp(tree)
-
-  def ConvertIfexp(self, tree):
-    """ Convert the IfExp(expr test, expr body, expr orelse) node."""
     return N.IfElse(position = self.gc.GC(tree),
         condition = self.ConvertTree(tree.test),
         if_true =  self.ConvertCompound(tree.body),
         if_false = self.ConvertCompound(tree.orelse))
+
+  def ConvertIfexp(self, tree):
+    """ Convert the IfExp(expr test, expr body, expr orelse) node."""
+    return N.Expression(position = self.gc.GC(tree),
+        operator = 'TERNARY_IF',
+        children = map(self.ConvertTree, [tree.test, tree.body,
+          tree.orelse]))
 
   def ConvertCompound(self, li):
     """ Convert a list of statements into a compound node. """
