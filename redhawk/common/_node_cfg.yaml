@@ -210,3 +210,10 @@ Generator:
   optargs: condition
   sexp: [target, generator, [_condition, condition]]
   children: target, generator, condition
+
+
+FunctionDecorator:
+  docstring: "Function Decorator"
+  args: position, decorator, function
+  sexp: ["function-decorator", decorator, function]
+  children: decorator, function

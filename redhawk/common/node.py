@@ -496,6 +496,29 @@ class FunctionArguments(Node):
 
 
 
+class FunctionDecorator(Node):
+  """Function Decorator"""
+  def __init__(self, position, decorator, function):
+    self.position = position
+    self.decorator = decorator
+    self.function = function
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.decorator)
+    li.append(self.function)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('function-decorator')
+    li.append(self.decorator)
+    li.append(self.function)
+    return li
+
+
+
 class Generator(Node):
   """The generator of a comprehension `for x in .. if ..` Python/Haskell. (A helper node for comprehension). Condition is a single condition"""
   def __init__(self, position, target, generator, condition = None):

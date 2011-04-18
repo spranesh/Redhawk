@@ -345,9 +345,18 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     body_node = N.Compound(position = self.gc.GC(tree),
                       compound_items = map(self.ConvertTree, tree.body))
 
-    return N.DefineFunction(position = self.gc.GC(tree),
+    f = N.DefineFunction(position = self.gc.GC(tree),
                             name = tree.name,
                             arguments = argument_node,
                             body = body_node)
+    
+    # Encapsulate in decorators
+    current = f
+    for d in tree.decorator_list[::-1]:
+      current = N.FunctionDecorator(position = self.gc.GC(d),
+                                    decorator = self.ConvertTree(d),
+                                    function = current)
+    return current
+      
 
 
