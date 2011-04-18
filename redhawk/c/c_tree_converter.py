@@ -247,7 +247,8 @@ class CTreeConverter(tree_converter.TreeConverter):
   def ConvertFunccall(self, tree):
     return N.CallFunction(position = GetCoords(tree),
         function = self.ConvertTree(tree.name),
-        arguments = map(self.ConvertTree, tree.args.exprs))
+        arguments = N.FunctionArguments(position = GetCoords(tree),
+                        arguments = map(self.ConvertTree, tree.args.exprs)))
 
   def ConvertStruct(self, tree):
     # If the pycparser's structure's decls is None, 

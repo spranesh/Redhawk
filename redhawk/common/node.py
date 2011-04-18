@@ -179,7 +179,7 @@ class CallFunction(Node):
   def GetSExp(self):
     li = []
     li.append(self.function)
-    li.extend(self.arguments)
+    li.append(self.arguments)
     return li
 
 
@@ -783,6 +783,26 @@ class While(Node):
       li.append([':do_while', 'true'])
     li.append(self.condition)
     li.append(self.body)
+    return li
+
+
+
+class Yield(Node):
+  """Yield Statement"""
+  def __init__(self, position, yield_expression):
+    self.position = position
+    self.yield_expression = yield_expression
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.yield_expression)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('yield')
+    li.append(self.yield_expression)
     return li
 
 

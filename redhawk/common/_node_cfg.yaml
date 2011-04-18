@@ -39,6 +39,12 @@ Return:
   children: return_expression
   sexp: ["return", return_expression]
 
+Yield:
+  docstring: "Yield Statement"
+  args: position, yield_expression
+  children: yield_expression
+  sexp: ["yield", yield_expression]
+
 DeclareSymbol:
   docstring: "Declare a symbol (like an ENUM, or like a lisp symbol)."
   args: position, name
@@ -101,7 +107,7 @@ Assignment:
 CallFunction:
   docstring: "A function call. (position, function, arguments), where the function itself is a tree (with a refer variable node)."
   args: position, function, arguments
-  sexp: [function, '*arguments']
+  sexp: [function, arguments]
   children: function, arguments
 
 Structure:
