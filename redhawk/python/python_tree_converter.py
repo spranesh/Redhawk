@@ -70,6 +70,9 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     self.gc = TransformCoord(filename)
     return
 
+  def ConvertNonetype(self, tree):
+    return None
+
   def ConvertExpr(self, tree):
     return self.ConvertTree(tree.value)
 
@@ -337,8 +340,8 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     # optargs: var_arguments, kwd_arguments
     argument_node = N.FunctionArguments(position = self.gc.GC(tree),
                                         arguments = arguments,
-                                        var_arguments = [vararg],
-                                        kwd_arguments = [kwarg])
+                                        var_arguments = vararg,
+                                        kwd_arguments = kwarg)
     
 
     # Convert body
@@ -359,4 +362,34 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return current
       
 
+
+  def ConvertCall(self, tree):
+    """ Convert a function call:
+
+      Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
+      keyword = (identifier arg, expr value)
+
+      CallFunction: position, function, arguments
+    """
+
+    #Fill up the arguments
+    arguments = []
+    for a in tree.args:
+
+      arguments.append(self.ConvertTree(a))
+
+    for k in tree.keywords:
+      arguments.append(N.DefineVariable(position = self.gc.GC(tree.args[-1]),
+                                        name = k.arg,
+                                        init = self.ConvertTree(k.value)))
+
+    argument_node = N.FunctionArguments(position = self.gc.GC(tree.args[0]),
+                                        arguments = arguments,
+                                        var_arguments = self.ConvertTree(tree.starargs),
+                                        kwd_arguments = self.ConvertTree(tree.kwargs))
+
+    return N.CallFunction(position = self.gc.GC(tree),
+                          function = self.ConvertTree(tree.func),
+                          arguments = argument_node)
 

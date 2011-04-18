@@ -178,7 +178,9 @@ class CallFunction(Node):
 
   def GetSExp(self):
     li = []
+    li.append('call')
     li.append(self.function)
+    li.append('quote')
     li.append(self.arguments)
     return li
 
@@ -489,9 +491,9 @@ class FunctionArguments(Node):
     li = []
     li.extend(self.arguments)
     if self.var_arguments:
-      li.append([':var_arguments'] + self.var_arguments)
+      li.append([':var_arguments', self.var_arguments])
     if self.kwd_arguments:
-      li.append([':kwd_arguments'] + self.kwd_arguments)
+      li.append([':kwd_arguments', self.kwd_arguments])
     return li
 
 
