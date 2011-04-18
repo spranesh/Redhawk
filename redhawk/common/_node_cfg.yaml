@@ -107,7 +107,7 @@ Assignment:
 CallFunction:
   docstring: "A function call. (position, function, arguments), where the function itself is a tree (with a refer variable node)."
   args: position, function, arguments
-  sexp: ["call", function, "quote", arguments]
+  sexp: ["apply", function, arguments]
   children: function, arguments
 
 Structure:

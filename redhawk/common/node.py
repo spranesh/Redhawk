@@ -178,9 +178,8 @@ class CallFunction(Node):
 
   def GetSExp(self):
     li = []
-    li.append('call')
+    li.append('apply')
     li.append(self.function)
-    li.append('quote')
     li.append(self.arguments)
     return li
 
