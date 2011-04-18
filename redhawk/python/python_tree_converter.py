@@ -304,3 +304,50 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         elt = elt,
         type = 'dict')
 
+
+  def ConvertFunctiondef(self, tree):
+    """ Convert the FunctionDef node.
+        FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+        arguments = (expr* args, identifier? vararg, identifier? kwarg, expr*
+        defaults) 
+
+        position, name, arguments, body
+        """
+    # Convert Arguments. The arguments need to be variable definitions, which
+    # do not exist elsewhere in Python (everything else is a ReferVariable).
+    # We therefore handle it here itself.
+    arguments =  []
+    for x in tree.args.args:
+      arguments.append(N.DefineVariable(
+                          position = self.gc.GC(x),
+                          name = x.id))
+
+    for (i, y) in enumerate(tree.args.defaults):
+      arguments[len(arguments) - len(tree.args.defaults) + i].init = self.ConvertTree(y)
+
+    vararg, kwarg = None, None
+    if tree.args.vararg:
+      vararg = N.DefineVariable(position = self.gc.GC(tree), name = tree.args.vararg)
+    if tree.args.kwarg:
+      kwarg = N.DefineVariable(position = self.gc.GC(tree), name = tree.args.kwarg)
+
+
+    # args: position, arguments
+    # optargs: var_arguments, kwd_arguments
+    argument_node = N.FunctionArguments(position = self.gc.GC(tree),
+                                        arguments = arguments,
+                                        var_arguments = [vararg],
+                                        kwd_arguments = [kwarg])
+    
+
+    # Convert body
+    body_node = N.Compound(position = self.gc.GC(tree),
+                      compound_items = map(self.ConvertTree, tree.body))
+
+    return N.DefineFunction(position = self.gc.GC(tree),
+                            name = tree.name,
+                            arguments = argument_node,
+                            body = body_node)
+
+
