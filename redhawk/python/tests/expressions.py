@@ -31,3 +31,5 @@ x if condition else y
 [2*x for x in li if x %2 == 0 if x%3 == 0]
 (g for g in it)
 (3*g for g in [1, 2, 3, 4])
+lambda x: 2*x
+lambda (x, y): x + y

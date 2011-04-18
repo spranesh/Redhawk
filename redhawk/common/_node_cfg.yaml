@@ -217,3 +217,11 @@ FunctionDecorator:
   args: position, decorator, function
   sexp: ["function-decorator", decorator, function]
   children: decorator, function
+
+
+Lambda:
+  docstring: "A Lambda Function"
+  args: position, arguments, value 
+  sexp: ["lambda", arguments, value]
+  children: arguemnts, value
+

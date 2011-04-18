@@ -587,6 +587,29 @@ class IfElse(Node):
 
 
 
+class Lambda(Node):
+  """A Lambda Function"""
+  def __init__(self, position, arguments, value):
+    self.position = position
+    self.arguments = arguments
+    self.value = value
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append('arguemnts')
+    li.append(self.value)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('lambda')
+    li.append(self.arguments)
+    li.append(self.value)
+    return li
+
+
+
 class List(Node):
   """A List."""
   def __init__(self, position, values):

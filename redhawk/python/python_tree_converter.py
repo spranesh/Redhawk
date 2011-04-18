@@ -367,13 +367,12 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     """ Convert a function call:
 
       Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
-
       keyword = (identifier arg, expr value)
 
-      CallFunction: position, function, arguments
-    """
+      into
+      CallFunction: position, function, arguments """
 
-    #Fill up the arguments
+    # Set up the arguments, using args, keywords, starargs, kwargs
     arguments = []
     for a in tree.args:
 
@@ -389,7 +388,26 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                                         var_arguments = self.ConvertTree(tree.starargs),
                                         kwd_arguments = self.ConvertTree(tree.kwargs))
 
+
     return N.CallFunction(position = self.gc.GC(tree),
                           function = self.ConvertTree(tree.func),
                           arguments = argument_node)
+
+
+  def ConvertLambda(self, tree):
+    """ Convert the lamdba function:
+        Lambda(arguments args, expr body)
+
+        into
+        Lambda: position, arguments, value"""
+    print tree.lineno
+    argument_node = N.FunctionArguments(position = self.gc.GC(tree),
+                                        arguments = map(self.ConvertTree, tree.args.args),
+                                        var_arguments = None,
+                                        kwd_arguments = None)
+
+
+    return N.Lambda(position = self.gc.GC(tree),
+                    arguments = argument_node,
+                    value = self.ConvertTree(tree.body))
 
