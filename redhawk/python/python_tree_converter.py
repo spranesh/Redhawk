@@ -4,6 +4,8 @@ import redhawk.common.node_position as NP
 import redhawk.common.tree_converter as tree_converter
 import redhawk.common.types as T
 
+import ast
+
 # Map Python AST operators into the L-AST operators
 # Add | Sub | Mult | Div | Mod | Pow | LShift 
 #                  | RShift | BitOr | BitXor | BitAnd | FloorDiv
@@ -98,6 +100,9 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         children = map(self.ConvertTree, [tree.left, tree.right]))
 
   def ConvertName(self, tree):
+    if isinstance(tree.ctx, ast.Param):
+      return N.DefineVariable(self.gc.GC(tree),
+          name = tree.id)
     return N.ReferVariable(self.gc.GC(tree),
         name = tree.id)
 
@@ -306,6 +311,33 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return self.__ConvertXComprehension(tree,
         elt = elt,
         type = 'dict')
+        
+
+  def __ConvertArguments(self, args, position):
+    """ Convert the Python argument node to the FunctionArguments L-AST node. The
+    arguments need to be variable definitions, which do not exist elsewhere in
+    Python (everything else is a ReferVariable).  We therefore handle it here
+    itself. """
+
+    arguments =  []
+    for x in args.args:
+      arguments.append(self.ConvertTree(x))
+
+
+    for (i, y) in enumerate(args.defaults):
+      arguments[len(arguments) - len(args.defaults) + i].init = self.ConvertTree(y)
+
+    vararg, kwarg = None, None
+    if args.vararg:
+      vararg = N.DefineVariable(position = position, name = args.vararg)
+    if args.kwarg:
+      kwarg = N.DefineVariable(position = position, name = args.kwarg)
+
+
+    return N.FunctionArguments(position = position,
+                               arguments = arguments,
+                               var_arguments = vararg,
+                               kwd_arguments = kwarg)
 
 
   def ConvertFunctiondef(self, tree):
@@ -317,33 +349,9 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
         position, name, arguments, body
         """
-    # Convert Arguments. The arguments need to be variable definitions, which
-    # do not exist elsewhere in Python (everything else is a ReferVariable).
-    # We therefore handle it here itself.
-    arguments =  []
-    for x in tree.args.args:
-      arguments.append(N.DefineVariable(
-                          position = self.gc.GC(x),
-                          name = x.id))
-
-    for (i, y) in enumerate(tree.args.defaults):
-      arguments[len(arguments) - len(tree.args.defaults) + i].init = self.ConvertTree(y)
-
-    vararg, kwarg = None, None
-    if tree.args.vararg:
-      vararg = N.DefineVariable(position = self.gc.GC(tree), name = tree.args.vararg)
-    if tree.args.kwarg:
-      kwarg = N.DefineVariable(position = self.gc.GC(tree), name = tree.args.kwarg)
-
-
-    # args: position, arguments
-    # optargs: var_arguments, kwd_arguments
-    argument_node = N.FunctionArguments(position = self.gc.GC(tree),
-                                        arguments = arguments,
-                                        var_arguments = vararg,
-                                        kwd_arguments = kwarg)
     
 
+    argument_node = self.__ConvertArguments(tree.args, self.gc.GC(tree))
     # Convert body
     body_node = N.Compound(position = self.gc.GC(tree),
                       compound_items = map(self.ConvertTree, tree.body))
@@ -400,12 +408,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
         into
         Lambda: position, arguments, value"""
-    print tree.lineno
-    argument_node = N.FunctionArguments(position = self.gc.GC(tree),
-                                        arguments = map(self.ConvertTree, tree.args.args),
-                                        var_arguments = None,
-                                        kwd_arguments = None)
-
+    argument_node = self.__ConvertArguments(tree.args, self.gc.GC(tree))
 
     return N.Lambda(position = self.gc.GC(tree),
                     arguments = argument_node,

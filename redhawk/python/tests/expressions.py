@@ -33,3 +33,4 @@ x if condition else y
 (3*g for g in [1, 2, 3, 4])
 lambda x: 2*x
 lambda (x, y): x + y
+lambda x, *y: y
