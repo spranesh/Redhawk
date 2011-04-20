@@ -59,12 +59,17 @@ class TransformCoord:
     self.filename = filename
     return
 
-  # Get Coord
+
   def GC(self, c):
+    """ Get Coord."""
     NP.NodePosition(self.filename, c.lineno, c.col_offset)
+
+
 
 def GetClassName(x):
   return x.__class__.__name__
+
+
 
 class PythonTreeConverter(tree_converter.TreeConverter):
   def __init__(self, filename=None):
@@ -72,11 +77,14 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     self.gc = TransformCoord(filename)
     return
 
+
   def ConvertNonetype(self, tree):
     return None
 
+
   def ConvertExpr(self, tree):
     return self.ConvertTree(tree.value)
+
 
   def ConvertNum(self, tree):
     #TODO(spranesh): Should the value be really str-ed?
@@ -84,11 +92,13 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         value = str(tree.n),
         type = T.BaseType('number'))
 
+
   def ConvertStr(self, tree):
     #TODO(spranesh): Should the value be really str-ed?
     return N.Constant(self.gc.GC(tree),
         value = str(tree.s),
         type = T.BaseType('string'))
+
 
   def ConvertBinop(self, tree):
     """ Convert the BinOp(expr left, operator op, expr right) node.
@@ -99,6 +109,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
         children = map(self.ConvertTree, [tree.left, tree.right]))
 
+
   def ConvertName(self, tree):
     if isinstance(tree.ctx, ast.Param):
       return N.DefineVariable(self.gc.GC(tree),
@@ -106,11 +117,13 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.ReferVariable(self.gc.GC(tree),
         name = tree.id)
 
+
   def ConvertBoolop(self, tree):
     """ Convert the BoolOp(boolop op, expr* values) node. (And | Or) """
     return N.Expression(position = self.gc.GC(tree),
         operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
         children = map(self.ConvertTree, tree.values))
+
 
   def __ConvertBinaryOperation(self, op, position, left, right):
     """ We split the conversion into two cases - not in, is not (not
@@ -169,16 +182,19 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         operator = UNARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
         children = [self.ConvertTree(tree.operand)])
 
+
   def ConvertTuple(self, tree):
     """ Convert the Tuple(expr* elts, expr_context ctx) node."""
     return N.Tuple(position = self.gc.GC(tree),
         members = map(self.ConvertTree, tree.elts))
+
 
   def ConvertList(self, tree):
     """ Convert the List(expr* elts, expr_context ctx) node."""
     return N.List(position = self.gc.GC(tree),
         values = map(self.ConvertTree, tree.elts))
  
+
   def ConvertAssign(self, tree):
     """ Convert the Assign(expr* targets, expr value) node."""
     if len(tree.targets) > 1:
@@ -203,6 +219,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         lvalue = self.ConvertTree(tree.target),
         rvalue = rvalue)
 
+
   def ConvertAttribute(self, tree):
     """ Convert the Attribute(expr value, identifier attr, expr_context ctx)
     node."""
@@ -211,12 +228,14 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         children = [self.ConvertTree(tree.value)
                    ,N.ReferVariable(self.gc.GC(tree), tree.attr)])
  
+
   def ConvertIf(self, tree):
     """ Convert the If(expr test, expr body, expr orelse) node."""
     return N.IfElse(position = self.gc.GC(tree),
         condition = self.ConvertTree(tree.test),
         if_true =  self.ConvertCompound(tree.body),
         if_false = self.ConvertCompound(tree.orelse))
+
 
   def ConvertIfexp(self, tree):
     """ Convert the IfExp(expr test, expr body, expr orelse) node."""
@@ -225,6 +244,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         children = map(self.ConvertTree, [tree.test, tree.body,
           tree.orelse]))
 
+
   def ConvertCompound(self, li):
     """ Convert a list of statements into a compound node. """
     assert(type(li) == list)
@@ -232,16 +252,20 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.Compound(position = self.gc.GC(li[0]),
         compound_items = map(self.ConvertTree, li))
 
+
   def ConvertModule(self, tree):
     return N.Module(self.filename,
         children = map(self.ConvertTree, tree.body))
+
 
   def ConvertInteractive(self, tree):
     return N.Module(None,
         children = map(self.ConvertTree, tree.body))
 
+
   def ConvertExpression(self, tree):
     return self.ConvertInteractive(tree)
+
 
   def ConvertComprehension(self, tree):
     """ Convert the comprehension(expr target, expr iter, expr* ifs) node into
@@ -273,6 +297,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         type = type,
         generators = map(self.ConvertTree, tree.generators))
 
+
   def ConvertListcomp(self, tree):
     """ Conver the ListComp(expr elt, comprehension* generators) node.
     Type is 'list'."""
@@ -281,10 +306,12 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         elt = self.ConvertTree(tree.elt),
         type = 'list')
 
+
   def ConvertGeneratorexp(self, tree):
     return self.__ConvertXComprehension(tree,
         elt = self.ConvertTree(tree.elt),
         type = 'generator')
+
 
   # Python 3
   def ConvertSetcomp(self, tree):
@@ -369,7 +396,6 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                                     function = current)
     return current
       
-
 
   def ConvertCall(self, tree):
     """ Convert a function call:
