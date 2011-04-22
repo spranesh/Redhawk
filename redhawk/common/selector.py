@@ -59,6 +59,7 @@ def RunSelector(s, tree):
 
 def Selector(node_type = None
             ,function = None
+            ,attr_matcher = None
             ,match_only_common_attributes = False
             ,**attrs):
   """ Return a selector function that selects based on the criteria passed.
@@ -70,6 +71,10 @@ def Selector(node_type = None
   If match_only_common_attributes is True, we match only the common attributes
   passed in, and it is considered a failure only when some attribute does not
   match, or there are no common attributes.
+
+  If `attr_matcher` is passed, a call to attr_matcher(node_attribute,
+  argument) is used to check for equality between the attribute value passed
+  in, and the attribute value in the node.
 
   If more than one criteria is passed, all the criteria have to be satisfied for
   a node to be selected."""
@@ -94,7 +99,10 @@ def Selector(node_type = None
 
       if hasattr(node, key): 
         count = 1
-        if val != getattr(node, key):
+        if attr_matcher:
+          if not attr_matcher(getattr(node, key), val):
+            return False
+        elif val != getattr(node, key):
           return False
 
     return (count != 0)
@@ -105,3 +113,79 @@ def Selector(node_type = None
 S = Selector    
 R = RunSelector 
 
+
+
+def And(s1, s2):
+  """ And(s1, s2) returns a new selector that selects a node only if BOTH
+     s1, and s2 select the node."""
+  return lambda x: s1(x) and s2(x)
+
+
+def Or(s1, s2):
+  """ Or(s1, s2) returns a new selector that selects a node if EITHER s1 or s2
+     select the node."""
+  return lambda x: s1(x) or s2(x)
+
+
+def HasChild(s1, s2):
+  """ HasChild(s1, s2) returns a selector that selects a node, n, only if
+        * s1 selects the node
+        * s2 selects a child of the node."""
+  def MatchNode(x):
+    if not s1(x):
+      return False
+
+    for child in U.Flatten(x.GetChildren()):
+      if s2(x):
+        return True
+    return False
+  return MatchNode
+
+
+def HasDescendent(s1, s2):
+  """ HasDescendent(s1, s2) returns a selector that selects a node, n, only if
+        * s1 selects the node
+        * s2 selects some descendant of the node."""
+  def MatchNode(x):
+    if not s1(x):
+      return False
+
+    for node in traverse.DFS(x):
+      if s2(node):
+        return True
+    return False
+  return MatchNode
+
+
+def HasParent(s1, s2):
+  """ HasParent(s1, s2) returns a selector that selects a node, n, only if
+        * s1 selects the node, n
+        * s2 selects the parent of the node, n.parent."""
+  def MatchNode(x):
+    if not s1(x):
+      return False
+
+    n = x.GetParent()
+
+    if n is not None:
+      return s2(n)
+
+  return MatchNode
+
+
+def HasAncestor(s1, s2):
+  """" HasAncestor(s1, s2) returns a selector that selects a node, n, only if
+        * s1 selects the node, n
+        * s2 selects some ancestor of the node, n."""
+  def MatchNode(x):
+    if not s1(x):
+      return False
+
+    while x is not None:
+      x = x.GetParent()
+
+      if x and s2(x):
+        return True
+
+    return False
+  return MatchNode
