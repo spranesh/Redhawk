@@ -1,3 +1,4 @@
+import redhawk.utils.util as U
 import pycparser
 import sys
 
@@ -6,14 +7,6 @@ def ShowObject(a):
     if name[:2] != "__":
       print ("%10s : %s"%(name, str(getattr(a, name))))
   return
-
-def StartShell():
-  try:
-    from IPython.Shell import IPShellEmbed
-    ipshell = IPShellEmbed()
-    ipshell(local_ns=locals())
-  except ImportError:
-    code.interact(local=locals())
 
 try:
   filename = sys.argv[1]
@@ -29,4 +22,4 @@ if "show" in sys.argv:
 if "coord" in sys.argv:
   tree.show(showcoord=True)
 else:
-  StartShell()
+  U.StartShell(locals(), banner="Variables: tree, body, program, ShowObject")

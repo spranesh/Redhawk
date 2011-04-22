@@ -90,3 +90,17 @@ def LogWarning(s, stream=sys.stderr):
   """ Log a warning to `stream` (default: sys.stderr.)"""
   stream.write("[WARNING]: %s\n"%(s))
   return
+
+
+def StartShell(local_vars, banner=''):
+  """ Start a shell, with the given local variables. It prints the given
+  banner as a welcome message."""
+
+  try:
+    from IPython.Shell import IPShellEmbed
+    ipshell = IPShellEmbed()
+    ipshell.set_banner(banner)
+    ipshell(local_ns=local_vars)
+  except ImportError:
+    import code
+    code.interact(local=local_vars, banner=banner)
