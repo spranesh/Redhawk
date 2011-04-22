@@ -25,7 +25,7 @@ def ConvertTree(t, filename=None, verbose=True):
   if verbose:
     print ast.dump(t)
   c = P.PythonTreeConverter(filename)
-  a = c.ConvertTree(t)
+  a = c.Convert(t)
   if verbose:
     print a.ToStr(), "\n\n"
   return a

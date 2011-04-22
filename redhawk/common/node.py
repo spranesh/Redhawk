@@ -6,6 +6,7 @@
 """
 
 import writers.scheme_writer as S
+import redhawk.utils.util as U
 
 import copy
 import pprint
@@ -99,6 +100,14 @@ class Node:
   def __str__(self):
     return self.GetName()
 
+  def SetParent(self, parent):
+    # We want __parent to be a private member, so that it doesnt arise in the
+    # dot diagrams, or the other exported formats.
+    self.__parent = parent
+
+  def GetParent(self):
+    return self.__parent
+
   def GetName(self):
     return self.__class__.__name__
 
@@ -107,6 +116,10 @@ class Node:
 
   def GetChildren(self):
     return []
+
+  def GetFlattenedChildren(self):
+    """ Returns a generator to flattened children."""
+    return U.Flatten(self.GetChildren())
 
   def ToStr(self):
     return S.WriteToScheme(self)
@@ -236,7 +249,7 @@ class Comprehension(Node):
   def GetChildren(self):
     li = []
     li.append(self.expr)
-    li.append('comprehension_generators')
+    li.append(self.generators)
     return li
 
   def GetSExp(self):
@@ -597,7 +610,7 @@ class Lambda(Node):
 
   def GetChildren(self):
     li = []
-    li.append('arguemnts')
+    li.append(self.arguments)
     li.append(self.value)
     return li
 

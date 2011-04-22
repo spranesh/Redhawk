@@ -18,7 +18,7 @@ def ConvertTree(t, filename=None, verbose=True):
   if verbose:
     t.show()
   c = C.CTreeConverter(filename)
-  ast = c.ConvertTree(t)
+  ast = c.Convert(t)
   if verbose:
     print ast.ToStr(), "\n\n"
   return ast

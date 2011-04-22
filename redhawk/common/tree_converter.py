@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import node
 
 class TreeConverter:
   """ The base tree converter class."""
@@ -8,6 +9,25 @@ class TreeConverter:
 
   def ThrowNotImplementedError(self, tree):
     raise NotImplementedError("Convert%s not implemented."%(tree.__class__.__name__.capitalize()))
+
+
+  def __AttachParents(self, tree, parent = None):
+    tree.SetParent(parent)
+    for c in tree.GetFlattenedChildren():
+      if type(c) is str:
+        print "+++ String Child : %s"%(c)
+      if c is not None:
+        self.__AttachParents(c, tree)
+    return
+
+
+  def Convert(self, tree):
+    """ Calls ConvertTree, and attaches parent links using __AttachParents.
+    This is the method to be called by outside methods, and functions."""
+    l_ast = self.ConvertTree(tree)
+    self.__AttachParents(l_ast)
+    return l_ast
+
 
   def ConvertTree(self, tree):
     method = "Convert" + tree.__class__.__name__.capitalize()
