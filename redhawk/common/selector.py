@@ -13,14 +13,14 @@ We have helper functions for creating two types of selectors:
 """
 
 import redhawk.utils.util as U
-import walk
+import traverse
 
 def Select(tree, selector):
   """ A generator that returns nodes, `n`, in the tree, `tree`
   for which `selector(n)` is True.
   
   Select :: tree -> selector -> [tree]"""
-  for n in walk.Walk(tree):
+  for n in traverse.DFS(tree):
     if selector(n):
       yield n
 
