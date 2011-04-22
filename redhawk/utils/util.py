@@ -14,16 +14,33 @@ def AssertWithError(condition, error):
   if not condition:
     ExitWithError(error)
 
+
 def Concat(li):
   """ Concat :: [[a]] -> [a].
       similar to Haskell's concat."""
   return reduce(operator.concat, li)
+
 
 def ExitWithError(error, backtrace=True):
   if backtrace:
     traceback.print_stack()
   sys.stderr.write("\n" + error + "\n")
   sys.exit(1)
+
+
+def Flatten(li):
+  """ Returns a generator that is a flattened out version of the original
+      list.
+      Example:
+        Flatten([1, 2, [3, 4]])     ->  [1, 2, 3, 4]
+        Flatten([[1, [2]], [3, 4]]) ->  [1, 2, 3, 4]
+  """
+  for x in li:
+    if type(x) == list:
+      Flatten(x)
+    else:
+      yield x
+  return
 
 
 def GetHashDigest(filename):
@@ -43,7 +60,7 @@ def GuessLanguage(filename):
   """ Attempts to Guess Langauge of `filename`. Essentially, we do a
   filename.rsplit('.', 1), and a lookup into a dictionary of extensions."""
   try:
-    (crap, extension) = filename.rsplit('.', 1)
+    (_, extension) = filename.rsplit('.', 1)
   except ValueError:
     ExitWithError("Could not guess language as '%s' does not have an \
         extension"%filename)
