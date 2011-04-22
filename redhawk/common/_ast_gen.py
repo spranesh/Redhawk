@@ -109,7 +109,7 @@ def WriteListReturnMethod(c, name, li, args):
   # If there is only one variable, and it starts with a *
   if len(li) == 1 and li[0][0] == '*':
     c.Indent()
-    c.WriteLine("return self.%s"%(li[0][1:]))
+    c.WriteLine("return self.%s[:]"%(li[0][1:]))
     c.Dedent()
     c.NewLine()
     return

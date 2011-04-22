@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import node
+import redhawk.utils.util as U
 
 class TreeConverter:
   """ The base tree converter class."""
@@ -13,9 +14,7 @@ class TreeConverter:
 
   def __AttachParents(self, tree, parent = None):
     tree.SetParent(parent)
-    for c in tree.GetFlattenedChildren():
-      if type(c) is str:
-        print "+++ String Child : %s"%(c)
+    for c in U.Flatten(tree.GetChildren()):
       if c is not None:
         self.__AttachParents(c, tree)
     return

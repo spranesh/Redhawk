@@ -35,12 +35,13 @@ def Flatten(li):
         Flatten([1, 2, [3, 4]])     ->  [1, 2, 3, 4]
         Flatten([[1, [2]], [3, 4]]) ->  [1, 2, 3, 4]
   """
+  flat = []
   for x in li:
     if type(x) == list:
-      Flatten(x)
+      flat.extend(Flatten(x))
     else:
-      yield x
-  return
+      flat.append(x)
+  return flat
 
 
 def GetHashDigest(filename):

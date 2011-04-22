@@ -78,14 +78,14 @@ def ExpandList(li, f):
   if type(li) is not list:
     return
 
-  for (i, e) in enumerate(li):
-    if type(e) is list:
-      li[i] = ExpandList(li[i], f)
-    elif isinstance(e, Node):
-      li[i] = f(e)
-      if type(li[i]) is list:
-        li[i] = ExpandList(li[i], f)
-  return li
+  # Expand all nodes to lists
+  expand = [f(e) if isinstance(e, Node) else e for e in li]
+
+  for i in range(len(expand)):
+    if type(expand[i]) is list:
+      expand[i] = ExpandList(expand[i], f)
+
+  return expand
 
 
 class Node:
@@ -99,6 +99,16 @@ class Node:
 
   def __str__(self):
     return self.GetName()
+
+  def GetSExp(self):
+    """ This function is not to be called directly. Code for this function is
+    generated."""
+    raise NotImplementedError("Base Node Class!")
+
+  def GetChildren(self):
+    """ This function is not to be called directly. Code for this function is
+    generated."""
+    return []
 
   def SetParent(self, parent):
     # We want __parent to be a private member, so that it doesnt arise in the
@@ -114,22 +124,6 @@ class Node:
   def MakeCopy(self):
     return copy.deepcopy(self)
 
-  def GetChildren(self):
-    return []
-
-  def GetFlattenedChildren(self):
-    """ Returns a generator to flattened children."""
-    return U.Flatten(self.GetChildren())
-
-  def ToStr(self):
-    return S.WriteToScheme(self)
-
-  def GetSExp(self):
-    raise NotImplementedError("Base Node Class!")
-
-  def GetRecursiveSExp(self):
-    return ExpandList(self.GetSExp(), lambda x: x.GetSExp())
-
   def GetAttributes(self):
     """ Return the lower case attributes of the class as a 
     pair - (class-name, dictionary-of-attributes). """
@@ -141,6 +135,12 @@ class Node:
         d[x] = getattr(self, x)
     return (self.__class__.__name__, d)
 
+  def GetRecursiveSExp(self):
+    return ExpandList(self.GetSExp(), lambda x: x.GetSExp())
+
+  def ToStr(self):
+    return S.WriteToScheme(self)
+
   def GetXMLAttributes(self):
     return self.GetAttributes()
 
@@ -149,7 +149,6 @@ class Node:
 
   def GetDotAttributes(self):
     return self.GetAttributes()
-
 
 
 class Assignment(Node):
@@ -227,7 +226,7 @@ class Compound(Node):
     return
 
   def GetChildren(self):
-    return self.compound_items
+    return self.compound_items[:]
 
   def GetSExp(self):
     li = []
@@ -426,7 +425,7 @@ class Enumerator(Node):
     return
 
   def GetChildren(self):
-    return self.values
+    return self.values[:]
 
   def GetSExp(self):
     li = []
@@ -446,7 +445,7 @@ class Expression(Node):
     return
 
   def GetChildren(self):
-    return self.children
+    return self.children[:]
 
   def GetSExp(self):
     li = []
@@ -631,10 +630,10 @@ class List(Node):
     return
 
   def GetChildren(self):
-    return self.values
+    return self.values[:]
 
   def GetSExp(self):
-    return self.values
+    return self.values[:]
 
 
 
@@ -646,7 +645,7 @@ class Module(Node):
     return
 
   def GetChildren(self):
-    return self.children
+    return self.children[:]
 
   def GetSExp(self):
     li = []
@@ -672,7 +671,7 @@ class ReferVariable(Node):
     return
 
   def GetSExp(self):
-    return self.name
+    return self.name[:]
 
 
 
@@ -727,7 +726,7 @@ class Statement(Node):
     return
 
   def GetChildren(self):
-    return self.children
+    return self.children[:]
 
   def GetSExp(self):
     li = []
@@ -748,7 +747,7 @@ class Structure(Node):
     return
 
   def GetChildren(self):
-    return self.members
+    return self.members[:]
 
   def GetSExp(self):
     li = []
@@ -794,10 +793,10 @@ class Tuple(Node):
     return
 
   def GetChildren(self):
-    return self.members
+    return self.members[:]
 
   def GetSExp(self):
-    return self.members
+    return self.members[:]
 
 
 
@@ -810,7 +809,7 @@ class Union(Node):
     return
 
   def GetChildren(self):
-    return self.members
+    return self.members[:]
 
   def GetSExp(self):
     li = []

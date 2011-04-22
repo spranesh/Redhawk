@@ -100,6 +100,16 @@ class Node:
   def __str__(self):
     return self.GetName()
 
+  def GetSExp(self):
+    """ This function is not to be called directly. Code for this function is
+    generated."""
+    raise NotImplementedError("Base Node Class!")
+
+  def GetChildren(self):
+    """ This function is not to be called directly. Code for this function is
+    generated."""
+    return []
+
   def SetParent(self, parent):
     # We want __parent to be a private member, so that it doesnt arise in the
     # dot diagrams, or the other exported formats.
@@ -114,22 +124,6 @@ class Node:
   def MakeCopy(self):
     return copy.deepcopy(self)
 
-  def GetChildren(self):
-    return []
-
-  def GetFlattenedChildren(self):
-    """ Returns a generator to flattened children."""
-    return U.Flatten(self.GetChildren())
-
-  def ToStr(self):
-    return S.WriteToScheme(self)
-
-  def GetSExp(self):
-    raise NotImplementedError("Base Node Class!")
-
-  def GetRecursiveSExp(self):
-    return ExpandList(self.GetSExp(), lambda x: x.GetSExp())
-
   def GetAttributes(self):
     """ Return the lower case attributes of the class as a 
     pair - (class-name, dictionary-of-attributes). """
@@ -141,6 +135,12 @@ class Node:
         d[x] = getattr(self, x)
     return (self.__class__.__name__, d)
 
+  def GetRecursiveSExp(self):
+    return ExpandList(self.GetSExp(), lambda x: x.GetSExp())
+
+  def ToStr(self):
+    return S.WriteToScheme(self)
+
   def GetXMLAttributes(self):
     return self.GetAttributes()
 
@@ -149,5 +149,4 @@ class Node:
 
   def GetDotAttributes(self):
     return self.GetAttributes()
-
 
