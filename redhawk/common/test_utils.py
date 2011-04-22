@@ -5,7 +5,8 @@ import redhawk.utils.parse_asts as P
 
 import glob
 
-AST_FILES = [("c/tests/c_files/*.c", 'c', 'c/tests/c_parsed.pickle')]
+AST_FILES = [("c/tests/c_files/*.c", 'c', 'c/tests/c_parsed.pickle')
+            ,("python/tests/*.py", 'python', 'python/tests/python_parsed.pickle')]
 
 def GetAllLASTs():
   for (g, language, pickle_file) in AST_FILES:

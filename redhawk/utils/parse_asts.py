@@ -26,6 +26,7 @@ ASTs to store unnecessary parsing, and tree conversion.
 """
 
 import redhawk.c.c_tree_converter as C
+import redhawk.python.python_tree_converter as P
 import util
 
 import pycparser
@@ -44,12 +45,11 @@ def ConvertAst(ast, language, filename=None):
   if language == 'c':
     converter = C.CTreeConverter(filename)
   elif language == 'python':
-    # converter = P.PythonTreeConverter(filename)
-    raise NotImplementedError("Python converter not implemented.")
+    converter = P.PythonTreeConverter(filename)
   else:
     raise NotImplementedError("Only C and Python Implemented so far")
 
-  return converter.ConvertTree(ast)
+  return converter.Convert(ast)
 
 
 
