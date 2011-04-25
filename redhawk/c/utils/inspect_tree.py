@@ -1,5 +1,6 @@
 import redhawk.utils.util as U
-import pycparser
+import redhawk.utils.parse_asts as parse_asts
+
 import sys
 
 def ShowObject(a):
@@ -14,7 +15,7 @@ except IndexError, e:
   sys.stderr.write("No C file specified to parse.\n")
   sys.exit(1)
 
-tree = pycparser.parse_file(filename, use_cpp = True, cpp_path='cpp', cpp_args='-Ifake_libc_include')
+tree = parse_asts.ParseC(filename)
 body = tree.children()
 program = open(filename).read()
 if "show" in sys.argv:

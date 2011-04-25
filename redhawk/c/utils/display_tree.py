@@ -1,7 +1,8 @@
 #!/usr/bin env python
 
+import redhawk.utils.parse_asts as parse_asts
+
 import sys
-import pycparser
 
 def GetNodeTypeShorthand(node):
   cparser_type = ""
@@ -56,7 +57,7 @@ except IndexError, e:
   sys.exit(1)
 
 #tree = pycparser.parse_file(filename)
-tree = pycparser.parse_file(filename, use_cpp = True, cpp_path='cpp', cpp_args='-Ifake_libc_include')
+tree = parse_asts.ParseC(filename)
 
 #tree.show(attrnames=True, showcoord=True)
 PrintTree(tree)

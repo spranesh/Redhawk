@@ -30,7 +30,9 @@ import redhawk.python.python_tree_converter as P
 import util
 
 import pycparser
+
 import ast
+import os.path
 
 def GetLAst(filename, language=None):
   """ Parse the file using the respective parser, and return the Language
@@ -68,9 +70,15 @@ def ParseFile(filename, language=None):
 
 
 def ParseC(filename):
-  """ Parse a C file using pycparser and return the C AST."""
+  """ Parse a C file by running it through the preprocessor, and pycparser and
+  return the C AST."""
+  fake_libc_dir = os.path.join(os.path.dirname(__file__), "fake_libc_include")
+
   try:
-    tree = pycparser.parse_file(filename, use_cpp = True)
+    tree = pycparser.parse_file(filename,
+        use_cpp = True,
+        cpp_path='cpp',
+        cpp_args='-I%s/'%fake_libc_dir)
   except StandardError, e:
     util.ExitWithError(str(e))
   return tree
