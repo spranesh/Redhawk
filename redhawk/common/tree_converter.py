@@ -12,11 +12,11 @@ class TreeConverter:
     raise NotImplementedError("Convert%s not implemented."%(tree.__class__.__name__.capitalize()))
 
 
-  def __AttachParents(self, tree, parent = None):
+  def AttachParents(self, tree, parent = None):
     tree.SetParent(parent)
     for c in U.Flatten(tree.GetChildren()):
       if c is not None:
-        self.__AttachParents(c, tree)
+        self.AttachParents(c, tree)
     return
 
 
@@ -24,7 +24,7 @@ class TreeConverter:
     """ Calls ConvertTree, and attaches parent links using __AttachParents.
     This is the method to be called by outside methods, and functions."""
     l_ast = self.ConvertTree(tree)
-    self.__AttachParents(l_ast)
+    self.AttachParents(l_ast)
     return l_ast
 
 

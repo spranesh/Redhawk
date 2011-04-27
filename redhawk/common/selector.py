@@ -6,7 +6,7 @@ some constraints. Selector functions have the type
     selector :: tree -> Bool
 
 Three types of selector functions are commonly required, and hence have easy
-methods to create them (via the Selector (S) function).
+methods to create them (via the Selector function).
 
   1. Those that select depending on the type of the node.
   2. Those that select depending on the attributes of the node.
@@ -25,7 +25,7 @@ combinators (http://www.w3.org/TR/css3-selectors/#combinators):
         * s1 selects the node
         * s2 selects a child of the node.
 
-  4. HasDescendent(s1, s2) returns a selector that selects a node, n, only if
+  4. HasDescendant(s1, s2) returns a selector that selects a node, n, only if
         * s1 selects the node
         * s2 selects some descendant of the node.
 
@@ -38,8 +38,11 @@ combinators (http://www.w3.org/TR/css3-selectors/#combinators):
         * s2 selects some ancestor of the node, n.
 
 
-Selectors are evaluted by calling RunSelector (R) with the selector and the
+Selectors are evaluted by calling RunSelector with the selector and the
 tree.
+
+The `S` class can also be used to create and combine selectors. This is the
+method currently recommended.
 
 Note that combining selectors is rather inefficient right now. This will be
 fixed in the future.
@@ -64,8 +67,8 @@ def Selector(node_type = None
             ,**attrs):
   """ Return a selector function that selects based on the criteria passed.
   
-  * node_type accepts a string, or a class, and checks if the node type matches.
-  * function accepts a boolean function, and selects if function(node) is true.
+  * node_type takes a string, or a class, and checks if the node type matches.
+  * function takes a boolean function, and selects if function(node) is true.
   * attrs is used to match the attributes of the node at hand.
 
   If match_only_common_attributes is True, we match only the common attributes
@@ -80,9 +83,13 @@ def Selector(node_type = None
   a node to be selected."""
 
   def MatchNodes(node):
-    match = (node_type == None
-            or node_type == node.GetName()
-            or node_type == type(node))
+    if node_type:
+      if type(node_type) is str:
+        match = node_type == node.GetName()
+      else:
+        match = isinstance(node, node_type)
+    else:
+      match = True
 
     if not match: return False
 
@@ -109,11 +116,6 @@ def Selector(node_type = None
 
   return MatchNodes
 
-# For shorthand
-S = Selector    
-R = RunSelector 
-
-
 
 def And(s1, s2):
   """ And(s1, s2) returns a new selector that selects a node only if BOTH
@@ -136,14 +138,14 @@ def HasChild(s1, s2):
       return False
 
     for child in U.Flatten(x.GetChildren()):
-      if s2(x):
+      if s2(child):
         return True
     return False
   return MatchNode
 
 
-def HasDescendent(s1, s2):
-  """ HasDescendent(s1, s2) returns a selector that selects a node, n, only if
+def HasDescendant(s1, s2):
+  """ HasDescendant(s1, s2) returns a selector that selects a node, n, only if
         * s1 selects the node
         * s2 selects some descendant of the node."""
   def MatchNode(x):
@@ -189,3 +191,118 @@ def HasAncestor(s1, s2):
 
     return False
   return MatchNode
+
+
+
+# Shorthand use of the selector API.
+class S:
+  """ If this shorthand API is used, it must be used consistently. All
+  arguments must be objects of this class.
+
+  """
+
+  def __init__(self
+              ,selector_function = None
+              ,node_type = None
+              ,function = None
+              ,attr_matcher = None
+              ,match_only_common_attributes = False
+              ,**attrs):
+    """ Create a selector object.
+
+    * selector_function, if not None, indicates that the function being passed
+      in is already a selector (created using the Selector function). All other
+      parameters are ignored.
+
+    * node_type takes a string, or a class, and checks if the node type matches.
+    * function takes a boolean function, and selects if function(node) is true.
+    * attrs is used to match the attributes of the node at hand.
+    
+    For more help, see the Selector function in this module."""
+
+    if selector_function:
+      self.selector = selector_function
+    else:
+      self.selector = Selector(node_type = node_type
+                              ,function = function
+                              ,attr_matcher = attr_matcher
+                              ,match_only_common_attributes = match_only_common_attributes
+                              **attrs)
+    return
+
+
+  def __lshift__(self, selector):
+    """ A << B is A.HasAncestor(B)"""
+    return self.HasAncestor(selector)
+
+
+  def __rshift__(self, selector):
+    """ A >> B is A.HasDescendant(B) """
+    return self.HasDescendant(selector)
+
+
+  def __call__(self, tree):
+    """ Calls RunSelector on the tree with the given selector."""
+    return RunSelector(self.selector, tree)
+
+
+  def __GetSelectorFunction(self, selector_or_selector_object):
+    """ Get the selector function from a variable which may either be a
+    selector or a selector object."""
+    if isinstance(selector_or_selector_object, S):
+      return selector_or_selector_object.selector
+    else:
+      return selector_or_selector_object
+
+
+  def HasChild(self, selector):
+    """ Returns a NEW selector that requires the current selector be valid,
+    and `selector` to be valid on one of its children.
+
+    See the HasChild function in the module for more help."""
+    return S(HasChild(self.selector
+                     ,self.__GetSelectorFunction(selector)))
+
+
+  def HasDescendant(self, selector):
+    """ Returns a NEW selector that requires the current selector be valid,
+    and the `selector` to be valid on one of its parents.
+
+    See the HasDescendant function in the module for more help."""
+    return S(HasDescendant(self.selector
+                      ,self.__GetSelectorFunction(selector)))
+
+
+  def HasParent(self, selector):
+    """ Returns a NEW selector that requires the current selector be valid,
+    and the `selector` to be valid on one of its parents.
+
+    See the HasParent function in the module for more help."""
+    return S(HasParent(self.selector
+                      ,self.__GetSelectorFunction(selector)))
+              
+
+  def HasAncestor(self, selector):
+    """ Returns a NEW selector that requires the current selector be valid,
+    and the `selector` to be valid on one of its ancestors.
+
+    See the HasAncestor function in the module for more help."""
+    return S(HasAncestor(self.selector
+                        ,self.__GetSelectorFunction(selector)))
+
+  def And(self, selector):
+    """ Returns a NEW selector that requires the current selector be valid,
+    and the `selector` also to be valid.
+
+    See the And function in the module for more help."""
+    return S(And(self.selector
+                ,self.__GetSelectorFunction(selector)))
+
+
+  def Or(self, selector):
+    """ Returns a NEW selector that requires the current selector be valid,
+    or the `selector` to be valid.
+
+    See the Or function in the module for more help."""
+    return S(Or(self.selector
+               ,self.__GetSelectorFunction(selector)))

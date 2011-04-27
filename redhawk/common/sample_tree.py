@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import node as N
+import tree_converter as T
 
 
 """
@@ -25,7 +26,7 @@ When printed it represents:
       (compound 
         (compound 
           (return 
-            (constant ))))
+            (constant 1))))
       (compound 
         (compound 
           (return 
@@ -44,7 +45,7 @@ if_true = N.Compound(
         position = None,
         return_expression = N.Constant(
           position = None,
-          value = 1))])
+          value = '1'))])
 
 fact_arguments = N.FunctionArguments(
     position = None,
@@ -113,6 +114,8 @@ factorial_tree = N.DefineFunction(
           position = None,
           compound_items = [ifelse]))
 
+
+T.TreeConverter().AttachParents(factorial_tree)
 tree = factorial_tree
 
 if __name__ == '__main__':
