@@ -465,3 +465,13 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.While(position = self.gc.GC(tree),
                    condition = self.ConvertTree(tree.test),
                    body = map(self.ConvertTree, tree.body))
+
+ 
+  def ConvertBreak(self, tree):
+    """ Convert the Continue statement. (Duh?)"""
+    return N.Break(position = self.gc.GC(tree))
+
+
+  def ConvertContinue(self, tree):
+    """ Convert the Continue statement. (Like, Duh?)"""
+    return N.Continue(position = self.gc.GC(tree))
