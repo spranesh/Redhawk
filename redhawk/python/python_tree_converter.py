@@ -227,7 +227,28 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         operator = 'ATTRIBUTE_INDEX',
         children = [self.ConvertTree(tree.value)
                    ,N.ReferVariable(self.gc.GC(tree), tree.attr)])
- 
+
+
+  def ConvertSlice(self, tree):
+    """ Convert the Slice(expr? lower, expr? upper, expr? step) node."""
+    return N.Slice(position = None,
+                   lower = self.ConvertTree(tree.lower),
+                   upper = self.ConvertTree(tree.upper),
+                   step =  self.ConvertTree(tree.step))
+
+
+  def ConvertIndex(self, tree):
+    """ Convert the Index(expr value) node."""
+    return self.ConvertTree(tree.value)
+
+
+  def ConvertSubscript(self, tree):
+    """ Convert Subscript(expr value, slice slice, expr_context ctx) node."""
+    return N.Expression(position = self.gc.GC(tree),
+        operator = 'INDEX_INTO',
+        children = [self.ConvertTree(tree.value),
+                    self.ConvertTree(tree.slice)])
+
 
   def ConvertIf(self, tree):
     """ Convert the If(expr test, expr body, expr orelse) node."""
@@ -482,3 +503,18 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.Assert(position = self.gc.GC(tree),
                     test_expression = self.ConvertTree(tree.test),
                     message = self.ConvertTree(tree.msg))
+
+
+  def ConvertDelete(self, tree):
+    """ Convert the Delete(expr* targets) statement."""
+    return N.Delete(position = self.gc.GC(tree),
+                    targets = map(self.ConvertTree, tree.targets))
+
+  def ConvertPrint(self, tree):
+    """ Convert the Print(expr? dest, expr* values, bool nl)
+      statement.
+    """
+    # TODO(spranesh): We currently ignore nl
+    return N.Print(position = self.gc.GC(tree),
+                   values = map(self.ConvertTree, tree.values),
+                   stream = self.ConvertTree(tree.dest))

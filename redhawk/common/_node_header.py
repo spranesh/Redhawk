@@ -59,7 +59,7 @@ ALLOWED_OPERATORS = {
     ,'TYPE_CAST'           : ('cast', 2)
 
     # An Indexing operator (dictionaries and lists)
-    ,'INDEX_INTO'          : ('index_into', 2)
+    ,'INDEX_INTO'          : ('index-into', 2)
 }
 
 

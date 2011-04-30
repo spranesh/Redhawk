@@ -322,5 +322,11 @@ Print:
   docstring: "The Print statement."
   args: position, values
   optargs: stream
-  children: values, dest
+  children: values, stream
   sexp: ["print", values, [_stream, stream]]
+
+Slice:
+  docstring: "A slice node."
+  args: position 
+  optargs: lower, upper, step
+  sexp: ["slice", [_lower, lower], [_upper, upper], [_step, step]]

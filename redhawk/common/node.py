@@ -59,7 +59,7 @@ ALLOWED_OPERATORS = {
     ,'TYPE_CAST'           : ('cast', 2)
 
     # An Indexing operator (dictionaries and lists)
-    ,'INDEX_INTO'          : ('index_into', 2)
+    ,'INDEX_INTO'          : ('index-into', 2)
 }
 
 
@@ -939,7 +939,7 @@ class Print(Node):
   def GetChildren(self):
     li = []
     li.append(self.values)
-    li.append('dest')
+    li.append(self.stream)
     return li
 
   def GetSExp(self):
@@ -1000,6 +1000,28 @@ class Return(Node):
     li = []
     li.append('return')
     li.append(self.return_expression)
+    return li
+
+
+
+class Slice(Node):
+  """A slice node."""
+  def __init__(self, position, lower = None, upper = None, step = None):
+    self.position = position
+    self.lower = lower
+    self.upper = upper
+    self.step = step
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('slice')
+    if self.lower:
+      li.append([':lower', self.lower])
+    if self.upper:
+      li.append([':upper', self.upper])
+    if self.step:
+      li.append([':step', self.step])
     return li
 
 

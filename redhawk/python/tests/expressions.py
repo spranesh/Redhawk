@@ -34,3 +34,8 @@ x if condition else y
 lambda x: 2*x
 lambda (x, y): x + y
 lambda x, *y: y
+li[0]
+li[-1]
+li[1:3]
+li[:]
+li[1:3:5]

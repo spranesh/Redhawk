@@ -16,7 +16,11 @@ class TreeConverter:
     tree.SetParent(parent)
     for c in U.Flatten(tree.GetChildren()):
       if c is not None:
-        self.AttachParents(c, tree)
+        try:
+          self.AttachParents(c, tree)
+        except AttributeError, e:
+          print c, parent, tree
+          raise AttributeError(e)
     return
 
 
