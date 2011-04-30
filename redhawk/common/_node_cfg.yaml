@@ -83,7 +83,7 @@ DefineFunction:
 DefineClass:
   docstring: "A class definition Node."
   args: position, name, inherits, body
-  children: name, bases, body
+  children: inherits, body
   sexp: ["define-class", name, [_inherits, inherits], body]
 
 Compound:

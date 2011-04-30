@@ -399,8 +399,7 @@ class DefineClass(Node):
 
   def GetChildren(self):
     li = []
-    li.append(self.name)
-    li.append('bases')
+    li.append(self.inherits)
     li.append(self.body)
     return li
 

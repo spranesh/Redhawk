@@ -410,14 +410,18 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                             name = tree.name,
                             arguments = argument_node,
                             body = body_node)
-    
-    # Encapsulate in decorators
-    current = f
-    for d in tree.decorator_list[::-1]:
-      current = N.FunctionDecorator(position = self.gc.GC(d),
+
+
+    return self.__EncapsulateNodeInDecorators(f, tree.decorator_list[::-1])
+
+
+  def __EncapsulateNodeInDecorators(self, node, decorator_list):
+    """ Encapsulate `node` in decorators from `decorator_list`"""
+    for d in decorator_list[::-1]:
+      node = N.FunctionDecorator(position = self.gc.GC(d),
                                     decorator = self.ConvertTree(d),
-                                    function = current)
-    return current
+                                    function = node)
+    return node
       
 
   def ConvertCall(self, tree):
@@ -572,3 +576,15 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.Let(position = self.gc.GC(tree),
                  defvars = defvars, 
                  body = self.ConvertCompound(tree.body))
+
+  def ConvertClassdef(self, tree):
+    """ Convert the 
+      ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+    node."""
+
+    c = N.DefineClass(position = self.gc.GC(tree),
+                      name = tree.name,
+                      inherits = map(self.ConvertTree, tree.bases),
+                      body = map(self.ConvertTree, tree.body))
+    
+    return self.__EncapsulateNodeInDecorators(c, tree.decorator_list[::-1])
