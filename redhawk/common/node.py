@@ -260,32 +260,6 @@ class CaseDefault(ControlFlowStatement):
 
 
 
-class Catch(ExceptionsStatement):
-  """Catch an exception."""
-  def __init__(self, position, body, exception_handlers, orelse):
-    self.position = position
-    self.body = body
-    self.exception_handlers = exception_handlers
-    self.orelse = orelse
-    return
-
-  def GetChildren(self):
-    li = []
-    li.append(self.body)
-    li.append(self.exception_handlers)
-    li.append(self.orelse)
-    return li
-
-  def GetSExp(self):
-    li = []
-    li.append('catch-exception')
-    li.append(self.body)
-    li.append(self.exception_handlers)
-    li.append(self.orelse)
-    return li
-
-
-
 class Compound(Node):
   """A compond list of items"""
   def __init__(self, position, compound_items):
@@ -558,6 +532,34 @@ class Enumerator(Node):
     li.append('define-enumerator')
     li.append(self.name)
     li.append(self.values)
+    return li
+
+
+
+class ExceptionHandler(ExceptionsStatement):
+  """An exception handler block"""
+  def __init__(self, position, body, name = None, type = None):
+    self.position = position
+    self.body = body
+    self.name = name
+    self.type = type
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.name)
+    li.append(self.type)
+    li.append(self.body)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('exception-handler')
+    if self.name:
+      li.append([':name', self.name])
+    if self.type:
+      li.append([':type', self.type])
+    li.append(self.body)
     return li
 
 
@@ -1013,6 +1015,13 @@ class Slice(Node):
     self.step = step
     return
 
+  def GetChildren(self):
+    li = []
+    li.append(self.lower)
+    li.append(self.upper)
+    li.append(self.step)
+    return li
+
   def GetSExp(self):
     li = []
     li.append('slice')
@@ -1093,6 +1102,34 @@ class Switch(ControlFlowStatement):
     li.append('switch')
     li.append(self.switch_on)
     li.append(self.body)
+    return li
+
+
+
+class TryCatch(ExceptionsStatement):
+  """A Try-Catch block."""
+  def __init__(self, position, body, exception_handlers, orelse):
+    self.position = position
+    self.body = body
+    self.exception_handlers = exception_handlers
+    self.orelse = orelse
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.body)
+    li.append(self.exception_handlers)
+    li.append(self.orelse)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('catch-exception')
+    li.append(self.body)
+    if self.exception_handlers:
+      li.append([':exception_handlers', self.exception_handlers])
+    if self.orelse:
+      li.append([':orelse', self.orelse])
     return li
 
 

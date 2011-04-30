@@ -523,3 +523,33 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.Print(position = self.gc.GC(tree),
                    values = map(self.ConvertTree, tree.values),
                    stream = self.ConvertTree(tree.dest))
+
+
+  def ConvertRaise(self, tree):
+    """ Convert the Raise(expr? type, expr? inst, expr? tback)"""
+    #TODO(spranesh): We currently ignore inst, and tback
+    return N.Raise(position = self.gc.GC(tree),
+                   exception_type = self.ConvertTree(tree.type))
+
+
+  def ConvertExcepthandler(self, tree):
+    """ Convert the ExceptHandler(expr? type, expr? name, stmt* body) node."""
+    return N.ExceptionHandler(position = self.gc.GC(tree),
+                              body = map(self.ConvertTree, tree.body),
+                              name = self.ConvertTree(tree.name),
+                              type = self.ConvertTree(tree.type))
+
+
+  def ConvertTryexcept(self, tree):
+    """ Convert the 
+    TryExcept(stmt* body, excepthandler* handlers, stmt* orelse)
+    node. """
+    return N.TryCatch(position = self.gc.GC(tree),
+                      body = map(self.ConvertTree, tree.body),
+                      exception_handlers = map(self.ConvertTree, tree.handlers),
+                      orelse = map(self.ConvertTree, tree.orelse))
+
+
+  def ConvertTryFinally(self, tree):
+    """ Convert the | TryFinally(stmt* body, stmt* finalbody) node."""
+    pass

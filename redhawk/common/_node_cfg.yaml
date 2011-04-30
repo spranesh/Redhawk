@@ -298,12 +298,20 @@ Raise:
   sexp: ["raise-exception", exception_type]
   children: exception_type
 
-Catch:
-  docstring: "Catch an exception."
+TryCatch:
+  docstring: "A Try-Catch block."
   super: ExceptionsStatement
   args: position, body, exception_handlers, orelse
-  sexp: ["catch-exception", body, exception_handlers, orelse]
+  sexp: ["catch-exception", body, [_exception_handlers, exception_handlers], [_orelse, orelse]]
   children: body, exception_handlers, orelse
+
+ExceptionHandler:
+  docstring: "An exception handler block"
+  super: ExceptionsStatement
+  args: position, body
+  optargs: name, type
+  sexp: ["exception-handler", [_name, name], [_type, type], body]
+  children: name, type, body
 
 Finally:
   docstring: "Final part of an exception try-catch."
@@ -330,3 +338,4 @@ Slice:
   args: position 
   optargs: lower, upper, step
   sexp: ["slice", [_lower, lower], [_upper, upper], [_step, step]]
+  children: lower, upper, step
