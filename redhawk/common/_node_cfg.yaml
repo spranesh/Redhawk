@@ -118,6 +118,7 @@ Structure:
   children: '*members'
 
 IfElse:
+  super: ControlFlowStatement
   docstring: "An If Else Node."
   args: position, condition, if_true
   optargs: if_false
@@ -125,12 +126,20 @@ IfElse:
   children: condition, if_true, if_false
 
 For:
+  super: ControlFlowStatement
   docstring: "A For Loop."
   args: position, init, condition, step, body
   sexp: ["for", [init, condition, step], body]
   children: init, condition, step, body
 
+ForEach:
+  docstring: "The For Each statement."
+  args: target, expr iter, body
+  sexp: ["for-each", target, iter, body]
+  children: target, iter, body
+
 While:
+  super: ControlFlowStatement
   docstring: "Represents a While Loop."
   args: position, condition, body
   optargs: do_while
@@ -174,12 +183,6 @@ Enumerator:
   sexp: ["define-enumerator", name, values]
   children: '*values'
 
-Statement:
-  docstring: "An Miscellaneous Statement Node."
-  args: position, name, children
-  children: '*children'
-  sexp: ['`ALLOWED_STATEMENTS[self.name][0]`', '*children']
-
 Goto:
   docstring: "The Goto construct. Considered Harmful, yea?"
   args: position, location
@@ -218,10 +221,89 @@ FunctionDecorator:
   sexp: ["function-decorator", decorator, function]
   children: decorator, function
 
-
 Lambda:
   docstring: "A Lambda Function"
   args: position, arguments, value 
   sexp: ["lambda", arguments, value]
   children: arguments, value
 
+Break:
+  super: ControlFlowStatement
+  docstring: "The Break Statement."
+  args: position
+  sexp: ["break"]
+  children:
+
+Continue:
+  super: ControlFlowStatement
+  docstring: "The Continue Statement."
+  args: position
+  sexp: ["continue"]
+  children:
+
+Pass:
+  super: ControlFlowStatement
+  docstring: "The Pass Statement."
+  args: position
+  sexp: ["pass"]
+  children:
+
+Assert:
+  docstring: "The Assert statement."
+  args: position, assert_expr
+  optargs: assert_msg
+  sexp: ["assert", assert_expr, [_assert_msg, assert_msg]]
+  children: assert_expr, assert_msg
+
+ImportAlias:
+  docstring: "import aliases."
+  args: position, name, as_name
+  sexp: ["alias", name, as_name]
+  children:
+
+Import:
+  docstring: "The import construct. import module_name as as_name"
+  args: position, import_aliases
+  sexp: ["import", import_aliases]
+  children: '*import_aliases'
+
+ImportFrom:
+  super: Import
+  docstring: "The import from construct. from module_name import x,y,z"
+  args: position, module, import_aliases
+  sexp: ["from", module, "import", import_aliases]
+  children: '*import_aliases'
+
+Exec:
+  docstring: "The exec statement."
+  args: position, body
+  optargs: globals, locals
+  sexp: ["exec", body, [_globals, globals], [_locals, locals]]
+  children:
+
+Raise:
+  docstring: "Raise an Exception."
+  super: ExceptionsStatement
+  args: position, exception_type
+  sexp: ["raise-exception", exception_type]
+  children: exception_type
+
+Catch:
+  docstring: "Catch an exception."
+  super: ExceptionsStatement
+  args: position, body, exception_handlers, orelse
+  sexp: ["catch-exception", body, exception_handlers, orelse]
+  children: body, exception_handlers, orelse
+
+Finally:
+  docstring: "Final part of an exception try-catch."
+  super: ExceptionsStatement
+  args: position, body, final_body
+  sexp: ["finally", body, final_body]
+  children: body, final_body
+  
+Delete:
+  docstring: "The delete statement."
+  args: position, targets
+  sexp: ["delete", '*targets']
+  children: '*targets'

@@ -11,14 +11,15 @@ import redhawk.utils.util as U
 import copy
 import pprint
 
+# -1 means infinite number of operators possible
 # A dictionary of allowed operators, and their arity.
 ALLOWED_OPERATORS = {
      'UNARY_MINUS'         : ('-', 1)
     ,'UNARY_PLUS'          : ('+', 1)
     ,'SIZE_OR_LEN'         : ('size-or-len-of', 1)
 
-    ,'MULTIPLY'            : ('*', 2)
-    ,'ADD'                 : ('+', 2)
+    ,'MULTIPLY'            : ('*', -1)
+    ,'ADD'                 : ('+', -1)
     ,'MINUS'               : ('-', 2)
     ,'DIVIDE'              : ('/', 2)
     ,'FLOOR_DIVIDE'        : ('//', 2)
@@ -31,9 +32,8 @@ ALLOWED_OPERATORS = {
     ,'BITWISE_AND'         : ('bitwise-and', 2)
     ,'BITWISE_NOT'         : ('bitwise-not', 1)
 
-    # 0 means infinite number of operators possible
-    ,'BOOLEAN_AND'         : ('and', 0)
-    ,'BOOLEAN_OR'          : ('or',  0)
+    ,'BOOLEAN_AND'         : ('and', -1)
+    ,'BOOLEAN_OR'          : ('or',  -1)
     ,'BOOLEAN_NOT'         : ('not', 1)
     ,'EQ'                  : ('eq', 2)
     ,'NOT_EQ'              : ('not-eq', 2)
@@ -61,12 +61,6 @@ ALLOWED_OPERATORS = {
     # An Indexing operator (dictionaries and lists)
     ,'INDEX_INTO'          : ('index_into', 2)
 }
-
-ALLOWED_STATEMENTS = {
-     'CONTINUE'            : ('continue', 0)
-    ,'BREAK'               : ('break', 0)
-}
-
 
 
 def ExpandList(li, f):
@@ -149,4 +143,15 @@ class Node:
 
   def GetDotAttributes(self):
     return self.GetAttributes()
+
+
+class ControlFlowStatement(Node):
+  """A base class for Control Flow statements."""
+  def __init__(self):
+    raise NotImplementedError("Base Class ControlFlowStatement not implemented!")
+
+class ExceptionsStatement(Node):
+  """A base class for Exceptions Related statements."""
+  def __init__(self):
+    raise NotImplementedError("Base Class ExceptionsStatement not implemented!")
 

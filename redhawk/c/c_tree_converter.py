@@ -348,14 +348,10 @@ class CTreeConverter(tree_converter.TreeConverter):
         value = self.ConvertTree(tree.value))
 
   def ConvertContinue(self, tree):
-    return N.Statement(position = GetCoords(tree),
-        name = 'CONTINUE',
-        children = [])
+    return N.Continue(position = GetCoords(tree))
 
   def ConvertBreak(self, tree):
-    return N.Statement(position = GetCoords(tree),
-        name = 'BREAK',
-        children = [])
+    return N.Break(position = GetCoords(tree))
 
   def ConvertGoto(self, tree):
     return N.Goto(position = GetCoords(tree),
