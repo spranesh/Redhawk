@@ -498,6 +498,11 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.Continue(position = self.gc.GC(tree))
 
 
+  def ConvertPass(self, tree):
+    """ Convert the Pass statement. (Like, Duh-uh?)"""
+    return N.Pass(position = self.gc.GC(tree))
+
+
   def ConvertAssert(self, tree):
     """ Convert Assert(expr test, expr? msg) """
     return N.Assert(position = self.gc.GC(tree),

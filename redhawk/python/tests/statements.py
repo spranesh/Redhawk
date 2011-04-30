@@ -12,3 +12,4 @@ del li[2]
 print a
 print a, b, c
 print>>sys.stderr, a, b, c
+def f(a): pass
