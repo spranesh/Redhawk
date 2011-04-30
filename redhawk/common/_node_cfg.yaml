@@ -339,3 +339,9 @@ Slice:
   optargs: lower, upper, step
   sexp: ["slice", [_lower, lower], [_upper, upper], [_step, step]]
   children: lower, upper, step
+
+Let:
+  docstring: "A Let binding."
+  args: position, defvars, body
+  sexp: ["with", defvars, body]
+  children: defvars, body

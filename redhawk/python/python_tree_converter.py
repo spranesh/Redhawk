@@ -440,7 +440,8 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                                         name = k.arg,
                                         init = self.ConvertTree(k.value)))
 
-    argument_node = N.FunctionArguments(position = self.gc.GC(tree.args[0]),
+
+    argument_node = N.FunctionArguments(position = self.gc.GC(tree.args[0]) if len(tree.args) > 0 else None,
                                         arguments = arguments,
                                         var_arguments = self.ConvertTree(tree.starargs),
                                         kwd_arguments = self.ConvertTree(tree.kwargs))
@@ -557,3 +558,17 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.Finally(position = self.gc.GC(tree),
                      body = self.ConvertCompound(tree.body),
                      final_body = self.ConvertCompound(tree.finalbody))
+
+
+  def ConvertWith(self, tree):
+    """ Convert With(expr context_expr, expr? optional_vars, stmt* body) node."""
+    assign_node = ast.Assign(
+        [tree.optional_vars],
+        tree.context_expr,
+        lineno = tree.lineno,
+        col_offset = tree.col_offset)
+
+    defvars = [self.ConvertTree(assign_node)]
+    return N.Let(position = self.gc.GC(tree),
+                 defvars = defvars, 
+                 body = self.ConvertCompound(tree.body))

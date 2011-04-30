@@ -621,8 +621,10 @@ class Finally(ExceptionsStatement):
   def GetSExp(self):
     li = []
     li.append('finally')
-    li.append(self.body)
-    li.append(self.final_body)
+    if self.body:
+      li.append([':body', self.body])
+    if self.final_body:
+      li.append([':final_body', self.final_body])
     return li
 
 
@@ -872,6 +874,29 @@ class Lambda(Node):
     li.append('lambda')
     li.append(self.arguments)
     li.append(self.value)
+    return li
+
+
+
+class Let(Node):
+  """A Let binding."""
+  def __init__(self, position, defvars, body):
+    self.position = position
+    self.defvars = defvars
+    self.body = body
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.defvars)
+    li.append(self.body)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('with')
+    li.append(self.defvars)
+    li.append(self.body)
     return li
 
 
