@@ -269,6 +269,8 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertCompound(self, li):
     """ Convert a list of statements into a compound node. """
     assert(type(li) == list)
+    if len(li) == 0:
+      return None
 
     return N.Compound(position = self.gc.GC(li[0]),
         compound_items = map(self.ConvertTree, li))
@@ -475,7 +477,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.ForEach(position = self.gc.GC(tree),
                      target = define_target_node,
                      iter_expression = self.ConvertTree(tree.iter),
-                     body = map(self.ConvertTree, tree.body))
+                     body = self.ConvertCompound(tree.body))
 
   def ConvertWhile(self, tree):
     """ Convert
@@ -485,7 +487,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     into the While node."""
     return N.While(position = self.gc.GC(tree),
                    condition = self.ConvertTree(tree.test),
-                   body = map(self.ConvertTree, tree.body))
+                   body = self.ConvertCompound(tree.body))
 
  
   def ConvertBreak(self, tree):
@@ -535,7 +537,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertExcepthandler(self, tree):
     """ Convert the ExceptHandler(expr? type, expr? name, stmt* body) node."""
     return N.ExceptionHandler(position = self.gc.GC(tree),
-                              body = map(self.ConvertTree, tree.body),
+                              body = self.ConvertCompound(tree.body),
                               name = self.ConvertTree(tree.name),
                               type = self.ConvertTree(tree.type))
 
@@ -545,11 +547,13 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     TryExcept(stmt* body, excepthandler* handlers, stmt* orelse)
     node. """
     return N.TryCatch(position = self.gc.GC(tree),
-                      body = map(self.ConvertTree, tree.body),
+                      body = self.ConvertCompound(tree.body),
                       exception_handlers = map(self.ConvertTree, tree.handlers),
-                      orelse = map(self.ConvertTree, tree.orelse))
+                      orelse = self.ConvertCompound(tree.orelse))
 
 
-  def ConvertTryFinally(self, tree):
+  def ConvertTryfinally(self, tree):
     """ Convert the | TryFinally(stmt* body, stmt* finalbody) node."""
-    pass
+    return N.Finally(position = self.gc.GC(tree),
+                     body = self.ConvertCompound(tree.body),
+                     final_body = self.ConvertCompound(tree.finalbody))

@@ -317,7 +317,7 @@ Finally:
   docstring: "Final part of an exception try-catch."
   super: ExceptionsStatement
   args: position, body, final_body
-  sexp: ["finally", body, final_body]
+  sexp: ["finally", [_body, body], [_final_body, final_body]]
   children: body, final_body
   
 Delete:

@@ -12,3 +12,5 @@ except IndexError, e:
   x = 0
   y = 0
   z = 0
+finally:
+  print x, y, z
