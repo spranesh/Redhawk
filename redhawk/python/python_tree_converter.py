@@ -607,3 +607,8 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.ImportFrom(position = self.gc.GC(tree),
                         module = tree.module,
                         import_aliases = map(self.ConvertAlias, tree.names))
+
+  def ConvertGlobal(self, tree):
+    return N.ContextVariables(position = self.gc.GC(tree),
+                     names = tree.names,
+                     context = 'globals')

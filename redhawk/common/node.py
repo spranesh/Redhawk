@@ -321,6 +321,23 @@ class Constant(Node):
 
 
 
+class ContextVariables(Node):
+  """Variables in a Context: scope, globals, etc.."""
+  def __init__(self, position, names, context):
+    self.position = position
+    self.names = names
+    self.context = context
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append(self.context)
+    li.append('scope')
+    li.append(self.names)
+    return li
+
+
+
 class Continue(ControlFlowStatement):
   """The Continue Statement."""
   def __init__(self, position):

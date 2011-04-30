@@ -346,3 +346,9 @@ Let:
   args: position, defvars, body
   sexp: ["with", defvars, body]
   children: defvars, body
+
+ContextVariables:
+  docstring: "Variables in a Context: scope, globals, etc.."
+  args: position, names, context
+  sexp: [context, "scope", names]
+  children:
