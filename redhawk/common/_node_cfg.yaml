@@ -80,6 +80,12 @@ DefineFunction:
   children: arguments, body
   sexp: ["define-function", name, arguments, body, [_return_type, return_type], [_quals, quals], [_storage, storage]]
 
+DefineClass:
+  docstring: "A class definition Node."
+  args: position, name, inherits, body
+  children: name, bases, body
+  sexp: ["define-class", name, [_inherits, inherits], body]
+
 Compound:
   docstring: "A compond list of items"
   args: position, compound_items
@@ -133,10 +139,11 @@ For:
   children: init, condition, step, body
 
 ForEach:
+  super: ControlFlowStatement
   docstring: "The For Each statement."
-  args: target, expr iter, body
-  sexp: ["for-each", target, iter, body]
-  children: target, iter, body
+  args: position, target, iter_expression, body
+  sexp: ["for-each", target, iter_expression, body]
+  children: target, iter_expression, body
 
 While:
   super: ControlFlowStatement
@@ -147,12 +154,14 @@ While:
   children: condition, body
 
 Switch:
+  super: ControlFlowStatement
   docstring: "A Swith Case Statement"
   args: position, switch_on, body
   sexp: ["switch", switch_on, body]
   children: switch_on, body
 
 CaseDefault:
+  super: ControlFlowStatement
   docstring: "A case or default statement."
   args: position
   optargs: condition
@@ -184,6 +193,7 @@ Enumerator:
   children: '*values'
 
 Goto:
+  super: ControlFlowStatement
   docstring: "The Goto construct. Considered Harmful, yea?"
   args: position, location
   children:
@@ -307,3 +317,10 @@ Delete:
   args: position, targets
   sexp: ["delete", '*targets']
   children: '*targets'
+
+Print:
+  docstring: "The Print statement."
+  args: position, values
+  optargs: stream
+  children: values, dest
+  sexp: ["print", values, [_stream, stream]]

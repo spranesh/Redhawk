@@ -440,3 +440,28 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                     arguments = argument_node,
                     value = self.ConvertTree(tree.body))
 
+  def ConvertFor(self, tree):
+    """ Convert 
+
+    For(expr target, expr iter, stmt* body, stmt* orelse)
+
+    into the ForEach L-ASt node."""
+
+    # TODO(spranesh): The target must be a DefineVariable rather than a ReferVariable.
+    # So give it a context of Param(). (ConvertName will handle the rest).
+    define_target_node = self.ConvertTree(tree.target)
+
+    return N.ForEach(position = self.gc.GC(tree),
+                     target = define_target_node,
+                     iter_expression = self.ConvertTree(tree.iter),
+                     body = map(self.ConvertTree, tree.body))
+
+  def ConvertWhile(self, tree):
+    """ Convert
+
+      While(expr test, stmt* body, stmt* orelse)
+
+    into the While node."""
+    return N.While(position = self.gc.GC(tree),
+                   condition = self.ConvertTree(tree.test),
+                   body = map(self.ConvertTree, tree.body))
