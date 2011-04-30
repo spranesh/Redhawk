@@ -475,3 +475,10 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertContinue(self, tree):
     """ Convert the Continue statement. (Like, Duh?)"""
     return N.Continue(position = self.gc.GC(tree))
+
+
+  def ConvertAssert(self, tree):
+    """ Convert Assert(expr test, expr? msg) """
+    return N.Assert(position = self.gc.GC(tree),
+                    test_expression = self.ConvertTree(tree.test),
+                    message = self.ConvertTree(tree.msg))

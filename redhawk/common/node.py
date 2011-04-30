@@ -158,24 +158,24 @@ class ExceptionsStatement(Node):
 
 class Assert(Node):
   """The Assert statement."""
-  def __init__(self, position, assert_expr, assert_msg = None):
+  def __init__(self, position, test_expression, message = None):
     self.position = position
-    self.assert_expr = assert_expr
-    self.assert_msg = assert_msg
+    self.test_expression = test_expression
+    self.message = message
     return
 
   def GetChildren(self):
     li = []
-    li.append(self.assert_expr)
-    li.append(self.assert_msg)
+    li.append(self.test_expression)
+    li.append(self.message)
     return li
 
   def GetSExp(self):
     li = []
     li.append('assert')
-    li.append(self.assert_expr)
-    if self.assert_msg:
-      li.append([':assert_msg', self.assert_msg])
+    li.append(self.test_expression)
+    if self.message:
+      li.append([':message', self.message])
     return li
 
 

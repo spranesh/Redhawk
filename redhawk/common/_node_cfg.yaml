@@ -260,10 +260,10 @@ Pass:
 
 Assert:
   docstring: "The Assert statement."
-  args: position, assert_expr
-  optargs: assert_msg
-  sexp: ["assert", assert_expr, [_assert_msg, assert_msg]]
-  children: assert_expr, assert_msg
+  args: position, test_expression
+  optargs: message
+  sexp: ["assert", test_expression, [_message, message]]
+  children: test_expression, message
 
 ImportAlias:
   docstring: "import aliases."
