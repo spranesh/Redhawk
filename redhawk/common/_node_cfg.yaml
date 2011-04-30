@@ -265,10 +265,11 @@ Assert:
   sexp: ["assert", test_expression, [_message, message]]
   children: test_expression, message
 
-ImportAlias:
-  docstring: "import aliases."
-  args: position, name, as_name
-  sexp: ["alias", name, as_name]
+ModuleAlias:
+  docstring: "Import Aliases."
+  args: position, name
+  optargs: asmodule
+  sexp: ["module-alias", name, [_asmodule, asmodule]]
   children:
 
 Import:

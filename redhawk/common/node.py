@@ -816,23 +816,6 @@ class Import(Node):
 
 
 
-class ImportAlias(Node):
-  """import aliases."""
-  def __init__(self, position, name, as_name):
-    self.position = position
-    self.name = name
-    self.as_name = as_name
-    return
-
-  def GetSExp(self):
-    li = []
-    li.append('alias')
-    li.append(self.name)
-    li.append(self.as_name)
-    return li
-
-
-
 class ImportFrom(Import):
   """The import from construct. from module_name import x,y,z"""
   def __init__(self, position, module, import_aliases):
@@ -938,6 +921,24 @@ class Module(Node):
     d['tags'].append('define-module')
     d[filename] = self.filename
     return (self.__class__.__name__, d)
+
+
+
+class ModuleAlias(Node):
+  """Import Aliases."""
+  def __init__(self, position, name, asmodule = None):
+    self.position = position
+    self.name = name
+    self.asmodule = asmodule
+    return
+
+  def GetSExp(self):
+    li = []
+    li.append('module-alias')
+    li.append(self.name)
+    if self.asmodule:
+      li.append([':asmodule', self.asmodule])
+    return li
 
 
 

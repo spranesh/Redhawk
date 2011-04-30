@@ -588,3 +588,22 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                       body = map(self.ConvertTree, tree.body))
     
     return self.__EncapsulateNodeInDecorators(c, tree.decorator_list[::-1])
+
+  def ConvertAlias(self, tree):
+    """ Convert alias = (identifier name, identifier? asname)"""
+    return N.ModuleAlias(position = None, 
+                         name = tree.name, 
+                         asmodule = tree.asname)
+
+  def ConvertImport(self, tree):
+    """ Convert Import(alias* names) node."""
+    return N.Import(position = self.gc.GC(tree),
+                    import_aliases = map(self.ConvertAlias, tree.names))
+
+  def ConvertImportfrom(self, tree):
+    """ Convert the 
+      ImportFrom(identifier? module, alias* names, int? level)
+    node."""
+    return N.ImportFrom(position = self.gc.GC(tree),
+                        module = tree.module,
+                        import_aliases = map(self.ConvertAlias, tree.names))
