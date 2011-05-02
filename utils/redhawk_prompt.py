@@ -2,6 +2,7 @@
 import redhawk.common.selector as S
 import redhawk.common.position as P
 import redhawk.common.writers.dot_writer as D
+import redhawk.common.writers.xml_writer as X
 import redhawk.utils.get_ast as G
 import redhawk.utils.util as U
 
@@ -84,6 +85,7 @@ Built in Functions:
 Built in Modules:
     S - redhawk.common.selector 
     P - redhawk.common.position 
+    X - redhawk.common.writers.xml_writer
 
 To view this again, use the Help function.  """
 
@@ -102,7 +104,8 @@ def EnterShell(trees):
       'ShowAST':ShowAST,
       'S':S,
       'P':P,
-      't': trees[0]}
+      't': trees[0],
+      'X': X}
   U.StartShell(local_vars, banner=Help(display=False))
 
 

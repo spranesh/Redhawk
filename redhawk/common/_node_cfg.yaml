@@ -24,7 +24,6 @@ Module:
   args: filename, children
   children: '*children'
   sexp: ["define-module", filename, children]
-  xml: ["define-module", filename]
 
 Constant:
   docstring: "Represents A Constant."

@@ -178,12 +178,12 @@ def WriteAttributeMethod(c, name, li, args):
   WriteMethodDeclaration(c, name, [], [])
   c.Indent()
   c.WriteLine("d = {}")
-  c.WriteLine("d['tags'] = []")
+  # c.WriteLine("d['tags'] = []")
   for x in li:
     if x in args:
       c.WriteLine("d[%s] = self.%s"%(x, x))
-    else:
-      c.WriteLine("d['tags'].append('%s')"%(x))
+    # else:
+    #   c.WriteLine("d['tags'].append('%s')"%(x))
   c.WriteLine("return (self.__class__.__name__, d)")
   c.Dedent()
   c.NewLine()

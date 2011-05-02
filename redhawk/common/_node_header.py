@@ -123,7 +123,7 @@ class Node:
     pair - (class-name, dictionary-of-attributes). """
     #TODO(spranesh): Any extra attributes we are missing?
     d = {}
-    d['tags'] = []
+    # d['tags'] = []
     for x in dir(self):
       if 'a' <= x[0] <= 'z':
         d[x] = getattr(self, x)
