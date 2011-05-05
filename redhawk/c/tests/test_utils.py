@@ -3,8 +3,6 @@
 import redhawk.c.c_tree_converter as C
 import redhawk.utils.get_ast as G
 
-import pycparser
-
 import sys
 
 RELATIVE_TEST_PATH = "c/tests/c_files/"

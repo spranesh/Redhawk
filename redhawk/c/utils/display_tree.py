@@ -56,7 +56,6 @@ except IndexError, e:
   sys.stderr.write("No C file specified to parse.\n")
   sys.exit(1)
 
-#tree = pycparser.parse_file(filename)
 tree = parse_asts.ParseC(filename)
 
 #tree.show(attrnames=True, showcoord=True)
