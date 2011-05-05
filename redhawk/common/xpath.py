@@ -87,12 +87,14 @@ class StarStarQuery(Query):
 
 
 class NodeMatchQuery(Query):
-  def __init__(self, node_type, attributes, codegroup, position = None):
-    self.node_type = node_type
+  # By default variables are '', if not found
+  def __init__(self, node_type, attributes, codegroup, position):
+    self.node_type = node_type or None
     self.attributes = dict(attributes)
-    self.codegroup = codegroup
-    self.position = position
+    self.codegroup = codegroup or None
+    self.position = position or None
 
+    print self.node_type, self.attributes, self.codegroup, self.position
     self.function = None
     if self.codegroup:
       try:
@@ -113,8 +115,7 @@ class NodeMatchQuery(Query):
         return iter([matched_nodes[self.position]])
       else:
         return iter([])
-    else:
-      return iter([list(matched_nodes)[position]])
+    return matched_nodes
 
   def ToStr(self):
     return "node_type = %s, attributes = %s, codegroup = %s, position = %s"%(
