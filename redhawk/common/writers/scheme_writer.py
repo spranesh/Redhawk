@@ -2,7 +2,7 @@
 
 import writer
 
-import redhawk.common.utils.code_generator_backend as C
+import redhawk.utils.code_generator_backend as C
 
 def WriteToScheme(tree):
   s = SchemeWriter()

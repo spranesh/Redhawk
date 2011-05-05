@@ -1,3 +1,5 @@
+""" A utilty module for C tests. """
+
 import redhawk.c.c_tree_converter as C
 import redhawk.utils.get_ast as G
 

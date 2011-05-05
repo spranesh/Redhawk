@@ -20,7 +20,7 @@ NodeQuery = identifier? @[identifier=string]* @{codeblock}? [number]
 """
 
 import re
-from utils.parser_combinator import (Literal, Regex, 
+from redhawk.utils.parser_combinator import (Literal, Regex, 
     Finished, Maybe, OnePlus, Choice, Sequence, Clean)
 
 class Query:

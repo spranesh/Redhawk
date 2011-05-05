@@ -1,5 +1,5 @@
 import redhawk.utils.util as U
-import redhawk.common.utils.code_generator_backend as C
+import redhawk.utils.code_generator_backend as C
 
 import pprint
 import yaml
