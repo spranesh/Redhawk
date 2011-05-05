@@ -108,7 +108,11 @@ class NodeMatchQuery(Query):
                            **self.attributes)
     matched_nodes = itertools.ifilter(s, it)
     if self.position is not None:
-      return matched_nodes
+      matched_nodes = list(matched_nodes)
+      if self.position < len(matched_nodes):
+        return iter([matched_nodes[self.position]])
+      else:
+        return iter([])
     else:
       return iter([list(matched_nodes)[position]])
 
