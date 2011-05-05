@@ -28,11 +28,14 @@ used to guess the language.
       the basename of the file passed is used.
 """
 
-import util
 import parse_asts
+import redhawk
+import util
 
 import cPickle as P
 import os
+
+VERSION_STRING = '__redhawk__version__'
 
 def GetLAst(filename, pickle_file, key=None, language=None):
   """ Get the language agnostic AST from a cache (pickle_file)."""
@@ -74,6 +77,12 @@ def ExtractTreeFromDatabase(filename, pickle_file, parser, key=None):
     fp.close()
   except (IOError, EOFError):
     parsed_data = {}
+
+  # If version numbers don't match, clear the pickle file.
+  if (not parsed_data.has_key(VERSION_STRING) or
+      parsed_data[VERSION_STRING] != redhawk.__version__):
+    parsed_data = {}
+    parsed_data[VERSION_STRING] = redhawk.__version__
 
   if parsed_data.has_key(key):
     (pickled_digest, pickled_ast) = parsed_data[key]
