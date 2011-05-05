@@ -136,7 +136,7 @@ location_query_parser = Choice(
 child_node_match_parser = Clean(
   Sequence(
     (Literal("["), None),
-    (location_query_parser, "Expected atomic query"),
+    (node_query_parser, "Expected a node query"),
     (Literal("]"), "Expected closing ']'")),
   lambda x: ChildNodeMatchQuery(x[1]))
 
