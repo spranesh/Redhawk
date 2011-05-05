@@ -86,7 +86,7 @@ def ParseC(filename):
 
 def ParsePython(filename):
   """ Parse a Python file using the ast module and return the Python AST."""
-  print "FILENAME: ", filename
+  # print "FILENAME: ", filename
   try:
     tree = ast.parse(expr = open(filename).read(), filename = filename)
   except SyntaxError, e:

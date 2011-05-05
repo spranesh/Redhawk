@@ -532,6 +532,29 @@ class Delete(Node):
 
 
 
+class Dict(Node):
+  """A dictionary."""
+  def __init__(self, position, keys, values):
+    self.position = position
+    self.keys = keys
+    self.values = values
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.keys)
+    li.append(self.values)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('dict')
+    li.append(self.keys)
+    li.append(self.values)
+    return li
+
+
+
 class Enumerator(Node):
   """An Enumerator."""
   def __init__(self, position, name, values):

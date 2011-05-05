@@ -184,6 +184,12 @@ Tuple:
   args: position, members 
   sexp: ['*members']
   children: '*members'
+
+Dict:
+  docstring: "A dictionary."
+  args: position, keys, values
+  sexp: ["dict", keys, values]
+  children: keys, values
  
 Enumerator:
   docstring: "An Enumerator."

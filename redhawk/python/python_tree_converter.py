@@ -62,7 +62,7 @@ class TransformCoord:
 
   def GC(self, c):
     """ Get Coord."""
-    NP.NodePosition(self.filename, c.lineno, c.col_offset)
+    return NP.NodePosition(self.filename, c.lineno, c.col_offset)
 
 
 
@@ -193,6 +193,12 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     """ Convert the List(expr* elts, expr_context ctx) node."""
     return N.List(position = self.gc.GC(tree),
         values = map(self.ConvertTree, tree.elts))
+
+  def ConvertDict(self, tree):
+    """ Convert the Dict(expr* keys, expr* values) node."""
+    return N.Dict(position = self.gc.GC(tree),
+        keys = map(self.ConvertTree, tree.keys),
+        values = map(self.ConvertTree, tree.values))
  
 
   def ConvertAssign(self, tree):
@@ -277,7 +283,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
 
   def ConvertModule(self, tree):
-    return N.Module(position = NP.NodePosition(self.filename, 0, 0),
+    return N.Module(position = NP.NodePosition(self.filename, 1, 1),
         filename = self.filename,
         children = map(self.ConvertTree, tree.body))
 

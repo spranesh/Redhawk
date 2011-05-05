@@ -54,7 +54,7 @@ def GetCoords(t):
 
 class CTreeConverter(tree_converter.TreeConverter):
   def ConvertFileast(self, tree):
-    return N.Module(position = NP.NodePosition(self.filename, 0, 0),
+    return N.Module(position = NP.NodePosition(self.filename, 1, 1),
         filename = self.filename,
         children = map(self.ConvertTree, tree.children()))
 

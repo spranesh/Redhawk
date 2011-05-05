@@ -29,7 +29,9 @@ def ShowPosition(position, context = 3, formatted=True):
 
 
 def HighlightCurrentLine(l, lines, context = 3):
+  line = "> " + lines[l]
   before = ["  " + x for x in lines[l-context:l]]
   after  = ["  " + x for x in lines[l+1:l+context]]
-  line = "> " + lines[l]
+  if l < context:
+    return line
   return "".join(before + [line] + after)

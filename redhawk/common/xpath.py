@@ -35,7 +35,7 @@ def Children(it):
   """ Return a generator to the children of all the nodes in the passed
   iterable."""
   for n in it:
-    for c in U.Flatten(c.GetChildren()):
+    for c in U.Flatten(n.GetChildren()):
       yield c
 
 def Parents(it):
@@ -101,6 +101,7 @@ class NodeMatchQuery(Query):
     return
 
   def Filter(self, it):
+    it = Children(it) # The children of the given nodes are checked.
     s = _selector.Selector(node_type = self.node_type,
                            function = self.function,
                            **self.attributes)
