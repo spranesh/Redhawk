@@ -18,35 +18,75 @@ LocationQuery =   .
 NodeQuery = identifier? @[identifier=string]* @{codeblock}? [number]
 
 """
+import _selector
+import traverse
 
+import redhawk.utils.parser_combinator as P
+import redhawk.utils.util as U
+
+import itertools
 import re
-from redhawk.utils.parser_combinator import (Literal, Regex, 
-    Finished, Maybe, OnePlus, Choice, Sequence, Clean)
+import sys
+
+# All our filter functions are from sequences to sequences
+#   Filter :: Iterable -> Iterable
+
+def Children(it):
+  """ Return a generator to the children of all the nodes in the passed
+  iterable."""
+  for n in it:
+    for c in U.Flatten(c.GetChildren()):
+      yield c
+
+def Parents(it):
+  """ Return a generator to the parents of all the nodes in the passed
+  iterable. Note that we first use a set to remove duplicates among the
+  parents."""
+  return iter(set((n.GetParent() for n in it)))
+
 
 class Query:
   def ToStr(self): return ''
+
+  def Filter(self):
+    raise NotImplementedError("Not Implemented in base class!")
+
   def __repr__(self):
     s = self.ToStr()
-    if s:
-      return "%s->%s"%(self.__class__.__name__, s)
+    if s: return "%s->%s"%(self.__class__.__name__, s)
     return self.__class__.__name__
 
-  def __str__(self): return self.__repr__()
+  def __str__(self):
+    return self.__repr__()
+
 
 class DotQuery(Query):
-  pass
+  def Filter(self, it):
+    return it
+
 
 class DotDotQuery(Query):
-  pass
+  def Filter(self, it):
+    return Parents(it)
+
 
 class StarQuery(Query):
-  pass
+  def Filter(self, it):
+    return Children(it)
+
 
 class StarStarQuery(Query):
-  pass
+  def Filter(self, it):
+    """ We do not want duplicates. This means storing all the objects into a
+    set. This is an expensive operation in memory, and in time O(n log n). We
+    are doing this for now, but probably need to come up with (heuristic
+    ways?) later."""
+    iterators = [traverse.DFS(i) for i in it]
+    return iter(set(itertools.chain(*iterators)))
+
 
 class NodeMatchQuery(Query):
-  def __init__(self, node_type, attributes, codegroup, position): 
+  def __init__(self, node_type, attributes, codegroup, position = None):
     self.node_type = node_type
     self.attributes = dict(attributes)
     self.codegroup = codegroup
@@ -60,16 +100,33 @@ class NodeMatchQuery(Query):
         raise SyntaxError(str(e) + ": " + self.codegroup)
     return
 
+  def Filter(self, it):
+    s = _selector.Selector(node_type = self.node_type,
+                           function = self.function,
+                           **self.attributes)
+    matched_nodes = itertools.ifilter(s, it)
+    if self.position is not None:
+      return matched_nodes
+    else:
+      return iter([list(matched_nodes)[position]])
+
   def ToStr(self):
     return "node_type = %s, attributes = %s, codegroup = %s, position = %s"%(
         self.node_type , self.attributes, self.codegroup, self.position)
 
+
 class ChildNodeMatchQuery(Query):
   def __init__(self, q):
+    assert(isinstance(q, NodeMatchQuery))
     self.child_query = q
 
   def ToStr(self): return "Child: " + self.child_query.ToStr()
 
+  def Filter(self, it):
+    children_iterator = Children(it)
+    filtered_children = q.Filter(children_iterator)
+    parents_of_filtered_children = Parents(filtered_children)
+    return parents_of_filtered_children
 
 # Parse xpath
 reg_identifier = re.compile(r"[a-zA-Z_][a-zA-Z0-9_]*")
@@ -83,25 +140,25 @@ def CleanAndWarnEmptyCodeBlock(s):
   if not r: raise SyntaxError("Empty Code block found.")
   return r
 
-string_parser = Clean(Regex(reg_string), lambda x: x[1:-1])
-codeblock_parser = Clean(Regex(reg_codeblock), CleanAndWarnEmptyCodeBlock)
-identifier_parser = Regex(reg_identifier)
-number_parser = Clean(Regex(reg_number), lambda x: int(x))
+string_parser = P.Clean(P.Regex(reg_string), lambda x: x[1:-1])
+codeblock_parser = P.Clean(P.Regex(reg_codeblock), CleanAndWarnEmptyCodeBlock)
+identifier_parser = P.Regex(reg_identifier)
+number_parser = P.Clean(P.Regex(reg_number), lambda x: int(x))
 
-attr_match_parser = Clean(
-  Sequence(
-    (Literal("@["), None),
+attr_match_parser = P.Clean(
+  P.Sequence(
+    (P.Literal("@["), None),
     (identifier_parser, "Identifier expected"),
-    (Literal("="), "'=' expected"),
+    (P.Literal("="), "'=' expected"),
     (string_parser, "String expected"),
-    (Literal("]"), "Closing ']' expected")),
+    (P.Literal("]"), "Closing ']' expected")),
   lambda x: (x[1], x[3]))
 
-position_parser = Clean(
-    Sequence(
-      (Literal("["), None),
+position_parser = P.Clean(
+    P.Sequence(
+      (P.Literal("["), None),
       (number_parser, "Number expected"),
-      (Literal("]"), "Closing ']' expected")
+      (P.Literal("]"), "Closing ']' expected")
       ),
     lambda x: x[1])
 
@@ -113,59 +170,104 @@ def CleanAndWarnEmptyNodeQuery(li):
       return NodeMatchQuery(*li)
   raise SyntaxError("Invalid or Empty NodeQuery!")
 
-node_query_parser = Clean(
-  Sequence(
-    (Maybe(identifier_parser), None),
-    (Maybe(OnePlus(attr_match_parser)), None),
-    (Maybe(codeblock_parser), None),
-    (Maybe(position_parser), None)),
+node_query_parser = P.Clean(
+  P.Sequence(
+    (P.Maybe(identifier_parser), None),
+    (P.Maybe(P.OnePlus(attr_match_parser)), None),
+    (P.Maybe(codeblock_parser), None),
+    (P.Maybe(position_parser), None)),
   CleanAndWarnEmptyNodeQuery)
 
-dot_parser = Clean(Literal("."), lambda x: DotQuery())
-dotdot_parser = Clean(Literal(".."), lambda x: DotDotQuery())
-star_parser = Clean(Literal("*"), lambda x: StarQuery())
-starstar_parser = Clean(Literal("**"), lambda x: StarStarQuery())
+dot_parser = P.Clean(P.Literal("."), lambda x: DotQuery())
+dotdot_parser = P.Clean(P.Literal(".."), lambda x: DotDotQuery())
+star_parser = P.Clean(P.Literal("*"), lambda x: StarQuery())
+starstar_parser = P.Clean(P.Literal("**"), lambda x: StarStarQuery())
 
-location_query_parser = Choice(
+location_query_parser = P.Choice(
     dotdot_parser,
     starstar_parser,
     dot_parser,
     star_parser,
     node_query_parser)
 
-child_node_match_parser = Clean(
-  Sequence(
-    (Literal("["), None),
+child_node_match_parser = P.Clean(
+  P.Sequence(
+    (P.Literal("["), None),
     (node_query_parser, "Expected a node query"),
-    (Literal("]"), "Expected closing ']'")),
+    (P.Literal("]"), "Expected closing ']'")),
   lambda x: ChildNodeMatchQuery(x[1]))
 
-atomic_query_parser = Choice(
+atomic_query_parser = P.Choice(
     child_node_match_parser,
     location_query_parser)
 
-slash_sep_atomic_queries_parser = OnePlus(
-  Clean(
-    Sequence(
-        (Literal("/"), None),
+slash_sep_atomic_queries_parser = P.OnePlus(
+  P.Clean(
+    P.Sequence(
+        (P.Literal("/"), None),
         (atomic_query_parser, "Invalid Atomic Query.")),
     lambda x: x[1]))
       
-xpath_query_parser = Clean(
-  Sequence(
+xpath_query_parser = P.Clean(
+  P.Sequence(
     (atomic_query_parser, "Invalid Atomic Query"),
-    (Maybe(slash_sep_atomic_queries_parser, lambda: list()), None),
-    (Finished(), "Left over munchies! Or maybe too few. Who's to know?")),
+    (P.Maybe(slash_sep_atomic_queries_parser, lambda: list()), None),
+    (P.Finished(), "Left over munchies! Or maybe too few. Who's to know?")),
   lambda x: [x[0]] + x[1])
 
 def ParseXPath(s):
+  """ Parse an XPath Query."""
   if s[0] == '/':
     raise SyntaxError("Queries should not start with a '/'")
   if s[-1] == '/':
     raise SyntaxError("Queries should not end with a '/'")
-  return xpath_query_parser(s)[0]
+  try:
+    return xpath_query_parser(s)[0]
+  except SyntaxError, e:
+    print "Syntax Error: %s"%(e)
+    sys.exit(1)
+  return
 
+def ApplyParsedXPathQuery(trees, xpath_query):
+  """ Apply a parsed XPath Query to a list (sequence) of `trees`."""
+  assert(type(xpath_query) == list)
+  filtered_nodes = iter(trees[:])
+  for q in xpath_query:
+    filtered_nodes = q.Filter(filtered_nodes)
+  return list(filtered_nodes)
+
+def XPath(trees, xpath_string):
+  """ Parse and apply the xpath query in `xpath_string` to the list (sequence)
+  of `trees`."""
+  return ApplyParsedXPathQuery(trees, ParseXPath(xpath_string))
+
+
+def Main():
+  """ Only for testing."""
+
+  import position
+  import redhawk.utils.get_ast as G
+
+  if len(sys.argv) < 2:
+    print """ %s <xpath-query> [files].
+
+    If files are not given, the parsed xpath-query is printed.
+    Otherwise the concerned lines in each file is printed."""%(sys.argv[0])
+    sys.exit(1)
+
+  parsed_query = ParseXPath(sys.argv[1])
+  if len(sys.argv) == 2:
+    print parsed_query
+    return
+
+  for f in sys.argv[2:]:
+    ast = G.GetLAst(f, pickle_file = None)
+    results = list(ApplyParsedXPathQuery([ast], parsed_query))
+    print "+++ %s"%(f)
+    for r in results:
+      print position.ShowPosition(position.GetPosition(r))
+    print
+  return
 
 if __name__ == '__main__':
-  import sys
-  print ParseXPath(sys.argv[1])
+  Main()

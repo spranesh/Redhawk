@@ -34,23 +34,23 @@ import parse_asts
 import cPickle as P
 import os
 
-def GetLAst(filename, pickle_file, key='', language=None):
+def GetLAst(filename, pickle_file, key=None, language=None):
   """ Get the language agnostic AST from a cache (pickle_file)."""
   parser = lambda filename: parse_asts.GetLAst(filename, language)
 
   return ExtractTreeFromDatabase(filename = filename
                                 ,parser = parser
                                 ,pickle_file = pickle_file
-                                ,key = None)
+                                ,key = key)
 
 
-def GetLanguageSpecificTree(filename, pickle_file, key='', language=None):
+def GetLanguageSpecificTree(filename, pickle_file, key=None, language=None):
   """ Get a language SPECIFIC ast."""
   parser = lambda filename: parse_asts.ParseFile(filename, language)
   return ExtractTreeFromDatabase(filename = filename
                                 ,parser = parser
                                 ,pickle_file = pickle_file
-                                ,key = None)
+                                ,key = key)
 
 
 

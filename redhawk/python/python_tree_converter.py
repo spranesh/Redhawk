@@ -277,7 +277,8 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
 
   def ConvertModule(self, tree):
-    return N.Module(self.filename,
+    return N.Module(position = NP.NodePosition(self.filename, 0, 0),
+        filename = self.filename,
         children = map(self.ConvertTree, tree.body))
 
 
@@ -440,7 +441,8 @@ class PythonTreeConverter(tree_converter.TreeConverter):
       arguments.append(self.ConvertTree(a))
 
     for k in tree.keywords:
-      arguments.append(N.DefineVariable(position = self.gc.GC(tree.args[-1]),
+      position_reference = tree.args[-1] if len(tree.args) > 0 else tree
+      arguments.append(N.DefineVariable(position = self.gc.GC(position_reference),
                                         name = k.arg,
                                         init = self.ConvertTree(k.value)))
 
@@ -612,3 +614,11 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.ContextVariables(position = self.gc.GC(tree),
                      names = tree.names,
                      context = 'globals')
+
+  def ConvertReturn(self, tree):
+    return N.Return(position = self.gc.GC(tree),
+                    return_expression = self.ConvertTree(tree.value))
+
+  def ConvertYield(self, tree):
+    return N.Yield(position = self.gc.GC(tree),
+                    yield_expression = self.ConvertTree(tree.value))

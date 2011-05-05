@@ -21,7 +21,7 @@
 
 Module:
   docstring : "Represents a file or module."
-  args: filename, children
+  args: position, filename, children
   children: '*children'
   sexp: ["define-module", filename, children]
 

@@ -917,7 +917,8 @@ class List(Node):
 
 class Module(Node):
   """Represents a file or module."""
-  def __init__(self, filename, children):
+  def __init__(self, position, filename, children):
+    self.position = position
     self.filename = filename
     self.children = children
     return

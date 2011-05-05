@@ -31,7 +31,7 @@ tests = [("prog001.c", "Function to return 0")
 
 def ConvertFile(filename):
   t = test_utils.SetUp(filename)
-  return test_utils.ConvertTree(t)
+  return test_utils.ConvertTree(t, filename=filename)
 
 def TestPrograms():
   for (filename, description) in tests:
