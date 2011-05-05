@@ -10,4 +10,5 @@ def DFS(tree):
   while queue:
     node = queue.pop() # Pop from the end
     queue.extend([x for x in U.Flatten(node.GetChildren()) if x is not None])
-    yield node
+    if node != None:
+      yield node

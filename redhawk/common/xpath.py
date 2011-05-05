@@ -36,7 +36,8 @@ def Children(it):
   iterable."""
   for n in it:
     for c in U.Flatten(n.GetChildren()):
-      yield c
+      if c is not None:
+        yield c
 
 def Parents(it):
   """ Return a generator to the parents of all the nodes in the passed
