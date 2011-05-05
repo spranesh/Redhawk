@@ -125,8 +125,9 @@ class ChildNodeMatchQuery(Query):
   def ToStr(self): return "Child: " + self.child_query.ToStr()
 
   def Filter(self, it):
-    children_iterator = Children(it)
-    filtered_children = q.Filter(children_iterator)
+    # Query the children. Since child_query is a NodeMatchQuery, it
+    # automatically checks the children.
+    filtered_children = self.child_query.Filter(it)
     parents_of_filtered_children = Parents(filtered_children)
     return parents_of_filtered_children
 
