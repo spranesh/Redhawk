@@ -2,7 +2,7 @@
 
 import redhawk.utils.get_ast as G
 import redhawk.utils.parse_asts as P
-import os.path
+import os
 
 import glob
 

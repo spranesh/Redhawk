@@ -8,7 +8,7 @@ import nose.tools
 import random
 import itertools
 import tempfile
-import os.path
+import os
 
 class TestDotWriter:
   def __init__(self):

@@ -32,7 +32,7 @@ import util
 import pycparser
 
 import ast
-import os.path
+import os
 
 def GetLAst(filename, language=None):
   """ Parse the file using the respective parser, and return the Language
