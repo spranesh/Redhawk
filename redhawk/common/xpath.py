@@ -94,7 +94,6 @@ class NodeMatchQuery(Query):
     self.codegroup = codegroup or None
     self.position = position or None
 
-    print self.node_type, self.attributes, self.codegroup, self.position
     self.function = None
     if self.codegroup:
       try:

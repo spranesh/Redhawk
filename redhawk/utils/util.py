@@ -63,7 +63,7 @@ def GuessLanguage(filename):
   try:
     (_, extension) = filename.rsplit('.', 1)
   except ValueError:
-    ExitWithError("Could not guess language as '%s' does not have an \
+    raise ValueError("Could not guess language as '%s' does not have an \
         extension"%filename)
 
   return {'c'   : 'c'

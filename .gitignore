@@ -7,3 +7,4 @@ yacctab.py
 .noseids
 *.pickle
 *.html
+.redhawk_db
