@@ -125,3 +125,15 @@ def FindFileInDirectoryOrAncestors(filename, dirname, perm=os.R_OK | os.W_OK):
 
   return filepath
 
+
+def AdjustFilePathToBaseDirectory(filepath, base_dir):
+  """ Adjust filepath, `filepath` to base directory, `base_dir`.
+  This function for example, on inputs
+    filepath = '/a/b/c/d.txt', base_dir = '/a/b'
+  returns 'c/d.txt'
+
+  If either the filepath nor the base_dir passed in is not in its absolutized
+  normalized form, it is taken to be relative to the current directory
+  (pwd)."""
+
+  return os.path.relpath(filepath, base_dir)
