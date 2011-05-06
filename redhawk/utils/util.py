@@ -67,8 +67,7 @@ def GuessLanguage(filename):
         extension"%filename)
 
   return {'c'   : 'c'
-         ,'py'  : 'python'}[extension]
-
+         ,'py'  : 'python'}[extension] 
 
 
 def IfElse(condition, iftrue, iffalse):
@@ -105,3 +104,24 @@ def StartShell(local_vars, banner=''):
   except ImportError:
     import code
     code.interact(local=local_vars, banner=banner)
+
+
+def FindFileInDirectoryOrAncestors(filename, dirname, perm=os.R_OK | os.W_OK):
+  """ Tries to find the file `filename` in the given directory `dirname` or
+  its parents. When found it makes sure the permissions match the given
+  `perm`. If no file is found, None is returned. If the file was found, but
+  the permissions are not satisfied, it raises an IOError."""
+  dirname = os.path.abspath(dirname)
+
+  while not os.path.exists(os.path.join(dirname, filename)):
+    parent_dirname = os.path.dirname(dirname)
+    if dirname == parent_dirname:
+      return None
+    dirname = parent_dirname
+
+  filepath = os.path.join(dirname, filename)
+  if os.access(filepath, perm) is False:
+    raise IOError("Read write permissions deny access to file %s"%(filepath))
+
+  return filepath
+
