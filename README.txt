@@ -54,7 +54,7 @@ Dependencies
 
 *Runtime Dependencies*:
 
-* `Python C Parser`_ - This is required to parse C code into ASTs. This
+* `pycparser`_ - This is required to parse C code into ASTs. This
   in-turn depends on Python-PLY (`python-ply` on debian-ubuntu).
 
 * `Python Graphviz`_ - For generating pretty AST graphs. This is an optional
