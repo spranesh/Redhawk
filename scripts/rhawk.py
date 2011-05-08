@@ -58,6 +58,7 @@ def ShowImage(filename, eog=False):
   im.show()
   return
 
+
 def GetDatabase():
   """ Return the location to the redhawk database if any."""
   try:
@@ -71,6 +72,7 @@ def GetDatabase():
 def GetKey(filepath):
   """ Return the key corresponding to the given filepath."""
   return U.AdjustFilePathToBaseDirectory(__DB_NAME__, os.curdir)
+
 
 def IsFileSupported(filepath):
   try:
