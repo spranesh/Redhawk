@@ -30,7 +30,7 @@ Constant:
   args: position, value
   optargs: type
   sexp : ["constant", value, [_type, type]]
-  children:
+  children: type
 
 Return:
   docstring: "Represents a Return Statement."
@@ -56,7 +56,7 @@ DefineVariable:
   args: position, name
   optargs: init, type, quals, storage
   sexp: ["define-variable", name, [_init, init], [_type, type], [_quals, quals], [_storage, storage]]
-  children:
+  children: init, type
 
 FunctionArguments:
   docstring: "Function Arguments."
@@ -69,14 +69,14 @@ DeclareFunction:
   docstring: "A Function Declaration Node."
   args: position, name, arguments
   optargs: return_type, storage, quals
-  children: arguments
+  children: arguments, return_type
   sexp: ["declare-function", name, arguments, [_return_type, return_type], [_quals, quals], [_storage, storage]]
 
 DefineFunction:
   docstring: "A Function Definition Node."
   args: position, name, arguments, body
   optargs: return_type, storage, quals
-  children: arguments, body
+  children: arguments, body, return_type
   sexp: ["define-function", name, arguments, body, [_return_type, return_type], [_quals, quals], [_storage, storage]]
 
 DefineClass:
@@ -116,7 +116,7 @@ CallFunction:
   children: function, arguments
 
 Structure:
-  docstring: "A structure type"
+  docstring: "A structure"
   args: position, name, members
   optargs: storage, quals
   sexp: ["define-structure", name, members, [_storage, storage], [_quals, quals]]

@@ -311,6 +311,11 @@ class Constant(Node):
     self.type = type
     return
 
+  def GetChildren(self):
+    li = []
+    li.append(self.type)
+    return li
+
   def GetSExp(self):
     li = []
     li.append('constant')
@@ -365,6 +370,7 @@ class DeclareFunction(Node):
   def GetChildren(self):
     li = []
     li.append(self.arguments)
+    li.append(self.return_type)
     return li
 
   def GetSExp(self):
@@ -447,6 +453,7 @@ class DefineFunction(Node):
     li = []
     li.append(self.arguments)
     li.append(self.body)
+    li.append(self.return_type)
     return li
 
   def GetSExp(self):
@@ -497,6 +504,12 @@ class DefineVariable(Node):
     self.quals = quals
     self.storage = storage
     return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.init)
+    li.append(self.type)
+    return li
 
   def GetSExp(self):
     li = []
@@ -1117,7 +1130,7 @@ class SourceLabel(Node):
 
 
 class Structure(Node):
-  """A structure type"""
+  """A structure"""
   def __init__(self, position, name, members, storage = None, quals = None):
     self.position = position
     self.name = name

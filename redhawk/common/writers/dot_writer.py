@@ -101,8 +101,6 @@ class DotWriter(writer.Writer):
       self.graph.add_edge(parent_index, node_index)
 
     children = ast_node.GetChildren()
-    types = [x for x in ast_node.GetAttributes()[1].values() if isinstance(x, T.Type)]
-    children = types + children
     
     for child in children:
       if child is None:
@@ -113,6 +111,7 @@ class DotWriter(writer.Writer):
         self.graph.add_edge(node_index, empty_node)
         map(lambda a: self.AddASTNodeToGraph(empty_node, a),
               child)
+
       elif isinstance(child, N.Node):
         self.AddASTNodeToGraph(node_index, child)
 
