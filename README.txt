@@ -47,7 +47,11 @@ Notes
 -----
 
 1. Run `_build_tables.py` in the pycparser directory, to pre-generate the lex
-and yacc tables, therey enabling quicker parsing of C files.
+and yacc tables. This will enable quicker parsing of C files. If pycparser was installed for all users, then 
+ 
+  * Root priviliges may be required to run _build_tables.py 
+  * Permissions for the resulting `lextab.py` and `yacctab.py` must be changed
+    to allow all users to read (755).
 
 Dependencies
 ------------
@@ -70,5 +74,5 @@ Dependencies
 
 .. _github: http://www.github.com/spranesh/Redhawk
 .. _Python Graphviz: http://networkx.lanl.gov/pygraphviz/
-.. _Python C Parser: http://code.google.com/p/pycparser/ 
+.. _pycparser: http://code.google.com/p/pycparser/ 
 .. _Python YAML: http://www.pyyaml.org
