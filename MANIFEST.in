@@ -1,0 +1,2 @@
+include redhawk/common/*.yaml
+recursive-include redhawk *.c *.py *.h

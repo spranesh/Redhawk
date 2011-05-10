@@ -8,3 +8,5 @@ yacctab.py
 *.pickle
 *.html
 .redhawk_db
+MANIFEST
+dist/*
