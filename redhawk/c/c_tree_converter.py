@@ -3,8 +3,10 @@
 
 import redhawk.common.node as N
 import redhawk.common.node_position as NP
+import redhawk.common.traverse as traverse
 import redhawk.common.tree_converter as tree_converter
 import redhawk.common.types as T
+import redhawk.utils.util as U
 
 # Map C operators into the LAST operators
 BINARY_OPERATOR_CONVERSIONS = {
@@ -53,6 +55,26 @@ def GetCoords(t):
   return NP.NodePosition(c.file, c.line, c.column)
 
 class CTreeConverter(tree_converter.TreeConverter):
+  def Convert(self, tree):
+    """ Override the convert method in the base class to handle escape
+    character representation by cpyparser."""
+    l_ast = tree_converter.TreeConverter.Convert(self, tree)
+    self.UnescapeEscapeCharacters(l_ast)
+    return l_ast
+
+  def UnescapeEscapeCharacters(self, tree):
+    """ Cpyparser stores new lines as \\n, so that when printed they appear as
+    \n. We want to unescape these newlines (and tabs), to match what python's
+    ast module does."""
+    for node in traverse.DFS(tree):
+      for attr in node.GetAttributes()[1]:
+        value = getattr(node, attr)
+        if type(value) is str:
+          unescaped_string = (value.replace("\\n", "\n").replace("\\t",
+              "\t").replace("\'", "").replace("\"", ""))
+          setattr(node, attr, unescaped_string)
+    return
+
   def ConvertFileast(self, tree):
     return N.Module(position = NP.NodePosition(self.filename, 1, 1),
         filename = self.filename,

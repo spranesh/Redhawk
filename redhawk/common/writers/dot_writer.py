@@ -12,11 +12,18 @@ def WriteToDot(tree):
   s = DotWriter()
   return s.WriteTree(tree)
 
+
 def WriteToImage(tree, fmt='png', filename=None):
   s = DotWriter()
   s.AddTree(tree)
   s.Draw(path=filename, fmt=fmt)
   return
+
+
+def EscapeWhitespace(s):
+  a = s.replace("\n", "\\\\n").replace("\t", "\\\\t")
+  return a
+
 
 class DotWriter(writer.Writer):
   def __init__(self):
@@ -55,7 +62,8 @@ class DotWriter(writer.Writer):
         Return the node index."""
     name, attrs = ast_node.GetDotAttributes() 
     label = [name]
-    label += ["%s: %s"%(k, v) for (k, v) in attrs.items() if type(v) is str]
+    label += ["%s: %s"%(EscapeWhitespace(str(k)), EscapeWhitespace(str(v)))
+      for (k, v) in attrs.items() if type(v) is str]
 
     if isinstance(ast_node, T.Type):
       color = "gray"

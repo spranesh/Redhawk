@@ -12,22 +12,17 @@ AST_FILES = [("c/tests/c_files/*.c", 'c', 'c/tests/c_parsed.pickle')
 def GetAllLASTs():
   for (g, language, pickle_file) in AST_FILES:
     for filename in glob.glob(g):
-      language_specific_tree = G.GetLanguageSpecificTree(filename
-                                                        ,pickle_file
-                                                        ,language=language
-                                                        ,key = None)
-      yield P.ConvertAst(language_specific_tree
+      yield GetLASTFromFile(filename, language, pickle_file)
+
+
+def GetLASTFromFile(filename, language, pickle_file):
+  """ We first fetch the tree's language specific AST, and use the ConvertAST
+  function in parse_asts. This convoluted approach is taken since the language
+  specific ASTs are cached by tests."""
+  language_specific_tree = G.GetLanguageSpecificTree(filename
+                                                    ,pickle_file
+                                                    ,language=language
+                                                    ,key = None)
+  return P.ConvertAst(language_specific_tree
                         ,language
                         ,filename)
-
-def TestGetAllLASTs():
-  """ Test the GetALLASTs function."""
-  count = 0
-  for i in GetAllLASTs():
-    count += 1
-    print "." ,
-
-  print
-  print count
-  return
-

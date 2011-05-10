@@ -27,24 +27,32 @@ class TestDotWriter:
     return
 
 
+test_dot_writer = TestDotWriter()
+
 def TestGenerator():
   """ Testing Dot Writer. """
-  PICK=5
-  c = TestDotWriter()
+  PICK=1
   all_asts = list(T.GetAllLASTs())
   for i in range(PICK):
     r_index = random.randrange(0, len(all_asts))
-    c.FunctionTestDot.im_func.description = "Test Random AST (%d) with Dot Writer."%(r_index)
-    yield c.FunctionTestDot, all_asts[r_index]
+    test_dot_writer.FunctionTestDot.im_func.description = "Test Random AST (%d) with Dot Writer."%(r_index)
+    yield test_dot_writer.FunctionTestDot, all_asts[r_index]
+
+
+def TestDotNewlineSupport():
+  """ Test Dot for programs with newlines in keys/attr strings."""
+  test_dot_writer.FunctionTestDot(T.GetLASTFromFile(
+    "common/writers/test_dot_writer_newline.c", "c", None))
+  test_dot_writer.FunctionTestDot(T.GetLASTFromFile(
+    "common/writers/test_dot_writer_newline.py", "python", None))
+  return
 
 
 # Disable the test by default.
 @nose.tools.nottest
 def TestAllPrograms():
   """ Testing Dot Writer (all programs) """
-  c = TestDotWriter()
   all_asts = list(T.GetAllLASTs())
   for (i, ast) in enumerate(all_asts):
-    c.FunctionTestDot.im_func.description = "Testing AST (%d) with Dot Writer."%(i)
-    yield c.FunctionTestDot, ast
-
+    test_dot_writer.FunctionTestDot.im_func.description = "Testing AST (%d) with Dot Writer."%(i)
+    yield test_dot_writer.FunctionTestDot, ast
