@@ -1,6 +1,7 @@
 #!/usr/bin/env python
+""" Test the node_position module in redhawk/common"""
 
-import node_position
+import redhawk.common.node_position as node_position
 
 class TestNodePosition:
   def __init__(self):

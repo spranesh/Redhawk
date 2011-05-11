@@ -2,7 +2,7 @@
 
 """ Test XPath."""
 
-import xpath as X
+import redhawk.common.xpath as X
 
 import nose.tools
 

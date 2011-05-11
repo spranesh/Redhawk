@@ -7,7 +7,7 @@ import os
 import sys
 
 RELATIVE_TEST_PATH = "test/files/c/"
-PICKLE_FILE = "test/asts_c.pickle"
+PICKLE_FILE = "test/files/asts_c.pickle"
   
 def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
   """ SetUp returns a parsed C Program."""

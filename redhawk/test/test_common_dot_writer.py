@@ -1,7 +1,8 @@
 #!/usr/bin/env python
+""" Test the DotWriter module in redhawk/common/writers."""
 
 import redhawk.common.writers.dot_writer as D
-import redhawk.common.test_utils as T
+import common_test_utils as T
 
 import nose.tools
 
@@ -42,9 +43,9 @@ def TestGenerator():
 def TestDotNewlineSupport():
   """ Test Dot for programs with newlines in keys/attr strings."""
   test_dot_writer.FunctionTestDot(T.GetLASTFromFile(
-    "common/writers/test_dot_writer_newline.c", "c", None))
+    "test/files/dot/newline.c", "c", None))
   test_dot_writer.FunctionTestDot(T.GetLASTFromFile(
-    "common/writers/test_dot_writer_newline.py", "python", None))
+    "test/files/dot/newline.py", "python", None))
   return
 
 

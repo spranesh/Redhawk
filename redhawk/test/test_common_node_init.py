@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-import node
-import node_position
+""" Test initialising of the Node class in redhawk/common/node.py"""
+import redhawk.common.node as node
 
 def TestNodeInit():
   """ Test Node cannot be initialised. """

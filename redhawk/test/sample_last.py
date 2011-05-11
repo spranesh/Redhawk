@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import node as N
-import tree_converter as T
+import redhawk.common.node as N
+import redhawk.common.tree_converter as T
 
 
 """

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-""" Test the selector module."""
+""" Test the selector module in redhawk/common."""
 
-import selector as S
-import node as N
-from sample_tree import tree
+import redhawk.common.selector as S
+import redhawk.common.node as N
+from sample_last import tree
 
 import nose
 

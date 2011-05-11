@@ -1,4 +1,5 @@
-import code_generator_backend as C
+""" Test the code_generator_backend.py in redhawk/utils."""
+import redhawk.utils.code_generator_backend as C
 
 class TestCodeGeneratorBackend:
   def setUp(self):

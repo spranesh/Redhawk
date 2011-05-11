@@ -1,5 +1,7 @@
+""" Test the parser_combinator.py in redhawk/utils."""
+
 import nose.tools
-import parser_combinator as P
+import redhawk.utils.parser_combinator as P
 import re
 
 digits = re.compile("[0-9]+")

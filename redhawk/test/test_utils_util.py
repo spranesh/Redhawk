@@ -1,4 +1,6 @@
-import util as U
+""" Test the util.py in redhawk/utils."""
+
+import redhawk.utils.util as U
 
 import nose.tools
 import tempfile

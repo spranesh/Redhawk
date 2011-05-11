@@ -2,12 +2,12 @@
 
 import redhawk.utils.get_ast as G
 import redhawk.utils.parse_asts as P
-import os
 
+import os
 import glob
 
-AST_FILES = [("c/tests/c_files/*.c", 'c', 'c/tests/c_parsed.pickle')
-            ,("python/tests/*.py", 'python', 'python/tests/python_parsed.pickle')]
+AST_FILES = [("test/files/c/*.c", 'c', 'test/files/asts_c.pickle')
+            ,("test/files/python/*.py", 'python', 'test/files/asts_python.pickle')]
 
 def GetAllLASTs():
   for (g, language, pickle_file) in AST_FILES:
@@ -26,3 +26,10 @@ def GetLASTFromFile(filename, language, pickle_file):
   return P.ConvertAst(language_specific_tree
                         ,language
                         ,filename)
+
+
+if __name__ == '__main__':
+  files_found = list(GetAllLASTs())
+  print "Files Found:"
+  for x in files_found:
+    print x, x.filename
