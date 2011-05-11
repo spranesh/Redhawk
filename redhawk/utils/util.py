@@ -98,7 +98,7 @@ def StartShell(local_vars, banner=''):
 
   try:
     from IPython.Shell import IPShellEmbed
-    ipshell = IPShellEmbed()
+    ipshell = IPShellEmbed([])
     ipshell.set_banner(banner)
     ipshell(local_ns=local_vars)
   except ImportError:
