@@ -286,26 +286,109 @@ have a `ReferVariable` descendent, whose name is 'init'::
 This gives us::
 
     counter.py:2:value = [init]
-    counter.py:10:self.value = init
     counter.py:18:init += 1
+    counter.py:10:self.value = init
 
 Note the `@[..]` syntax similar to XPATH, for referring to an attribute.
 
 *Example 8*:
-What if we wanted assignments were init was being set, and not referred to?
+What if we wanted assignments were init was being set, and not referred to? We
+would use a code block to look at the `lvalue` of the `Assignment`.::
+
+    $ redhawk query '**/Assignment@{n.lvalue.name == "init"}' counter.py
+
+This gives us::
+
+    counter.py:18:init += 1
+
+*Example 9*:
+Let us find all Function calls that start with 'Counter'. Looking again at the
+`node`_ yaml configuration, we see that we want to find 'CallFunction's, where
+the function object has a name starting with "Counter". [3]_ ::
+
+    $ redhawk query '**/CallFunction@{n.function.name[:7] == "Counter"}' counter.py
+
+This gives us::
+
+    counter.py:22:c1 = CounterClosure()
+    counter.py:23:c2 = CounterClass()
+    counter.py:24:c3 = CounterIter()
+
 
 An abstract grammar of the query language can be found via::
 
     $ pydoc redhawk.common.xpath
 
+Much more is possible, using the Selector API.
 
 Using the API
 -------------
 
 The `redhawk` package can also be used as an API by importing
 `redhawk.common.selector` and related packages. Some of the useful packages
-are already imported for the user in `redhawk_prompt` and are a good place to
+are already imported for the user in `redhawk prompt` and are a good place to
 start things at.
+
+*Example 1*
+Suppose in the above file we wanted to find all generators, i.e, function
+definitions, which had a yield as a descendent.
+
+We first go into a redhawk prompt::
+
+    $ redhawk prompt counter.py
+    
+    
+    Built in Variables:
+        trees - contains the parse trees of the files passed in the command line
+    
+    Built in Functions:
+        ConvertFileToAst - Converts a file into a language agnostic AST.
+        ConvertCodeToAst - Converts a code snippet into a language agnostic AST.
+        Help             - Displays this prompt.
+        ShowASTAsImage   - Shows the AST as a graph using dot.
+    
+    Built in Modules:
+        S - redhawk.common.selector
+        P - redhawk.common.position
+    
+    To view this again, use the Help function.
+
+
+We then define our selectors. (See `pydoc redhawk.common.selector` for more
+information)::
+
+    In [1]: function_def = S.S(node_type='DefineFunction')
+    In [2]: yield_stmt = S.S(node_type='Yield')
+    In [3]: reqd_selector = function_def.HasDescendant(yield_stmt)
+
+
+We then apply the selector on the file. The files passed are in the `trees
+argument`. Since this file was the first, it is in `trees[0]`::
+
+    In [4]: results = list(reqd_selector(trees[0]))
+    In [5]: results[0]
+    Out[5]: DefineFunction
+
+
+This is indeed the function we wanted. Just to be sure, we use the
+`P.GetPosition` function to get the position of the result node. We the use
+the `P.ShowPosition` function (with a context argument for clarity) to see the
+result::
+
+    In [6]: print P.ShowPosition(P.GetPosition(results[0]), context = 6)
+
+          self.value = init
+    
+        def Bump(self):
+          self.value += 1
+          return self.value
+    
+    > def CounterIter(init = 0):
+        while True:
+          init += 1
+          yield init
+    
+      if __name__ == '__main__':
 
 
 License
@@ -317,7 +400,11 @@ the source distribution.
 
 
 .. [1] `ast_gen.py`_ generates `node.py`_ and `types.py`_ using these YAML configuration files.
+
 .. [2] In fact the portion inside the `@{..}` is just appended to a 'lambda n:' and `eval`-ed to get a function.
+
+.. [3] Note that 'CallFunction's do not directly have a name. This is because it the function object, unlike that of a function definition, can be a value. It is possible to do (f.g[x])(y), and such.
+
 
 .. _imgur: http://imgur.com/CBHCX
 .. _counter.py: https://github.com/spranesh/Redhawk/tree/master/redhawk/test/files/python/counter.py
