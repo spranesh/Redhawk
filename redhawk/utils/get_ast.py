@@ -51,7 +51,7 @@ def GetLAST(filename, database, key=None, language=None):
   CreateLASTFetcher, and then using GetAST."""
   last_parser = lambda filename: parse_ast.GetLAST(filename, language)
   if database == None:
-    return parser(filename)
+    return last_parser(filename)
 
   ast_fetcher = CreateLASTFetcher(database, language)
   ast = ast_fetcher.GetAST(filename, key)
