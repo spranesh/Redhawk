@@ -3,14 +3,16 @@
 import redhawk.c.c_tree_converter as C
 import redhawk.utils.get_ast as G
 
+import os
 import sys
 
-RELATIVE_TEST_PATH = "test/c_files/"
-PICKLE_FILE = "test/c_asts.pickle"
+RELATIVE_TEST_PATH = "test/files/c/"
+PICKLE_FILE = "test/asts_c.pickle"
   
 def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
   """ SetUp returns a parsed C Program."""
-  return G.GetLanguageSpecificTree(rel_path + filename, PICKLE_FILE, language='c')
+  return G.GetLanguageSpecificTree(os.path.join(rel_path, filename),
+      PICKLE_FILE, language='c')
 
 
 def ConvertTree(t, filename=None, verbose=True):
