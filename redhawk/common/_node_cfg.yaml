@@ -357,3 +357,10 @@ ContextVariables:
   args: position, names, context
   sexp: [context, "scope", names]
   children:
+
+Show:
+  docstring: "Convert to a showable. Like Haskell's show, and python's repr."
+  args: position, value
+  sexp: ["show", value]
+  children: value
+

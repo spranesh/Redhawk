@@ -1078,6 +1078,26 @@ class Return(Node):
 
 
 
+class Show(Node):
+  """Convert to a showable. Like Haskell's show, and python's repr."""
+  def __init__(self, position, value):
+    self.position = position
+    self.value = value
+    return
+
+  def GetChildren(self):
+    li = []
+    li.append(self.value)
+    return li
+
+  def GetSExp(self):
+    li = []
+    li.append('show')
+    li.append(self.value)
+    return li
+
+
+
 class Slice(Node):
   """A slice node."""
   def __init__(self, position, lower = None, upper = None, step = None):

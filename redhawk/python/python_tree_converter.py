@@ -63,8 +63,10 @@ class TransformCoord:
 
   def GC(self, c):
     """ Get Coord."""
-    return NP.NodePosition(self.filename, c.lineno, c.col_offset)
-
+    try:
+      return NP.NodePosition(self.filename, c.lineno, c.col_offset)
+    except AttributeError, e:
+      return None
 
 
 def GetClassName(x):
@@ -97,8 +99,20 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertStr(self, tree):
     #TODO(spranesh): Should the value be really str-ed?
     return N.Constant(self.gc.GC(tree),
-        value = str(tree.s),
+        value = tree.s,
         type = T.BaseType('string'))
+
+
+  def ConvertRepr(self, tree):
+    return N.Show(position = self.gc.GC(tree),
+        value = self.ConvertTree(tree.value))
+
+
+  def ConvertExec(self, tree):
+    return N.Exec(position = self.gc.GC(tree),
+        body = self.ConvertTree(tree.body),
+        locals = self.ConvertTree(tree.locals),
+        globals = self.ConvertTree(tree.globals))
 
 
   def ConvertBinop(self, tree):
@@ -242,6 +256,13 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                    lower = self.ConvertTree(tree.lower),
                    upper = self.ConvertTree(tree.upper),
                    step =  self.ConvertTree(tree.step))
+
+
+  def ConvertExtslice(self, tree):
+    """ Convert ExtSlice(slice *dims)."""
+    #TODO(spranesh): Cheap hack. We only convert the first slice.
+    #Maybe use a compound?
+    return self.ConvertTree(tree.dims[0])
 
 
   def ConvertIndex(self, tree):

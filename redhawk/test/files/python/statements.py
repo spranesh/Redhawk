@@ -15,3 +15,4 @@ print>>sys.stderr, a, b, c
 def f(a): pass
 raise AttributeError("Oh noes! Attribute Error!")
 global x, y
+exec 2 + 3
