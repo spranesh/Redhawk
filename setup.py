@@ -17,15 +17,16 @@ setup(
     # packages = find_packages()
     packages=[
       'redhawk',
-      'redhawk.examples',
       'redhawk.c',
       'redhawk.c.utils',
       'redhawk.common',
       'redhawk.common.readers',
       'redhawk.common.writers',
+      'redhawk.examples',
       'redhawk.python',
       'redhawk.python.utils',
       'redhawk.utils',
+      'redhawk.scripts',
       'redhawk.test'],
 
     package_data = {
@@ -53,7 +54,5 @@ setup(
       "Topic :: Software Development",
       "Topic :: Utilities"],
 
-    scripts=[
-      'bin/redhawk_prompt',
-      'bin/redhawk']
+    scripts=['bin/redhawk']
 )
