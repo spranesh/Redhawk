@@ -123,9 +123,9 @@ class ASTFetcher:
     self.database = database_file
     self.parser = parser
     self.changed = False
-    print "Reading.."
+    # sys.stderr.write("Reading..\n")
     self.parsed_data = self.__ReadFromDatabase()
-    print "Done."
+    # sys.stderr.write("Done.")
     return
 
   def __ReadFromDatabase(self):
