@@ -6,7 +6,7 @@ fp.close()
 
 setup(
     name='redhawk',
-    version='1.0.1',
+    version='1.0.2',
     description='An AST based navigation system.',
     long_description=long_description,
     author="Pranesh Srinivasan",

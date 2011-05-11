@@ -14,7 +14,7 @@ agnostic AST, or LAST.
 The resulting LAST can be queried by using either Selectors (similar to
 JQuery), or an xpath like syntax. A Typical use of Redhawk is as shown below::
 
-    $ redhawk '*/DefineFunction' file1.py file2.c
+    $ redhawk query '*/DefineFunction' file1.py file2.c
 
 Redhawk is currently under heavy development. The code can be found on
 `github`_. 
@@ -123,7 +123,7 @@ API.
 Using the `redhawk` executable
 ------------------------------
 
-The `redhawk` program supports four commands:
+The `redhawk` program supports five commands:
 
 =========   =======================================================
  Command      Purpose
@@ -176,7 +176,7 @@ The `query` command supports an XPATH-like language for querying. We describe
 examples below. In querying for a particular construct, the name of that Node
 in the LAST has to be known. (Thorough documentation about this is coming up.
 For now, one can refer to the `node`_ and `types`_ yaml configuration files on
-github.)[1]_ 
+github.) [1]_ 
 
 For the examples below, we shall use the `counter.py`_ file::
 
@@ -329,9 +329,10 @@ The `redhawk` package can also be used as an API by importing
 are already imported for the user in `redhawk prompt` and are a good place to
 start things at.
 
-*Example 1*
+*Example 1*:
 Suppose in the above file we wanted to find all generators, i.e, function
-definitions, which had a yield as a descendent.
+definitions, which had a yield as a descendent. We shall see how easy, and
+logical this query becomes using selectors.
 
 We first go into a redhawk prompt::
 
@@ -362,8 +363,8 @@ information)::
     In [3]: reqd_selector = function_def.HasDescendant(yield_stmt)
 
 
-We then apply the selector on the file. The files passed are in the `trees
-argument`. Since this file was the first, it is in `trees[0]`::
+We then apply the selector on the file. The asts of the files passed are in
+the `trees argument`. Since this file was the first, it is in `trees[0]`::
 
     In [4]: results = list(reqd_selector(trees[0]))
     In [5]: results[0]
@@ -390,6 +391,9 @@ result::
     
       if __name__ == '__main__':
 
+It is easy to see from this example that selectors are highly composable, and
+thus are very powerful. It is hoped that using selectors becomes a natural way
+to write powerful custom scripts, for querying code.
 
 License
 -------
