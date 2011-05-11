@@ -17,6 +17,7 @@ BINARY_OPERATOR_CONVERSIONS = {
      ,'Sub'       : 'MINUS'
      ,'Mult'      : 'MULTIPLY'
      ,'Div'       : 'DIVIDE'
+     ,'Pow'       : 'POWER'
      ,'BitXor'    : 'BITWISE_XOR'
      ,'BitOr'     : 'BITWISE_OR'
      ,'BitAnd'    : 'BITWISE_AND'
