@@ -1,34 +1,41 @@
 #!/usr/bin/env python
-""" This module contains procedures that are used to get Abstract Syntax
-Trees. This module provides procedures that cache these ASTs (in pickled
-files) of the user's choice, preventing unnecessary parsing, and tree
-conversion.
+""" This module contains procedures that are used to fetch Abstract Syntax
+Trees, optionally using a database. The database is internally stored using
+python pickle files.
 
-The functions in this module are explained below. Note that whenever the
-language argument is not passed, the GuessLanguage function from util.py is
-used to guess the language.
-    
-    * GetLAst: This is the only function that the end user (generally)
-      needs. This gets the languge agnostic ast of a given file. This is a
-      wrapper around ExtractTreeFromDatabase. If key is None, the basename of
-      the file passed is used.
+There are two types of trees that are required.
 
-    The following functions are generally NOT REQUIRED by the end user:
+1. The Language Agnostic Syntax Tree (LAST). This is the tree that redhawk
+performs its operations on. This is what is required almost all of the time -
+for querying, searching, editing (in upcoming versions), etc..
 
-    * GetLanguageSpecificTree: This is similar to the GetLAst function,
-      returns a language specific tree. This function can hence be used to retrieve (and cache)
-      trees other than the Language Agnostic Tree. This function is used by
-      the internal test suites. This is a wrapper around
-      ExtractTreeFromDatabase. If key is none, the basename of the file passed
-      is used.
+2. The various Language SPECIFIC trees. These are the trees emitted by the
+parsers of the various languages - `pycparser`, the `ast` module in python,
+etc.. These are used by Redhawk internally to CONSTRUCT the LAST. This is
+almost never need by the API user. It is provided here since much of redhawk
+internally requires it.
 
-    * ExtractTreeFromDatabase: This extracts a tree from the database,
-      If the tree cannot be found, or its digest does not match, it parses the
-      file using the parser, and stores it in the database. If key is none,
-      the basename of the file passed is used.
+The ASTFetcher class is never instantiated directly. Instances of the
+ASTFetcher class are created by calling either CreateLASTFetcher, or
+CreateLanguageSpecificFetcher.
+
+NOTE: The WriteDatabase method must be called MANUALLY when using the
+ASTFetcher class to update the database file. This is so, for performance
+reasons.
+
+
+If a single tree is to be obtained, it is easier to call GetLAST, or
+GetLanguageSpecificTree.
+
+In short, only the GetLAST, and the CreateLASTFetcher functions are required
+by most API users.
+
+NOTE: None can be passed as the argument to the database argument, for any of
+these functions. In such a case, it will simply fetch the required tree, by
+parsing (and converting) it.
 """
 
-import parse_asts
+import parse_ast
 import redhawk
 import util
 
@@ -36,71 +43,126 @@ import cPickle as P
 import os
 import sys
 
-VERSION_STRING = '__redhawk__version__'
-
-def GetLAst(filename, pickle_file, key=None, language=None):
-  """ Get the language agnostic AST from a cache (pickle_file)."""
-  parser = lambda filename: parse_asts.GetLAst(filename, language)
-
-  return ExtractTreeFromDatabase(filename = filename
-                                ,parser = parser
-                                ,pickle_file = pickle_file
-                                ,key = key)
+VERSION_KEY = '__redhawk__version__'
 
 
-def GetLanguageSpecificTree(filename, pickle_file, key=None, language=None):
-  """ Get a language SPECIFIC ast."""
-  parser = lambda filename: parse_asts.ParseFile(filename, language)
-  return ExtractTreeFromDatabase(filename = filename
-                                ,parser = parser
-                                ,pickle_file = pickle_file
-                                ,key = key)
+def GetLAST(filename, database, key=None, language=None):
+  """ Get a Single LAST. Similar to creating a LAST fetcher instance using
+  CreateLASTFetcher, and then using GetAST."""
+  return CreateLASTFetcher(database, language).GetAST(filename, key)
 
 
+def GetLanguageSpecificTree(filename, database, key=None, language=None):
+  """ Get a Single Language Specific Tree. Similar to creating a Language
+  Specific Tree fetcher instance using CreateLanguageSpecificFetcher, and then
+  using GetAST."""
+  return CreateLanguageSpecificFetcher(database, language).GetAST(filename, key)
 
-def ExtractTreeFromDatabase(filename, pickle_file, parser, key=None):
-  """ Extract a tree from the databse, with the key `key`. If the tree cannot
-  be found, or its digest does not match that of the `filename`'s use the
-  parser to reparse the file, and store it in the databse.
 
-  If key is none, the basename of the file is used.
-  """
-  if pickle_file is None:
-    return parser(filename)
+def CreateLASTFetcher(database, language = None):
+  """ A factory method for creating a LAST fetcher (It handles the parser
+  argument).
 
-  digest = util.GetHashDigest(filename)
+  The `database_file` argument is a path to the database file.  If None is passed as the
+  `database_file` argument, the trees are ALWAYS reparsed.
+
+  The `language` argument can be set to 'c' or 'python' if the `database_file` will
+  contain only c files or python files respectively. If a mixture is to be
+  stored, this is set to None. (The `language` argument exists only for
+  performance reasons -- it avoids language detection.)"""
   
-  key = key or os.path.basename(filename)
+  return ASTFetcher(
+      database_file = database, 
+      parser = lambda filename: parse_ast.GetLAST(filename, language))
 
-  try:
-    fp = open(pickle_file)
-    parsed_data = P.load(fp)
-    fp.close()
-  except (IOError, EOFError):
-    sys.stderr.write("Could not read from database.\n")
-    parsed_data = {}
 
-  # If version numbers don't match, clear the pickle file.
-  if (not parsed_data.has_key(VERSION_STRING) or
-      parsed_data[VERSION_STRING] != redhawk.__version__):
-    parsed_data = {}
-    parsed_data[VERSION_STRING] = redhawk.__version__
+def CreateLanguageSpecificFetcher(database, language=None):
+  """ A factory method for creating a language specific tree Fetcher.
 
-  if parsed_data.has_key(key):
-    (pickled_digest, pickled_ast) = parsed_data[key]
-    if pickled_digest == digest:
-      return pickled_ast
+  The `database_file` argument is a path to the database file. If None is
+  passed, the trees are ALWAYS reparsed.
 
-  if parser is None:
-    return None
+  The `language` argument can be set to 'c' or 'python' if the database_file
+  will contain only c files or python files respectively. If a mixture is to
+  be stored, this is set to None. (The `language` argument exists only for
+  performance reasons -- it avoids language detection.)"""
+  return ASTFetcher(
+      database_file = database,
+      parser = lambda filename: parse_ast.ParseFile(filename, language))
 
-  ast = parser(filename)
-  parsed_data[key] = (digest, ast)
 
-  try:
-    fp = open(pickle_file, "w")
-    P.dump(parsed_data, fp)
-    fp.close()
-  except IOError, e:
-    sys.stderr.write("Could not write to Database: No Write permissions?\n")
-  return ast
+class ASTFetcher:
+  """ Fetches AST trees from a pickle file. 
+
+  Normally, you would want to use either of the factory functions:
+    * CreateLASTFetcher - Get an instance of the AST class, that fetches
+      Language agnostic parse trees.
+
+    * CreateLanguageSpecificFetcher - Get an instance of the AST class that
+      fetches language specific parse trees.
+
+  NOTE: The WriteDatabase must be called MANUALLY. This is so for performance
+  reasons. If this is cumbersome, because you are fetching only one LAST or
+  one Language Specific Tree, use the helper functions, `GetLAST` and
+  `GetLanguageSpecificTree` respecitively."""
+
+  def __init__(self, database_file, parser):
+    self.database = database_file
+    self.parser = parser
+    self.parsed_data = self.__ReadFromDatabase()
+    return
+
+  def __ReadFromDatabase(self):
+    try:
+      fp = open(self.database)
+      parsed_data = P.load(fp)
+      fp.close()
+    except (IOError, EOFError):
+      sys.stderr.write("Could not read from database.\n")
+      parsed_data = {}
+    except TypeError:
+      parsed_data = {}
+
+    # If version numbers don't match, don't read the data.
+    if (not parsed_data.has_key(VERSION_KEY) or
+        parsed_data[VERSION_KEY] != redhawk.__version__):
+      parsed_data = {}
+      parsed_data[VERSION_KEY] = redhawk.__version__
+    return parsed_data
+
+
+  def __WriteToDatabase(self):
+    try:
+      fp = open(self.database, "w")
+      P.dump(self.parsed_data, fp)
+      fp.close()
+    except IOError, e:
+      sys.stderr.write("Could not write to Database: No Write permissions?\n")
+    return
+
+  def WriteDatabase(self):
+    """ Update the databse file."""
+    return self.__WriteToDatabase()
+
+
+  def GetAST(self, filename, key=None):
+    """ Extract a tree from the database. If `key` is None, the basename of
+    the file is used. If the tree cannot be found, it is parsed, and stored in
+    the database (in Memory).
+
+    Note that to UPDATE the Database FILE, WriteDatabase() must be called.
+    """
+    digest = util.GetHashDigest(filename)
+    key = key or os.path.basename(filename)
+  
+    if self.parsed_data.has_key(key):
+      (pickled_digest, pickled_ast) = self.parsed_data[key]
+      if pickled_digest == digest:
+        return pickled_ast
+  
+    if self.parser is None:
+      return None
+  
+    ast = self.parser(filename)
+    self.parsed_data[key] = (digest, ast)
+    return ast

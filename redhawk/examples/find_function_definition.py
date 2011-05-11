@@ -18,7 +18,7 @@ def Main():
   function_name = sys.argv[1]
   files = sys.argv[2:]
 
-  asts = [G.GetLAst(x, pickle_file = None) for x in files]
+  asts = [G.GetLAST(x, database = None) for x in files]
 
   # Ugly way of writing the selector
   # selector = lambda x: x.GetName() == 'DefineFunction' and x.name == function_name

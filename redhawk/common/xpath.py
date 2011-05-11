@@ -268,7 +268,7 @@ def Main():
     return
 
   for f in sys.argv[2:]:
-    ast = G.GetLAst(f, pickle_file = None)
+    ast = G.GetLAST(f, database = None)
     results = list(ApplyParsedXPathQuery([ast], parsed_query))
     print "+++ %s"%(f)
     for r in results:

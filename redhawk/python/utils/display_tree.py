@@ -10,5 +10,5 @@ filename = sys.argv[1]
 
 pprint.pprint(ast.dump(
   G.GetLanguageSpecificTree(filename, 
-                            pickle_file = None, 
+                            database = None, 
                             language='python')))

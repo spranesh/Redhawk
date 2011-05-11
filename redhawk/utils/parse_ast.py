@@ -1,13 +1,17 @@
 #!/usr/bin/env python
-""" This module contains functions that parse files and return asts. The
+""" 
+If you are an API user, you should almost always be using get_ast.py, rather
+than this module.
+
+This module contains functions that parse files and return asts. The
 functions in this module should (generally) not be used directly. Instead, the
 wrappers in redhawk/utils/get_last.py are to be used, as they also cache the
 ASTs to store unnecessary parsing, and tree conversion.
 
-      * GetLAst: Gets the Language Agnostic AST of a file. Essentially a
-        function composition of ConvertAst and ParseFile.
+      * GetLAST: Gets the Language Agnostic AST of a file. Essentially a
+        function composition of ConvertAST and ParseFile.
 
-      * ConvertAst: This function converts a language specific AST to the
+      * ConvertAST: This function converts a language specific AST to the
         L-AST. This function takes an optional filename argument, to fill in
         the Module Node.
 
@@ -34,16 +38,16 @@ import pycparser
 import ast
 import os
 
-def GetLAst(filename, language=None):
+def GetLAST(filename, language=None):
   """ Parse the file using the respective parser, and return the Language
   Agnostic AST."""
 
-  return ConvertAst(ParseFile(filename, language)
+  return ConvertAST(ParseFile(filename, language)
                     ,language or util.GuessLanguage(filename)
                     ,filename)
 
 
-def ConvertAst(ast, language, filename=None):
+def ConvertAST(ast, language, filename=None):
   if language == 'c':
     converter = C.CTreeConverter(filename)
   elif language == 'python':

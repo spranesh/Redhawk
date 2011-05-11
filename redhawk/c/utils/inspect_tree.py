@@ -1,5 +1,5 @@
 import redhawk.utils.util as U
-import redhawk.utils.parse_asts as parse_asts
+import redhawk.utils.parse_ast as parse_ast
 
 import sys
 
@@ -15,7 +15,7 @@ except IndexError, e:
   sys.stderr.write("No C file specified to parse.\n")
   sys.exit(1)
 
-tree = parse_asts.ParseC(filename)
+tree = parse_ast.ParseC(filename)
 body = tree.children()
 program = open(filename).read()
 if "show" in sys.argv:
