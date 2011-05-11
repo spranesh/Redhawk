@@ -15,8 +15,8 @@ setup(
     url="http://pypi.python.org/pypi/redhawk/",
 
     packages=['redhawk'
+             ,'redhawk.examples'
              ,'redhawk.c'
-             ,'redhawk.c.tests'
              ,'redhawk.common'
              ,'redhawk.common.readers'
              ,'redhawk.common.writers'
@@ -29,6 +29,6 @@ setup(
                       # ,'pygraphviz>=0.99' # Optional Dependency
                       ],
 
-    scripts=['scripts/redhawk_prompt'
-           ,'scripts/redhawk']
+    scripts=['bin/redhawk_prompt'
+            ,'bin/redhawk']
 )

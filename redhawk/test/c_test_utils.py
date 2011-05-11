@@ -5,8 +5,8 @@ import redhawk.utils.get_ast as G
 
 import sys
 
-RELATIVE_TEST_PATH = "c/tests/c_files/"
-PICKLE_FILE = "c/tests/c_parsed.pickle"
+RELATIVE_TEST_PATH = "test/c_files/"
+PICKLE_FILE = "test/c_asts.pickle"
   
 def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
   """ SetUp returns a parsed C Program."""

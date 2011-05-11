@@ -6,16 +6,16 @@
     Note that these tests only check that conversion works, and not that the
     resultant tree is actually correct (yet)."""
 
-import test_utils
+import c_test_utils as CT
 
 TEST_FILE = "declarations.c"
 
-test_descriptions = open("%s/%s"%(test_utils.RELATIVE_TEST_PATH, TEST_FILE)).readlines()
+test_descriptions = open("%s/%s"%(CT.RELATIVE_TEST_PATH, TEST_FILE)).readlines()
 
-ConvertDeclaration = test_utils.ConvertTree
+ConvertDeclaration = CT.ConvertTree
 
 def TestDeclarations():
-  t = test_utils.SetUp(TEST_FILE)
+  t = CT.SetUp(TEST_FILE)
   for (i, description) in enumerate(test_descriptions):
     ConvertDeclaration.description = "Test `%s`"%(description.strip())
     yield ConvertDeclaration, t.children()[i]

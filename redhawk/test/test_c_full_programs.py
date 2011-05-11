@@ -2,7 +2,7 @@
 
 """ Tests conversion of full programs. """
 
-import test_utils
+import c_test_utils as CT
 
 tests = [("prog001.c", "Function to return 0")
         ,("prog002.c", "Static function to return 0")
@@ -31,8 +31,8 @@ tests = [("prog001.c", "Function to return 0")
         ,("prog025.c", "Test Hello World Empty arguments.")]
 
 def ConvertFile(filename):
-  t = test_utils.SetUp(filename)
-  return test_utils.ConvertTree(t, filename=filename)
+  t = CT.SetUp(filename)
+  return CT.ConvertTree(t, filename=filename)
 
 def TestPrograms():
   for (filename, description) in tests:
