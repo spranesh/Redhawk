@@ -49,15 +49,28 @@ VERSION_KEY = '__redhawk__version__'
 def GetLAST(filename, database, key=None, language=None):
   """ Get a Single LAST. Similar to creating a LAST fetcher instance using
   CreateLASTFetcher, and then using GetAST."""
-  return CreateLASTFetcher(database, language).GetAST(filename, key)
+  last_parser = lambda filename: parse_ast.GetLAST(filename, language)
+  if database == None:
+    return parser(filename)
+
+  ast_fetcher = CreateLASTFetcher(database, language)
+  ast = ast_fetcher.GetAST(filename, key)
+  ast_fetcher.WriteDatabase()
+  return ast
+
 
 
 def GetLanguageSpecificTree(filename, database, key=None, language=None):
   """ Get a Single Language Specific Tree. Similar to creating a Language
   Specific Tree fetcher instance using CreateLanguageSpecificFetcher, and then
   using GetAST."""
-  return CreateLanguageSpecificFetcher(database, language).GetAST(filename, key)
-
+  specific_parser = lambda filename: parse_ast.ParseFile(filename, language)
+  if database is None:
+    return specific_parser(filename)
+  ast_fetcher = CreateLanguageSpecificFetcher(database, language)
+  ast = ast_fetcher.GetAST(filename, key)
+  ast_fetcher.WriteDatabase()
+  return ast
 
 def CreateLASTFetcher(database, language = None):
   """ A factory method for creating a LAST fetcher (It handles the parser
@@ -109,6 +122,7 @@ class ASTFetcher:
   def __init__(self, database_file, parser):
     self.database = database_file
     self.parser = parser
+    self.changed = False
     self.parsed_data = self.__ReadFromDatabase()
     return
 
@@ -120,24 +134,34 @@ class ASTFetcher:
     except (IOError, EOFError):
       sys.stderr.write("Could not read from database.\n")
       parsed_data = {}
+      self.changed = True
     except TypeError:
       parsed_data = {}
+      self.changed = True
 
     # If version numbers don't match, don't read the data.
     if (not parsed_data.has_key(VERSION_KEY) or
         parsed_data[VERSION_KEY] != redhawk.__version__):
       parsed_data = {}
       parsed_data[VERSION_KEY] = redhawk.__version__
+      self.changed = True
     return parsed_data
 
 
   def __WriteToDatabase(self):
+    # sys.stderr.write("Changed?%s\n"%(self.changed))
+    if self.database is None:
+      return
+    if self.changed == False:
+      return
+
     try:
       fp = open(self.database, "w")
       P.dump(self.parsed_data, fp)
       fp.close()
     except IOError, e:
       sys.stderr.write("Could not write to Database: No Write permissions?\n")
+    self.changed = False
     return
 
   def WriteDatabase(self):
@@ -165,4 +189,5 @@ class ASTFetcher:
   
     ast = self.parser(filename)
     self.parsed_data[key] = (digest, ast)
+    self.changed = True
     return ast
