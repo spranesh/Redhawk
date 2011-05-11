@@ -34,6 +34,7 @@ import util
 
 import cPickle as P
 import os
+import sys
 
 VERSION_STRING = '__redhawk__version__'
 
@@ -76,6 +77,7 @@ def ExtractTreeFromDatabase(filename, pickle_file, parser, key=None):
     parsed_data = P.load(fp)
     fp.close()
   except (IOError, EOFError):
+    sys.stderr.write("Could not read from database.\n")
     parsed_data = {}
 
   # If version numbers don't match, clear the pickle file.
@@ -95,7 +97,10 @@ def ExtractTreeFromDatabase(filename, pickle_file, parser, key=None):
   ast = parser(filename)
   parsed_data[key] = (digest, ast)
 
-  fp = open(pickle_file, "w")
-  P.dump(parsed_data, fp)
-  fp.close()
+  try:
+    fp = open(pickle_file, "w")
+    P.dump(parsed_data, fp)
+    fp.close()
+  except IOError, e:
+    sys.stderr.write("Could not write to Database: No Write permissions?\n")
   return ast
