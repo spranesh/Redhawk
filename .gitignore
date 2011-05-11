@@ -10,3 +10,4 @@ yacctab.py
 .redhawk_db
 MANIFEST
 dist/*
+*.egg-info
