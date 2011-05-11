@@ -78,8 +78,8 @@ Built in Functions:
     ShowASTAsImage   - Shows the AST as a graph using dot.
 
 Built in Modules:
-    selector - redhawk.common.selector 
-    position - redhawk.common.position 
+    S - redhawk.common.selector 
+    P - redhawk.common.position 
 
 To view this again, use the Help function.  """
 
@@ -96,8 +96,8 @@ def EnterShell(trees):
       'ConvertCodeToAST': ConvertCodeToAST,
       'Help':Help,
       'ShowASTAsImage':S.ShowASTAsImage,
-      'selector':selector,
-      'position':position,
+      'S':selector,
+      'P':position,
     }
   U.StartShell(local_vars, banner=Help(display=False))
 
