@@ -4,7 +4,8 @@
 
 def GetPosition(tree):
   """ Get the position of a node, of the position of its closest parent."""
-  while (tree != None) and (tree.position == None):
+  while (tree != None) and ((not hasattr(tree, 'position')) or (tree.position
+    == None)):
     tree = tree.GetParent()
 
   if tree == None:

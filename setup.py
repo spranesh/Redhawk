@@ -36,8 +36,8 @@ setup(
       },
 
     install_requires = [
-      'PyYAML>=3.09',
-      'nose>=0.11',
+      # 'PyYAML>=3.09',
+      # 'nose>=0.11',
       # ,'pygraphviz>=0.99' # Optional Dependency
       'pycparser>=2.02' ],
 
