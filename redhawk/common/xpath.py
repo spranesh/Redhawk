@@ -252,7 +252,7 @@ def XPath(trees, xpath_string):
 def Main():
   """ Only for testing."""
 
-  import position
+  import format_position as F
   import redhawk.utils.get_ast as G
 
   if len(sys.argv) < 2:
@@ -270,10 +270,8 @@ def Main():
   for f in sys.argv[2:]:
     ast = G.GetLAST(f, database = None)
     results = list(ApplyParsedXPathQuery([ast], parsed_query))
-    print "+++ %s"%(f)
     for r in results:
-      print position.ShowPosition(position.GetPosition(r))
-    print
+      F.PrintContextInFile(r,context=3)
   return
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import script_util as S
 import redhawk.common.selector as selector
-import redhawk.common.position as position
+import redhawk.common.format_position as format_position
 import redhawk.utils.get_ast as G
 import redhawk.utils.util as U
 
@@ -79,7 +79,7 @@ Built in Functions:
 
 Built in Modules:
     S - redhawk.common.selector 
-    P - redhawk.common.position 
+    F - redhawk.common.format_position 
 
 To view this again, use the Help function.  """
 
@@ -97,7 +97,7 @@ def EnterShell(trees):
       'Help':Help,
       'ShowASTAsImage':S.ShowASTAsImage,
       'S':selector,
-      'P':position,
+      'F':format_position,
     }
   U.StartShell(local_vars, banner=Help(display=False))
 

@@ -2,7 +2,7 @@
 import script_util as S
 
 import redhawk.common.xpath as X
-import redhawk.common.position as P
+import redhawk.common.format_position as F
 import redhawk.utils.get_ast as G
 
 import optparse
@@ -27,7 +27,7 @@ def Main(args):
       "--context",
       dest = "context",
       type = "int",
-      default = None,
+      default = 0,
       help = "Context to be shown." + S.OPTIONS_DEFAULT_STRING)
 
   parser.add_option(
@@ -57,22 +57,13 @@ def Main(args):
     ast = ast_fetcher.GetAST(f, key=S.GetKey(f, database))
     results = list(X.ApplyParsedXPathQuery([ast], parsed_query))
 
-    if options.context:
-      # TODO(spranesh): Fix the context
-      for r in results:
-        p = P.GetPosition(r)
-        print "+++%s:%d"%(f, p.line)
-        print P.ShowPosition(p, context = options.context)
-
-    else:
+    if results:
       fp = open(f)
       lines = fp.readlines()
-      for r in results:
-        p = P.GetPosition(r)
-        if len(lines) != 0:
-          print "%s:%d:%s"%(f, p.line, lines[p.line-1].strip())
-        else:
-          print "%s:%d:%s"%(f, p.line, "")
       fp.close()
+      
+      for r in results:
+        F.PrintContextInFile(r, context = options.context)
+
   ast_fetcher.WriteDatabase()
   return
