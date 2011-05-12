@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-fp = open("README.txt")
+fp = open("README.rst")
 long_description=fp.read()
 fp.close()
 
@@ -30,9 +30,18 @@ setup(
       'redhawk.test'],
 
     package_data = {
-      'redhawk.utils': ['fake_libc_include/*'],
-      'redhawk.test': ['files/python/*', 'files/c/*', 'files/dot/*'],
-      'redhawk.common': ['*.yaml']
+      'redhawk.utils': [
+        'fake_libc_include/*'
+       ],
+      'redhawk.test': [
+        'files/python/*',
+        'files/c/*',
+        'files/dot/*',
+        'files/examples/*',
+       ],
+      'redhawk.common': [
+        '*.yaml'
+       ]
       },
 
     install_requires = [

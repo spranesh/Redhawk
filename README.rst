@@ -411,7 +411,7 @@ the source distribution.
 
 
 .. _imgur: http://imgur.com/CBHCX
-.. _counter.py: https://github.com/spranesh/Redhawk/tree/master/redhawk/test/files/python/counter.py
+.. _counter.py: https://github.com/spranesh/Redhawk/tree/master/redhawk/test/files/examples/counter.py
 .. _ast_gen.py: https://github.com/spranesh/Redhawk/blob/master/redhawk/common/_ast_gen.py
 .. _node.py: https://github.com/spranesh/Redhawk/blob/master/redhawk/common/node.py
 .. _types.py: https://github.com/spranesh/Redhawk/blob/master/redhawk/common/types.py
@@ -424,4 +424,3 @@ the source distribution.
 .. _pycparser: http://code.google.com/p/pycparser/ 
 .. _Python YAML: http://www.pyyaml.org
 .. _nosetests: http://somethingaboutorange.com/mrl/projects/nose/1.0.0/
-
