@@ -225,6 +225,9 @@ class CTreeConverter(tree_converter.TreeConverter):
     """ Note that this function returns a list, as opposed to a node."""
     # The Case Node is screwed up. We need to flesh out the
     # case node's stmt, and put it up one level higher.
+    if not tree.block_items:
+      return []
+
     compound_items = []
     for t in tree.block_items:
       ct = self.ConvertTree(t)

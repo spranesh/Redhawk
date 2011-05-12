@@ -28,7 +28,8 @@ tests = [("prog001.c", "Function to return 0")
         ,("prog022.c", "Test Union (decl and ref)")
         ,("prog023.c", "Test Structure Defintion")
         ,("prog024.c", "Test Ternary If")
-        ,("prog025.c", "Test Hello World Empty arguments.")]
+        ,("prog025.c", "Test Hello World Empty arguments.")
+        ,("prog026.c", "Test Empty Main Program.")]
 
 def ConvertFile(filename):
   t = CT.SetUp(filename)
