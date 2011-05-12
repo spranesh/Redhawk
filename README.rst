@@ -178,7 +178,9 @@ in the LAST has to be known. (Thorough documentation about this is coming up.
 For now, one can refer to the `node`_ and `types`_ yaml configuration files on
 github.) [1]_ 
 
-For the examples below, we shall use the `counter.py`_ file::
+For the examples below, we shall use the `counter.py`_ file. It is to be noted
+that the same queries will work with other languages also (only C is supported
+for now).::
 
      1	def CounterClosure(init=0):
      2	  value = [init]
@@ -220,8 +222,24 @@ Let us find all functions at the module level in `counter.py`::
 
 This gives us::
 
-    counter.py:1:def CounterClosure(init=0):
     counter.py:16:def CounterIter(init = 0):
+    counter.py:1:def CounterClosure(init=0):
+
+
+Note:
+
+1. The results are not necessarily in a sorted order, with respect to
+   line number. This does not hamper the use of Redhawk for searching and
+   navigation. (The results will always be guaranteed to be sorted with respect to the
+   files). On the plus side, this makes Redhawk a little bit faster. If order is
+   required, a simple invocation of the unix `sort` program should fix this.
+
+2. The above query would work on a C program as well. Running the same query
+   on `stats.c`_ gives us::
+
+    stats.c:17:float Variance(float *p, int len)
+    stats.c:5:float Mean(float *p, int len)
+    stats.c:34:int main()
 
 *Example 2*:
 Let us find all functions one level below the module level in `counter.py`::
@@ -230,10 +248,9 @@ Let us find all functions one level below the module level in `counter.py`::
 
 This gives us::
 
-    counter.py:3:def Inc():
     counter.py:9:def __init__(self, init=0):
+    counter.py:3:def Inc():
     counter.py:12:def Bump(self):
-
 
 
 *Example 3*:
@@ -244,13 +261,10 @@ Let us find all functions *anywhere* in the program.::
 This gives us::
 
     counter.py:9:def __init__(self, init=0):
-    counter.py:12:def Bump(self):
+    counter.py:16:def CounterIter(init = 0):
     counter.py:3:def Inc():
     counter.py:1:def CounterClosure(init=0):
-    counter.py:16:def CounterIter(init = 0):
-
-(Note that this is not necessarily in a sorted order. This can be fixed by
-passing the result through an invocation of sort.)
+    counter.py:12:def Bump(self):
 
 *Example 4*:
 Suppose we wanted to find all closures in the file. We could do this via::
@@ -271,12 +285,23 @@ name. Now we simply need to test whether the first 7 letters of the name are
 
 This gives us:
 
-    counter.py:1:def CounterClosure(init=0):
     counter.py:16:def CounterIter(init = 0):
+    counter.py:1:def CounterClosure(init=0):
 
 
 The `@{..}` represents a python lambda function, with the default variable n.
 Thus, it is another way of providing arbitrary functions to match with. [2]_
+
+To remind the reader that all these queries are langauge agnostic, running the
+above command, but instead search for all functions that have the letter `e` in
+the them, in the `stats.c`_ file.::
+
+    $ redhawk query '**/DefineFunction@{n.name.find("e") != -1}' stats.c
+
+gives us::
+
+    stats.c:17:float Variance(float *p, int len)
+    stats.c:5:float Mean(float *p, int len)
 
 *Example 7*:
 Find all assignments where init is involved. Looking again at the `node`
@@ -284,7 +309,6 @@ configuration file, we realise that we are looking for `Assignment` Nodes, which
 have a `ReferVariable` descendent, whose name is 'init'::
 
     $ redhawk query '**/Assignment/**/ReferVariable@[name="init"]' counter.py
-
 
 This gives us::
 
@@ -313,9 +337,9 @@ the function object has a name starting with "Counter". [3]_ ::
 
 This gives us::
 
-    counter.py:23:c2 = CounterClass()
     counter.py:24:c3 = CounterIter()
     counter.py:22:c1 = CounterClosure()
+    counter.py:23:c2 = CounterClass()
 
 
 An abstract grammar of the query language can be found via::
@@ -339,9 +363,11 @@ logical this query becomes using selectors.
 
 We first go into a redhawk prompt::
 
-    $ redhawk prompt counter.py
+    $ redhawk prompt counter.py                                                                [1]
     
-    
+
+We are greeted with a help banner::
+
     Built in Variables:
         trees - contains the parse trees of the files passed in the command line
     
@@ -353,13 +379,13 @@ We first go into a redhawk prompt::
     
     Built in Modules:
         S - redhawk.common.selector
-        P - redhawk.common.position
+        F - redhawk.common.format_position
     
     To view this again, use the Help function.
+    
 
-
-We then define our selectors. (See `pydoc redhawk.common.selector` for more
-information)::
+In the prompt, we define our selectors. (See `pydoc redhawk.common.selector`
+for what selectors are, and how they can be composed)::
 
     In [1]: function_def = S.S(node_type='DefineFunction')
     In [2]: yield_stmt = S.S(node_type='Yield')
@@ -371,28 +397,30 @@ the `trees argument`. Since this file was the first, it is in `trees[0]`::
 
     In [4]: results = list(reqd_selector(trees[0]))
     In [5]: results[0]
+
+gives us::
+
     Out[5]: DefineFunction
 
 
 This is indeed the function we wanted. Just to be sure, we use the
-`P.GetPosition` function to get the position of the result node. We the use
-the `P.ShowPosition` function (with a context argument for clarity) to see the
-result::
+`F.PrintContextInFile` function to print the context of the tree.::
 
-    In [6]: print P.ShowPosition(P.GetPosition(results[0]), context = 6)
+    In [6]: F.PrintContextInFile(results[0], context=6)
+    counter.py:10:       self.value = init
+    counter.py:11:   
+    counter.py:12:     def Bump(self):
+    counter.py:13:       self.value += 1
+    counter.py:14:       return self.value
+    counter.py:15:   
+    counter.py:16: > def CounterIter(init = 0):
+    counter.py:17:     while True:
+    counter.py:18:       init += 1
+    counter.py:19:       yield init
+    counter.py:20:   
+    counter.py:21:   if __name__ == '__main__':
+    counter.py:22:     c1 = CounterClosure()
 
-          self.value = init
-    
-        def Bump(self):
-          self.value += 1
-          return self.value
-    
-    > def CounterIter(init = 0):
-        while True:
-          init += 1
-          yield init
-    
-      if __name__ == '__main__':
 
 It is easy to see from this example that selectors are highly composable, and
 thus are very powerful. It is hoped that using selectors becomes a natural way
@@ -415,6 +443,7 @@ the source distribution.
 
 .. _imgur: http://imgur.com/CBHCX
 .. _counter.py: https://github.com/spranesh/Redhawk/tree/master/redhawk/test/files/examples/counter.py
+.. _stats.c: https://github.com/spranesh/Redhawk/tree/master/redhawk/test/files/examples/stats.c
 .. _ast_gen.py: https://github.com/spranesh/Redhawk/blob/master/redhawk/common/_ast_gen.py
 .. _node.py: https://github.com/spranesh/Redhawk/blob/master/redhawk/common/node.py
 .. _types.py: https://github.com/spranesh/Redhawk/blob/master/redhawk/common/types.py
