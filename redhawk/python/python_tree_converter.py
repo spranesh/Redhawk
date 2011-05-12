@@ -232,12 +232,13 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertAugassign(self, tree):
     """ Convert the AugAssign(expr target, operator op, expr value) node."""
     #TODO(spranesh): Not cheat?
+    lvalue = self.ConvertTree(tree.target)
     rvalue = N.Expression(position = self.gc.GC(tree.value),
         operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
-        children = map(self.ConvertTree, [tree.target, tree.value]))
+        children = [lvalue, self.ConvertTree(tree.value)])
 
     return N.Assignment(position = self.gc.GC(tree),
-        lvalue = self.ConvertTree(tree.target),
+        lvalue = lvalue,
         rvalue = rvalue)
 
 

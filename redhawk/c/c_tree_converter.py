@@ -260,14 +260,18 @@ class CTreeConverter(tree_converter.TreeConverter):
       #TODO(spranesh): Not make any transformations to the += like operators?
       assert(aux_op in BINARY_OPERATOR_CONVERSIONS)
 
+      # Make sure that the same subtree is there in both the lvalue,
+      # and the first child of the rvalue
+      lvalue = self.ConvertTree(tree.lvalue)
       rvalue = N.Expression(position = GetCoords(tree.rvalue),
           operator = BINARY_OPERATOR_CONVERSIONS[aux_op],
-          children = map(self.ConvertTree, [tree.lvalue, tree.rvalue]))
+          children = [lvalue, self.ConvertTree(tree.rvalue)])
     else:
+      lvalue = self.ConvertTree(tree.lvalue)
       rvalue = self.ConvertTree(tree.rvalue)
 
     return N.Assignment(position = GetCoords(tree),
-          lvalue = self.ConvertTree(tree.lvalue),
+          lvalue = lvalue,
           rvalue = rvalue)
 
   def ConvertFunccall(self, tree):
