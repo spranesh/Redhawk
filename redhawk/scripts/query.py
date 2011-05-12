@@ -55,7 +55,7 @@ def Main(args):
   ast_fetcher = G.CreateLASTFetcher(database)
   for f in S.GetSupportedFiles(files):
     ast = ast_fetcher.GetAST(f, key=S.GetKey(f, database))
-    results = list(X.ApplyParsedXPathQuery([ast], parsed_query))
+    results = set(X.ApplyParsedXPathQuery([ast], parsed_query))
 
     if results:
       fp = open(f)
