@@ -37,6 +37,7 @@ import pycparser
 
 import ast
 import os
+import sys
 
 def GetLAST(filename, language=None):
   """ Parse the file using the respective parser, and return the Language
@@ -83,9 +84,11 @@ def ParseC(filename):
         use_cpp = True,
         cpp_path='cpp',
         cpp_args='-I%s/'%fake_libc_dir)
-  except StandardError, e:
-    util.ExitWithError(str(e))
-  return tree
+    return tree
+  except pycparser.plyparser.ParseError, e:
+    error = "ERROR: Parsing file: %s with pycparser (with cpp). Skipping\n"%(filename)
+    sys.stderr.write(error)
+    return None
 
 
 def ParsePython(filename):
@@ -93,6 +96,8 @@ def ParsePython(filename):
   # print "FILENAME: ", filename
   try:
     tree = ast.parse(expr = open(filename).read(), filename = filename)
+    return tree
   except SyntaxError, e:
-    util.ExitWithError(str(e))
-  return tree
+    error = "ERROR: Parsing file: %s with ast module. Skipping\n"%(filename)
+    sys.stderr.write(error)
+    return None
