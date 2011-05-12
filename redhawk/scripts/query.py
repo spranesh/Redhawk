@@ -38,6 +38,14 @@ def Main(args):
       default=True,
       help = "Explicity tell redhawk to NOT use the database." + S.OPTIONS_DEFAULT_STRING)
 
+  parser.add_option(
+      "-s",
+      "--store-new",
+      action="store_true",
+      dest="store_new",
+      default=False,
+      help = "Store new files that redhawk comes across in the database." + S.OPTIONS_DEFAULT_STRING)
+
   options, args = parser.parse_args(args)
   if not len(args):
       parser.error("No query or files given.")
@@ -48,13 +56,13 @@ def Main(args):
     sys.stderr.write("Query was parsed as: %s\n"%(parsed_query))
     sys.exit(1)
 
-  database = S.GetDatabase() if options.use_db else None
+  database_file = S.GetDatabase() if options.use_db else None
 
   files = args[1:]
 
-  ast_fetcher = G.CreateLASTFetcher(database)
+  ast_fetcher = G.CreateLASTFetcher(database_file, store_new = options.store_new)
   for f in S.GetSupportedFiles(files):
-    ast = ast_fetcher.GetAST(f, key=S.GetKey(f, database))
+    ast = ast_fetcher.GetAST(f, key=S.GetKey(f, database_file))
     results = set(X.ApplyParsedXPathQuery([ast], parsed_query))
 
     if results:
@@ -65,5 +73,5 @@ def Main(args):
       for r in results:
         F.PrintContextInFile(r, context = options.context)
 
-  ast_fetcher.WriteDatabase()
+  ast_fetcher.Close()
   return

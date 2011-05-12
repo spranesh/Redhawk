@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 import script_util as S
-import init
 import add
-import query
+import init
+import listfiles
 import prompt
+import query
+import remove
 import show
+import where
 
 import optparse
 import sys
@@ -22,9 +25,12 @@ The simplest use case is just:
 Supported commands are:
   init        Create an EMPTY AST index.
   add         Add files to an AST index.
-  query       Query for a pattern in a list of files, or in the index.
+  listfiles   List all the files in the AST index.
   prompt      Start a redhawk subshell, with preloaded modules, and parse-trees.
+  query       Query for a pattern in a list of files, or in the index.
+  remove      Remove files from the AST index.
   show        Show (visualize) a file either as text, or as an image.
+  where       Print the location of the current redhawk index (if there is one).
 
 See $prog COMMAND --help for more detailed information about that command.
 
@@ -46,9 +52,12 @@ def Main():
   dispatch = { 
       'add':   add.Main,
       'init':  init.Main,
-      'query': query.Main,
+      'listfiles': listfiles.Main,
       'prompt': prompt.Main,
+      'query': query.Main,
+      'remove': remove.Main,
       'show':  show.Main,
+      'where': where.Main,
     }
   if sys.argv[1] in dispatch:
     dispatch[sys.argv[1]](sys.argv[2:])

@@ -141,6 +141,14 @@ def AdjustFilePathToBaseDirectory(filepath, base_dir):
   print filepath
   print cur_dir
 
+def GetDBPathRelativeToCurrentDirectory(filepath):
+  database_dir = os.path.dirname(
+      FindFileInDirectoryOrAncestors(
+        redhawk.GetDBName(),
+        os.curdir))
+
+  abs_filepath = os.path.join(database_dir, filepath)
+  return os.path.relpath(abs_filepath, os.curdir)
 
 def OpenSourceFile(filepath):
   """ Try to open the file. If not, we try to open the filepath as one
@@ -150,12 +158,4 @@ def OpenSourceFile(filepath):
   except IOError, e:
     pass
   
-  database_dir = os.path.dirname(
-      FindFileInDirectoryOrAncestors(
-        redhawk.GetDBName(),
-        os.curdir))
-
-  abs_filepath = os.path.join(database_dir, filepath)
-  new_filepath = os.path.relpath(abs_filepath, os.curdir)
-
-  return open(new_filepath)
+  return open(GetDBPathRelativeToCurrentDirectory(filepath))

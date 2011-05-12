@@ -20,13 +20,14 @@ Type help() at the prompt to know more.
 """)
 
 USE_DATABASE = False
+STORE_NEW = False
 
 
 def ConvertFileToAST(f):
   """ Convert a file into an language agnostic AST."""
   if USE_DATABASE:
     database = S.GetDatabase()
-    return G.GetLAST(f, database, key=S.GetKey(f, database))
+    return G.GetLAST(f, database, key=S.GetKey(f, database), store_new = STORE_NEW)
   else:
     return G.GetLAST(f, database=None)
 
@@ -40,6 +41,7 @@ def ConvertCodeToAST(s, language):
 
 
 def Main(args):
+  global STORE_NEW
   parser = optparse.OptionParser(usage)
   parser.add_option(
       "-n",
@@ -49,6 +51,14 @@ def Main(args):
       default=True,
       help = "Explicity tell redhawk to NOT use the database." + S.OPTIONS_DEFAULT_STRING)
 
+  parser.add_option(
+      "-s",
+      "--store-new",
+      action="store_true",
+      dest="store_new",
+      default=False,
+      help = "Store new files that redhawk comes across in the database." + S.OPTIONS_DEFAULT_STRING)
+
   options, args = parser.parse_args(args)
 
   database = None
@@ -56,12 +66,15 @@ def Main(args):
     database = S.GetDatabase()
     USE_DATABASE = True
 
+  if options.store_new:
+    STORE_NEW = True
+
   if args is []:
     trees = []
   else:
-    ast_fetcher = G.CreateLASTFetcher(database)
+    ast_fetcher = G.CreateLASTFetcher(database, store_new = STORE_NEW)
     trees = [ast_fetcher.GetAST(f, key=S.GetKey(f, database)) for f in args]
-    ast_fetcher.WriteDatabase()
+    ast_fetcher.Close()
   return EnterShell(trees)
 
 

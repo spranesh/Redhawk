@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 
 import script_util as S
+import redhawk
 import redhawk.utils.get_ast as G
+import redhawk.utils.util as U
+import redhawk.utils.key_value_store as KVStore
 
 import optparse
 
 usage = S.MakeStringFromTemplate("""
-$prog add file1 ..
+$prog remove file1 ..
 
-Add ASTs to the database.
+Removes ASTs from the database.
 (If a directory is given, it traverses it recursively.)
 """)
 
@@ -25,11 +28,13 @@ def Main(args):
     S.ExitWithError(S.MakeStringFromTemplate(
         "No database found. Maybe $prog init first?"))
 
-  ast_fetcher = G.CreateLASTFetcher(database_file, store_new = True)
+  store = KVStore.KeyValueStore(database_file, redhawk.GetVersion())
   for f in S.GetSupportedFiles(args):
-    ast = ast_fetcher.GetAST(f, key=S.GetKey(f, database_file))
-    print "%s: Parsing "%(f)
-  print "Adding to Database.."
-  ast_fetcher.Close()
-  print "Done"
+    key = S.GetKey(f, database_file)
+    if store.HasKey(key):
+      print "Removing: %s"%(U.GetDBPathRelativeToCurrentDirectory(f))
+      store.RemoveKey(key)
+    else:
+      print "Not found: %s"%(U.GetDBPathRelativeToCurrentDirectory(f))
+  store.Close()
   return

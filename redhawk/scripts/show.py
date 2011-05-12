@@ -42,14 +42,25 @@ def Main(args):
       default=True,
       help = "Explicity tell redhawk to NOT use the database." + S.OPTIONS_DEFAULT_STRING)
 
+  parser.add_option(
+      "-s",
+      "--store-new",
+      action="store_true",
+      dest="store_new",
+      default=False,
+      help = "Store new files that redhawk comes across in the database." + S.OPTIONS_DEFAULT_STRING)
+
   options, args = parser.parse_args(args)
   if len(args) != 1:
       parser.error("Exactly one file should be given.")
 
-  database = S.GetDatabase() if options.use_db else None
+  database_file = S.GetDatabase() if options.use_db else None
 
 
-  ast = G.GetLAST(args[0], database = database, key=S.GetKey(args[0], database))
+  ast_fetcher = G.CreateLASTFetcher(database_file, store_new = options.store_new)
+  ast = ast_fetcher.GetAST(args[0], key=S.GetKey(args[0], database_file))
+  ast_fetcher.Close()
+
   if options.eog:
     options.image = True
 
