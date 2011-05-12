@@ -197,7 +197,7 @@ class CTreeConverter(tree_converter.TreeConverter):
     if tree.args:
       arguments = self.ConvertTree(tree.args)
     else:
-      arguments = N.FunctionArguments(position = [], arguments = [])
+      arguments = N.FunctionArguments(position = None, arguments = [])
 
     return N.DeclareFunction(
         position = GetCoords(tree),

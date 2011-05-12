@@ -58,6 +58,9 @@ def __FormatResult(filepath, line_index, context=3, lines = None):
     lines = fp.readlines()
     fp.close()
 
+  if len(lines) is 0:
+    return "%s:0:"%(filepath)
+
   if context is 0:
     return "%s:%d:%s"%(filepath, line_index+1, lines[line_index].strip())
 
