@@ -38,6 +38,11 @@ def Main():
     print HELP
     sys.exit(0)
 
+  if "-v" in sys.argv[1:] or "--version" in sys.argv[1:]:
+    import redhawk
+    print "Redhawk Version: v%s"%(redhawk.GetVersion())
+    sys.exit(0)
+
   dispatch = { 
       'add':   add.Main,
       'init':  init.Main,

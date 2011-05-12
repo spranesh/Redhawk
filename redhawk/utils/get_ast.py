@@ -143,9 +143,9 @@ class ASTFetcher:
 
     # If version numbers don't match, don't read the data.
     if (not parsed_data.has_key(VERSION_KEY) or
-        parsed_data[VERSION_KEY] != redhawk.__version__):
+        parsed_data[VERSION_KEY] != redhawk.GetVersion()):
       parsed_data = {}
-      parsed_data[VERSION_KEY] = redhawk.__version__
+      parsed_data[VERSION_KEY] = redhawk.GetVersion()
       self.changed = True
     return parsed_data
 

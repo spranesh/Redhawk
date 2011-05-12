@@ -1,14 +1,16 @@
 from setuptools import setup, find_packages
 
-fp = open("README.rst")
-long_description=fp.read()
-fp.close()
+def ReadFile(f):
+  fp = open(f)
+  result=fp.read()
+  fp.close()
+  return result.strip()
 
 setup(
     name='redhawk',
-    version='1.0.2',
     description='An AST based navigation system.',
-    long_description=long_description,
+    version=ReadFile("redhawk/VERSION"),
+    long_description=ReadFile("README.rst"),
     author="Pranesh Srinivasan",
     author_email="spranesh@gmail.com",
     license="The BSD 2-Clause License",
