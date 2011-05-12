@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
 
+import redhawk
+
 def ReadFile(f):
   fp = open(f)
   result=fp.read()
@@ -9,8 +11,8 @@ def ReadFile(f):
 setup(
     name='redhawk',
     description='An AST based navigation system.',
-    version=ReadFile("redhawk/VERSION"),
-    long_description=ReadFile("README.rst"),
+    version=redhawk.GetVersion(),
+    long_description=ReadFile("README.txt"),
     author="Pranesh Srinivasan",
     author_email="spranesh@gmail.com",
     license="The BSD 2-Clause License",

@@ -1,7 +1,6 @@
 import os
 
+__version__ = '1.0.3dev'
+
 def GetVersion():
-  fp = open(os.path.join(os.path.dirname(__file__), "VERSION"))
-  version = fp.read().strip()
-  fp.close()
-  return version
+  return __version__
