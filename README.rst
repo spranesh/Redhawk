@@ -19,6 +19,7 @@ JQuery), or an xpath like syntax. A Typical use of Redhawk is as shown below::
 Redhawk is currently under heavy development. The code can be found on
 `github`_. 
 
+
 Redhawk currently requires python 2.6 or 2.7.
 
 Project Objectives
@@ -29,25 +30,17 @@ Project Objectives
 1. Allow users to effectively find and thereby navigate code in an
 editor-independent manner.
 
-2. Become fast enough to work on large code bases. Note that Redhawk already
-works on Django, i.e., can be used to query code in Django. Using Redhawk
-without a database, gives us a stream of steady but slow results. On the
-other hand, if Redhawk is used with its custom pickle-database, it takes a
-very long time to start, but throws up results very quickly. (The database
-file is ~62MB in size). Techniques like splitting up the database into smaller
-ones, are being looked at.
-
-3. Sparkling documentation for API usage, and a long list of examples, with
+2. Better documentation for API usage, and a long list of examples, with
 examples scripts using the Selector API.
 
-4. Allow cross-language analysis in the future, thereby benefitting projects
+3. Allow cross-language analysis in the future, thereby benefitting projects
 in multiple languages.
 
-5. Expose the LAST in a simple manner via the Redhawk API for other tools.
+4. Expose the LAST in a simple manner via the Redhawk API for other tools.
 These tools could involve indenting code, suggesting completions, or static
 analysis.
 
-6. Eventually allow editing of the LAST, and thereby powerful 
+5. Eventually allow editing of the LAST, and thereby powerful 
 refactoring.
 
 
@@ -123,19 +116,21 @@ API.
 Using the `redhawk` executable
 ------------------------------
 
-The `redhawk` program supports five commands:
+The `redhawk` program supports eight commands:
 
 =========   =======================================================
  Command      Purpose
 =========   =======================================================
-init        Create an EMPTY AST index.
 add         Add files to an AST index.
-query       Query for a pattern in a list of files, or in the index.
-show        Show (visualize) a file either as text, or as an image.
+init        Create an EMPTY AST index.
+listfiles   List all the files in the AST index.
 prompt      Drop into a python prompt with helpful functions for 
             exploring the parse tree.
+query       Query for a pattern in a list of files, or in the index.
+remove      Remove files from the AST index.
+show        Show (visualize) a file either as text, or as an image.
+where       Print the location of the current redhawk index (if there is one).
 =========   =======================================================
-
 
 The simplest way to run `redhawk` is to simply use a `query` command on a file
 (or directory). The `query` command as described above takes an xpath-like
@@ -433,6 +428,23 @@ free to use it for commercial or non-commercial projects with little or no
 restriction. For a complete text of the license see the LICENSE.txt file in
 the source distribution.
 
+Change List
+------------
+
+*v1.1.0*
+
+* Fast enough to work on Django - Querying DefineClass anywhere in the
+  codebase, takes just 45 seconds!
+
+* Uses the shelve module instead of the pickle module, to decrease read and
+  write times for the redhawk database.
+
+* Redhawk supports three new commands - `listfiles`, `remove`, `where`
+ 
+* The `query`, and `show`, commands take an extra argument `-s`, to decide if
+  new trees should be added to the database.
+
+* Skip a file if there is a parser error.
 
 .. [1] `ast_gen.py`_ generates `node.py`_ and `types.py`_ using these YAML configuration files.
 
