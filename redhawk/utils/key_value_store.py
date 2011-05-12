@@ -10,6 +10,7 @@ are in place.
 import anydbm
 import os
 import shelve
+import redhawk
 
 VERSION_KEY = '__redhawk__version__'
 
@@ -75,10 +76,10 @@ class KeyValueStore:
     return
 
   def ClearStore(self):
-    _CloseStoreObject(store)
+    _CloseStoreObject(self.store)
     RemoveExistingStore(self.store_file)
-    CreateNewStore(self.store_file)
-    self.store = sheve.open(self.store_file)
+    CreateNewStore(self.store_file, redhawk.GetVersion())
+    self.store = shelve.open(self.store_file)
     return
 
   def Close(self):
