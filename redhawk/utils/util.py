@@ -1,11 +1,11 @@
 #!/usr/bin/env python
+import redhawk
 
 import hashlib
 import operator
 import os
 import sys
 import traceback 
-
 
 def AssertWithError(condition, error):
   """ If condition is false, exit with error."""
@@ -137,3 +137,25 @@ def AdjustFilePathToBaseDirectory(filepath, base_dir):
   (pwd)."""
 
   return os.path.relpath(filepath, base_dir)
+
+  print filepath
+  print cur_dir
+
+
+def OpenSourceFile(filepath):
+  """ Try to open the file. If not, we try to open the filepath as one
+  relative to the redhawk database."""
+  try:
+    return open(filepath)
+  except IOError, e:
+    pass
+  
+  database_dir = os.path.dirname(
+      FindFileInDirectoryOrAncestors(
+        redhawk.GetDBName(),
+        os.curdir))
+
+  abs_filepath = os.path.join(database_dir, filepath)
+  new_filepath = os.path.relpath(abs_filepath, os.curdir)
+
+  return open(new_filepath)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 """ Functions and Constants common to all the executables."""
+import redhawk
 import redhawk.utils.util as U
 
 import string
@@ -16,7 +17,7 @@ or from the distro's native package manager. pygraphviz goes by the name
 python-pygraphviz on debian/ubuntu."""
 
 # The standard Redhawk Database file.
-DB_NAME = '.redhawk_db'
+DB_NAME = redhawk.GetDBName()
 
 # The program name
 PROGRAM_NAME = sys.argv[0]

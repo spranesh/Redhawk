@@ -7,6 +7,7 @@ Most users will either just use ContextInFile or PrintContextInFile.
 In case one wants to get the position first, and print it, a composition of
 GetPosition, and ShowPosition will be useful.
 """
+import redhawk.utils.util as U
 
 def ContextInFile(tree, context = 3, lines=None):
   """ Return the lines (with context) of the tree in its file."""
@@ -54,7 +55,7 @@ def __FormatResult(filepath, line_index, context=3, lines = None):
     return "%s:0:"%(filepath)
 
   if lines is None:
-    fp = open(filepath)
+    fp = U.OpenSourceFile(filepath)
     lines = fp.readlines()
     fp.close()
 
