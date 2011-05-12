@@ -36,3 +36,8 @@ class TreeConverter:
     method = "Convert" + tree.__class__.__name__.capitalize()
     visitor = getattr(self, method, self.ThrowNotImplementedError)
     return visitor(tree)
+
+  def ConvertListOfStatements(self, statements):
+    """ Convert a list of statements, to a list of LAST nodes.
+    Note that this function returns a List and not a Node."""
+    return map(self.ConvertTree, statements)

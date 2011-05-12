@@ -222,6 +222,7 @@ class CTreeConverter(tree_converter.TreeConverter):
         quals = func_decl.quals)
 
   def ConvertCompound(self, tree):
+    """ Note that this function returns a list, as opposed to a node."""
     # The Case Node is screwed up. We need to flesh out the
     # case node's stmt, and put it up one level higher.
     compound_items = []
@@ -235,8 +236,10 @@ class CTreeConverter(tree_converter.TreeConverter):
         ct = self.ConvertTree(t)
         compound_items.append(ct)
 
-    return N.Compound(position = GetCoords(tree),
-        compound_items = compound_items)
+    # We should be using self.ConvertListOfStatements here,
+    # but since the converted nodes are already in a list,
+    # we return that.
+    return compound_items
 
   def ConvertBinaryop(self, tree):
     assert(tree.op in BINARY_OPERATOR_CONVERSIONS)

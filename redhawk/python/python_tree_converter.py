@@ -282,8 +282,8 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     """ Convert the If(expr test, expr body, expr orelse) node."""
     return N.IfElse(position = self.gc.GC(tree),
         condition = self.ConvertTree(tree.test),
-        if_true =  self.ConvertCompound(tree.body),
-        if_false = self.ConvertCompound(tree.orelse))
+        if_true =  self.ConvertListOfStatements(tree.body),
+        if_false = self.ConvertListOfStatements(tree.orelse))
 
 
   def ConvertIfexp(self, tree):
@@ -432,8 +432,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
     argument_node = self.__ConvertArguments(tree.args, self.gc.GC(tree))
     # Convert body
-    body_node = N.Compound(position = self.gc.GC(tree),
-                      compound_items = map(self.ConvertTree, tree.body))
+    body_node = self.ConvertListOfStatements(tree.body)
 
     f = N.DefineFunction(position = self.gc.GC(tree),
                             name = tree.name,
@@ -512,7 +511,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return N.ForEach(position = self.gc.GC(tree),
                      target = define_target_node,
                      iter_expression = self.ConvertTree(tree.iter),
-                     body = self.ConvertCompound(tree.body))
+                     body = self.ConvertListOfStatements(tree.body))
 
   def ConvertWhile(self, tree):
     """ Convert
@@ -522,7 +521,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     into the While node."""
     return N.While(position = self.gc.GC(tree),
                    condition = self.ConvertTree(tree.test),
-                   body = self.ConvertCompound(tree.body))
+                   body = self.ConvertListOfStatements(tree.body))
 
  
   def ConvertBreak(self, tree):
@@ -572,7 +571,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertExcepthandler(self, tree):
     """ Convert the ExceptHandler(expr? type, expr? name, stmt* body) node."""
     return N.ExceptionHandler(position = self.gc.GC(tree),
-                              body = self.ConvertCompound(tree.body),
+                              body = self.ConvertListOfStatements(tree.body),
                               name = self.ConvertTree(tree.name),
                               type = self.ConvertTree(tree.type))
 
@@ -582,16 +581,16 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     TryExcept(stmt* body, excepthandler* handlers, stmt* orelse)
     node. """
     return N.TryCatch(position = self.gc.GC(tree),
-                      body = self.ConvertCompound(tree.body),
+                      body = self.ConvertListOfStatements(tree.body),
                       exception_handlers = map(self.ConvertTree, tree.handlers),
-                      orelse = self.ConvertCompound(tree.orelse))
+                      orelse = self.ConvertListOfStatements(tree.orelse))
 
 
   def ConvertTryfinally(self, tree):
     """ Convert the | TryFinally(stmt* body, stmt* finalbody) node."""
     return N.Finally(position = self.gc.GC(tree),
-                     body = self.ConvertCompound(tree.body),
-                     final_body = self.ConvertCompound(tree.finalbody))
+                     body = self.ConvertListOfStatements(tree.body),
+                     final_body = self.ConvertListOfStatements(tree.finalbody))
 
 
   def ConvertWith(self, tree):
@@ -605,7 +604,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     defvars = [self.ConvertTree(assign_node)]
     return N.Let(position = self.gc.GC(tree),
                  defvars = defvars, 
-                 body = self.ConvertCompound(tree.body))
+                 body = self.ConvertListOfStatements(tree.body))
 
   def ConvertClassdef(self, tree):
     """ Convert the 

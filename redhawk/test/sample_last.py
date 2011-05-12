@@ -38,14 +38,12 @@ When printed it represents:
 """
 
 
-if_true = N.Compound(
-    position = None,
-    compound_items = [
+if_true = [
       N.Return(
         position = None,
         return_expression = N.Constant(
           position = None,
-          value = '1'))])
+          value = '1'))]
 
 fact_arguments = N.FunctionArguments(
     position = None,
@@ -63,9 +61,7 @@ fact_arguments = N.FunctionArguments(
 
 
 
-if_false = N.Compound(
-    position = None,
-    compound_items = [
+if_false = [
       N.Return(
         position = None,
         return_expression = N.Expression(
@@ -79,7 +75,7 @@ if_false = N.Compound(
               function = N.ReferVariable(
                 position = None,
                 name = 'Factorial'),
-              arguments = fact_arguments)]))])
+              arguments = fact_arguments)]))]
 
 ifelse = N.IfElse(
     position = None,
@@ -93,12 +89,8 @@ ifelse = N.IfElse(
             N.Constant(
                position = None,
                value = '0')]),
-    if_true = N.Compound(
-        position = None,
-        compound_items = [if_true]),
-    if_false = N.Compound(
-        position = None,
-        compound_items = [if_false]))
+    if_true = if_true,
+    if_false = if_false)
 
 
 factorial_tree = N.DefineFunction(
@@ -110,9 +102,7 @@ factorial_tree = N.DefineFunction(
               N.DefineVariable(
                    position = None
                    ,name = 'n')]),
-     body = N.Compound(
-          position = None,
-          compound_items = [ifelse]))
+     body = [ifelse])
 
 
 T.TreeConverter().AttachParents(factorial_tree)

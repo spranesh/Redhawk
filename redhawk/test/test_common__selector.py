@@ -33,7 +33,8 @@ def TestEmptySelector():
   """ Test the Empty Selector (Should return all nodes)."""
   s = S.Selector()
   l = list(S.RunSelector(s, tree))
-  assert(len(l) == 23) # Number of nodes in the tree.
+  # print l, len(l)
+  assert(len(l) == 18) # Number of nodes in the tree.
   return
 
 
