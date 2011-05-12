@@ -1,3 +1,6 @@
 include LICENSE.txt
-include README.txt
+include README.rst
 include MANIFEST.in
+include redhawk/common/*.yaml
+include redhawk/utils/fake_libc_include/*.h
+recursive-include redhawk/test/files *.c *.py

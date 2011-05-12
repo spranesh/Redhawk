@@ -9,10 +9,11 @@ def ReadFile(f):
   return result.strip()
 
 setup(
+    include_package_data = True,
     name='redhawk',
     description='An AST based navigation system.',
     version=redhawk.GetVersion(),
-    long_description=ReadFile("README.txt"),
+    long_description=ReadFile("README.rst"),
     author="Pranesh Srinivasan",
     author_email="spranesh@gmail.com",
     license="The BSD 2-Clause License",
@@ -34,14 +35,14 @@ setup(
       'redhawk.test'],
 
     package_data = {
-      'redhawk.utils': [
-        'fake_libc_include/*'
-       ],
       'redhawk.test': [
-        'files/python/*',
         'files/c/*',
         'files/dot/*',
         'files/examples/*',
+        'files/python/*',
+       ],
+      'redhawk.utils': [
+        'fake_libc_include/*'
        ],
       'redhawk.common': [
         '*.yaml'

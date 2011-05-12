@@ -230,8 +230,10 @@ Let us find all functions one level below the module level in `counter.py`::
 
 This gives us::
 
+    counter.py:3:def Inc():
     counter.py:9:def __init__(self, init=0):
     counter.py:12:def Bump(self):
+
 
 
 *Example 3*:
@@ -241,9 +243,9 @@ Let us find all functions *anywhere* in the program.::
 
 This gives us::
 
-    counter.py:3:def Inc():
     counter.py:9:def __init__(self, init=0):
     counter.py:12:def Bump(self):
+    counter.py:3:def Inc():
     counter.py:1:def CounterClosure(init=0):
     counter.py:16:def CounterIter(init = 0):
 
@@ -283,6 +285,7 @@ have a `ReferVariable` descendent, whose name is 'init'::
 
     $ redhawk query '**/Assignment/**/ReferVariable@[name="init"]' counter.py
 
+
 This gives us::
 
     counter.py:2:value = [init]
@@ -310,9 +313,9 @@ the function object has a name starting with "Counter". [3]_ ::
 
 This gives us::
 
-    counter.py:22:c1 = CounterClosure()
     counter.py:23:c2 = CounterClass()
     counter.py:24:c3 = CounterIter()
+    counter.py:22:c1 = CounterClosure()
 
 
 An abstract grammar of the query language can be found via::
