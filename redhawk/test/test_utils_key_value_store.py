@@ -8,6 +8,7 @@ import nose.tools
 import glob
 import os
 import shelve
+import sys
 import tempfile
 
 PREFIX = "redhawk-key-value-store-test"
@@ -145,6 +146,15 @@ class TestKeyValueStore:
     store = shelve.open(self.temp_file, 'c')
     store[KV.VERSION_KEY] = '0.0.0'
     store.close()
+
+    temp_file = GetTempFile()
+    fp = sys.stderr
+    sys.stderr = sys.stdout
+
+    print "Expected Error :"
     self.store = KV.KeyValueStore(self.temp_file, redhawk.GetVersion())
+
+    sys.stderr = fp
+
     assert(self.store.GetVersion() == redhawk.GetVersion())
 
