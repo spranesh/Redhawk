@@ -2,8 +2,10 @@
 
 """ Test Python Conversions."""
 
+import redhawk
 import redhawk.python.python_tree_converter as P
 import redhawk.utils.get_ast as G
+import redhawk.utils.key_value_store as KVStore
 
 import nose.tools
 
@@ -16,7 +18,10 @@ RELATIVE_TEST_PATH = "test/files/python"
   
 def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
   """ SetUp returns a parsed python Program."""
-  PICKLE_FILE = "test/files/asts_python.pickle"
+  PICKLE_FILE = "test/files/asts_python.redhawk_db"
+  if not os.path.exists(PICKLE_FILE):
+    KVStore.CreateNewStore(PICKLE_FILE, redhawk.GetVersion())
+    
   return G.GetLanguageSpecificTree(os.path.join(rel_path, filename),
       PICKLE_FILE,
       language='python')

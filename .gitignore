@@ -6,6 +6,7 @@ yacctab.py
 *.json
 .noseids
 *.pickle
+*.redhawk_db
 *.html
 .redhawk_db
 MANIFEST

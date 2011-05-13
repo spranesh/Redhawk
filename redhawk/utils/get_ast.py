@@ -136,7 +136,7 @@ class ASTFetcher:
       return
 
     if not os.path.exists(database_file):
-      sys.stderr.write("Database %s does not exist."%(self.database))
+      sys.stderr.write("Database %s does not exist."%(self.database_file))
       self.database = None
       return
 
