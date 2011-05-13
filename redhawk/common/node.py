@@ -112,6 +112,15 @@ class Node:
   def GetParent(self):
     return self.__parent
 
+  def GetFlattenedChildren(self):
+    """ Get a list of flattened children. This method caches the flattened
+    children before returning it, to prevent repeated calls to
+    U.Flatten(..)."""
+    if not hasattr(self, 'flattened_children_cache'):
+      flattened_children = U.Flatten(self.GetChildren())
+      self.flattened_children_cache = flattened_children
+    return self.flattened_children_cache
+
   def GetName(self):
     return self.__class__.__name__
 

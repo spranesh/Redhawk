@@ -14,8 +14,11 @@ class TreeConverter:
 
 
   def AttachParents(self, tree, parent = None):
+    """ Attach parents to the tree.
+    Also create the cache at the each node, by exercising
+    tree.GetFlattenedChildren()."""
     tree.SetParent(parent)
-    for c in U.Flatten(tree.GetChildren()):
+    for c in tree.GetFlattenedChildren():
       if c is not None:
         try:
           self.AttachParents(c, tree)
@@ -26,14 +29,22 @@ class TreeConverter:
 
 
   def Convert(self, tree):
-    """ Calls ConvertTree, and attaches parent links using __AttachParents.
-    This is the method to be called by outside methods, and functions."""
+    """ Calls ConvertTree, and attaches parent links using AttachParents.
+    This is the method to be called by outside methods, and functions.
+    
+    This also exercises the GetFlattenedChildren at each node, and creates the
+    necessary cache at each node. If this is not done during the database
+    creation time, it is rather pointless, since every node is most likely to be
+    visited just once during the course of a search."""
+
     if tree is None:
-      return N.Module(position = NP.NodePosition(self.filename, 1, 1),
+      l_ast = N.Module(position = NP.NodePosition(self.filename, 1, 1),
         filename = self.filename,
         children = [])
 
-    l_ast = self.ConvertTree(tree)
+    else:
+      l_ast = self.ConvertTree(tree)
+
     self.AttachParents(l_ast)
     return l_ast
 

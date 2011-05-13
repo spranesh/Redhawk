@@ -35,7 +35,7 @@ def Children(it):
   """ Return a generator to the children of all the nodes in the passed
   iterable."""
   for n in it:
-    for c in U.Flatten(n.GetChildren()):
+    for c in n.GetFlattenedChildren():
       if c is not None:
         yield c
 
@@ -80,10 +80,10 @@ class StarStarQuery(Query):
   def Filter(self, it):
     """ We do not want duplicates. This means storing all the objects into a
     set. This is an expensive operation in memory, and in time O(n log n). We
-    are doing this for now, but probably need to come up with (heuristic
+    just skip this for now, but probably need to come up with (heuristic
     ways?) later."""
-    iterators = [traverse.DFS(i) for i in it]
-    return iter(set(itertools.chain(*iterators)))
+    iterators = (traverse.DFS(i) for i in it)
+    return itertools.chain(*iterators)
 
 
 class NodeMatchQuery(Query):

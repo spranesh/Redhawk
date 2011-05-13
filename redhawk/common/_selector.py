@@ -160,7 +160,7 @@ def HasChild(s1, s2):
     if not s1(x):
       return False
 
-    for child in U.Flatten(x.GetChildren()):
+    for child in x.GetFlattenedChildren():
       if s2(child):
         return True
     return False
