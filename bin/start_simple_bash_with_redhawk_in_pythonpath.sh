@@ -1,5 +1,5 @@
 #!/bin/bash
-RELDIR=../redhawk
+RELDIR=../
 
 
 SCRIPT=`readlink -f $0`
