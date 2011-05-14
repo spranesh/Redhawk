@@ -56,7 +56,8 @@ def Main(args):
       action="store_true",
       dest="store_new",
       default=False,
-      help = "Store new files that redhawk comes across in the database." 
+      help = "Store new files that redhawk comes across in the database. "
+      + "(implies no parallel)" 
       + S.OPTIONS_DEFAULT_STRING)
 
   parser.add_option(
@@ -89,6 +90,9 @@ def Main(args):
   options, args = parser.parse_args(args)
   if not len(args):
       parser.error("No query or files given.")
+
+  if options.store_new:
+    options.parallel = False
 
   parsed_query = X.ParseXPath(args[0])
   if len(args) == 1:
