@@ -95,7 +95,7 @@ def ParsePython(filename):
   """ Parse a Python file using the ast module and return the Python AST."""
   # print "FILENAME: ", filename
   try:
-    tree = ast.parse(expr = open(filename).read(), filename = filename)
+    tree = ast.parse(open(filename).read(), filename = filename)
     return tree
   except SyntaxError, e:
     error = "ERROR: Parsing file: %s with ast module. Skipping\n"%(filename)
