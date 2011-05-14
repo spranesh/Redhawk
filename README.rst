@@ -431,10 +431,21 @@ the source distribution.
 Change List
 ------------
 
+*v1.1.1*
+
+* Python2.7 compatibility: ast.parse (Thanks to Nafai77)
+
+* Profiled, performance improvements by 15% by shifting to deque, and caching
+  flattened children.
+
+* Provided a bin/start_simple_bash_with_redhawk_in_pythonpath.sh to enter a
+  temporary shell with redhawk in PYTHONPATH (for devs).
+
 *v1.1.0*
 
 * Fast enough to work on Django - Querying DefineClass anywhere in the
-  codebase, takes just 45 seconds!
+  codebase (~2300 python files), takes just 45 seconds on a celeron netbook.
+  Thats 19ms per file!
 
 * Uses the shelve module instead of the pickle module, to decrease read and
   write times for the redhawk database.
