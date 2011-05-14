@@ -70,7 +70,6 @@ def Main():
 
   parser.add_option(
       "-v",
-      "--verbose",
       dest="verbose",
       action="count",
       default=1,
@@ -85,7 +84,7 @@ def Main():
       help = "Print version and exit.")
 
   # Hack to get redhawk to show formatted help with optparse
-  if sys.argv[1] in "-h --help".split():
+  if len(sys.argv) == 1 or sys.argv[1] in "-h --help".split():
     parser.print_help()
     print epilog
     sys.exit(0)
