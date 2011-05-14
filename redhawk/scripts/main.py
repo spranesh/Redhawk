@@ -70,7 +70,6 @@ def Main():
 
   parser.add_option(
       "-v",
-      "--verbose",
       dest="verbose",
       action="count",
       default=1,
