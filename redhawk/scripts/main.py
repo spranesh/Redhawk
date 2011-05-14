@@ -61,7 +61,7 @@ def Main():
     dispatch[sys.argv[1]](sys.argv[2:])
   else:
     print "Command %s not found."%sys.argv[1]
-    print HELP
+    print usage
     sys.exit(1)
   return
 
