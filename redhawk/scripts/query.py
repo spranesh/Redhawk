@@ -7,7 +7,6 @@ import redhawk.utils.task_runner as R
 
 import optparse
 import sys
-import pp
 
 usage = S.MakeStringFromTemplate("""$prog query [options] <query> file1 file2 ..
 
