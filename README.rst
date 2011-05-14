@@ -54,6 +54,12 @@ Dependencies
 
 *Optional but highly recommended Dependencies*:
 
+* `pp`_ - Parallel Python is required for running queries in parallel. This
+  speeds up queries by more than 2x. This is highly recommended if you are
+  going to query large projects. The whole of Django can be queried in less
+  than 20 seconds, by using parallel python (passing `-p` to the `query`
+  command).
+
 * `Python Graphviz`_ is required for generating pretty AST graphs.  This
   package is an *optional* dependency, but highly recommended. This package goes by the name
   `python-pygraphviz` on Ubuntu, and depends on `graphviz`, and `dot`. (`Pip`
@@ -477,5 +483,6 @@ Change List
 .. _github: http://www.github.com/spranesh/Redhawk
 .. _Python Graphviz: http://networkx.lanl.gov/pygraphviz/
 .. _pycparser: http://code.google.com/p/pycparser/ 
+.. _pycparser: http://pypi.python.org/pypi/pp
 .. _Python YAML: http://www.pyyaml.org
 .. _nosetests: http://somethingaboutorange.com/mrl/projects/nose/1.0.0/

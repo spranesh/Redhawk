@@ -50,6 +50,7 @@ setup(
       },
 
     install_requires = [
+      # 'pp>=1.5.7'
       # 'PyYAML>=3.09',
       # 'nose>=0.11',
       # ,'pygraphviz>=0.99' # Optional Dependency
