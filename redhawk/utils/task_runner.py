@@ -27,7 +27,6 @@ You can also get it from pip:
 
 Please run redhawk without the parallel option in the meantime.
 """
-import tempfile
 
 class TaskRunner:
   def __init__(self,
@@ -97,13 +96,10 @@ class TaskRunner:
 
 
   def RunParallel(self, args):
-    temp_file = tempfile.mktemp(prefix="rhawk-task-runner")
-    log_handle = open(temp_file, "w")
     job_server = self.pp.Server(
         ncpus = self.num_workers,
         ppservers = self.servers,
-        secret='redhawk-secret-key',
-        logstream = log_handle)
+        secret='redhawk-secret-key')
 
     if self.verbose:
       sys.stderr.write("Starting pp with %s workers\n"%(job_server.get_ncpus()))
