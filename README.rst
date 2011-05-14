@@ -368,7 +368,7 @@ logical this query becomes using selectors.
 
 We first go into a redhawk prompt::
 
-    $ redhawk prompt counter.py                                                                [1]
+    $ redhawk prompt counter.py
     
 
 We are greeted with a help banner::
@@ -440,6 +440,9 @@ the source distribution.
 
 Change List
 ------------
+*v1.1.3*
+
+Bugs in the README's RST syntax fixed.
 
 *v1.1.2*
 
