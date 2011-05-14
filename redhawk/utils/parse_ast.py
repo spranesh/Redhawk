@@ -36,6 +36,7 @@ import util
 import pycparser
 
 import ast
+import logging
 import os
 import sys
 
@@ -86,8 +87,8 @@ def ParseC(filename):
         cpp_args='-I%s/'%fake_libc_dir)
     return tree
   except pycparser.plyparser.ParseError, e:
-    error = "ERROR: Parsing file: %s with pycparser (with cpp). Skipping\n"%(filename)
-    sys.stderr.write(error)
+    error = "Error parsing file %s with pycparser (with cpp). Skipping\n"%(filename)
+    logging.warning(error)
     return None
 
 
@@ -98,6 +99,6 @@ def ParsePython(filename):
     tree = ast.parse(open(filename).read(), filename = filename)
     return tree
   except SyntaxError, e:
-    error = "ERROR: Parsing file: %s with ast module. Skipping\n"%(filename)
-    sys.stderr.write(error)
+    error = "Error parsing file %s with ast module. Skipping\n"%(filename)
+    logging.warning(error)
     return None

@@ -38,9 +38,9 @@ import redhawk
 import util
 import key_value_store as KVStore
 
-import shelve
+import logging
 import os
-import sys
+import shelve
 
 
 def GetLAST(filename, database, key=None, language=None, store_new = True):
@@ -130,24 +130,24 @@ class ASTFetcher:
     self.database_file = database_file
     self.parser = parser
     self.store_new = store_new
-    # sys.stderr.write("Reading..\n")
+    # logging.info("Reading..\n")
     if self.database_file is None:
       self.database = None
       return
 
     if not os.path.exists(database_file):
-      sys.stderr.write("Database %s does not exist."%(self.database_file))
+      logging.warning("Database %s does not exist."%(self.database_file))
       self.database = None
       return
 
     if not KVStore.IsValidStore(database_file):
       print database_file
-      sys.stderr.write("Not a valid store. Recreating..\n")
+      logging.error("Not a valid store. Recreating..\n")
       KVStore.RemoveExistingStore(database_file)
       KVStore.CreateNewStore(database_file, redhawk.GetVersion())
 
     self.database = KVStore.KeyValueStore(database_file, redhawk.GetVersion())
-    # sys.stderr.write("Done.")
+    # logging.info("Done.")
     return
 
 

@@ -4,9 +4,10 @@
 import redhawk
 import redhawk.utils.util as U
 
+import logging
+import os
 import string
 import sys
-import os
 import tempfile
 
 PYGRAPHVIZ_NOT_FOUND = """This feature requires the pygraphviz, which does not
@@ -100,7 +101,7 @@ def GetDatabase():
   try:
     return U.FindFileInDirectoryOrAncestors(DB_NAME, os.curdir)
   except IOError, e:
-    sys.stderr.write("""The redhawk database exists, but does not have read & write
+    logging.warning("""The redhawk database exists, but does not have read & write
     permissions. Fix this to prevent re-parsing. Carrying on..""")
     return None
 

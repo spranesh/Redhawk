@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import script_util as S
 import add
 import init
 import listfiles
@@ -9,22 +8,27 @@ import remove
 import show
 import where
 
+import redhawk
+import script_util as S
+
+import logging
 import optparse
 import sys
 
 
-usage = S.MakeStringFromTemplate(
-"""$prog [-v] COMMAND [OPTIONS] [ARGS...]
-
+usage = "%prog [-h] [--version] [-v..] COMMAND [OPTIONS] [ARGS...]"
+description = "A LAST based navigation system."
+epilog = S.MakeStringFromTemplate(
+"""
 The simplest use case is just:
 
   $ $prog query <query> files
 
 Supported commands are:
 
-  init        Create an EMPTY AST index.
-  add         Add files to an AST index.
-  listfiles   List all the files in the AST index.
+  init        Create an EMPTY LAST index.
+  add         Add files to an LAST index.
+  listfiles   List all the files in the LAST index.
   prompt      Start a redhawk subshell, with preloaded modules, and parse-trees.
   query       Query for a pattern in a list of files, or in the index.
   remove      Remove files from the AST index.
@@ -38,14 +42,51 @@ done with the init, and add commands.  Though recommended, an index is NOT
 necessary. """)
 
 def Main():
-  if len(sys.argv) < 2 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
-    print usage
+  parser = optparse.OptionParser(
+      usage = usage,
+      description = description)
+
+  parser.add_option(
+      "-v",
+      "--verbose",
+      dest="verbose",
+      action="count",
+      default=1,
+      help="Increase verbosity (specify multiple times for more)"
+      + S.OPTIONS_DEFAULT_STRING)
+
+  parser.add_option(
+      '--version',
+      action="store_true",
+      dest="version",
+      default=False,
+      help = "Print version and exit.")
+
+  # Hack to get redhawk to show formatted help with optparse
+  if sys.argv[1] in "-h --help".split():
+    parser.print_help()
+    print epilog
     sys.exit(0)
 
-  if "-v" in sys.argv[1:] or "--version" in sys.argv[1:]:
-    import redhawk
+  options, args = parser.parse_args(sys.argv[1:])
+
+  if options.verbose == 1:
+    log_level = logging.ERROR
+  if options.verbose == 2:
+    log_level = logging.WARNING
+  if options.verbose == 3:
+    log_level = logging.INFO
+  if options.verbose == 4:
+    log_level = logging.DEBUG
+
+  logging.basicConfig(level=log_level)
+
+  if options.version:
     print "Redhawk Version: v%s"%(redhawk.GetVersion())
     sys.exit(0)
+
+  if len(args) is 0:
+    parser.error("No Commands given")
 
   dispatch = { 
       'add':   add.Main,
@@ -57,10 +98,10 @@ def Main():
       'show':  show.Main,
       'where': where.Main,
     }
-  if sys.argv[1] in dispatch:
-    dispatch[sys.argv[1]](sys.argv[2:])
+  if args[0] in dispatch:
+    dispatch[args[0]](args[1:])
   else:
-    print "Command %s not found."%sys.argv[1]
+    print "Command %s not found."%args[0]
     print usage
     sys.exit(1)
   return

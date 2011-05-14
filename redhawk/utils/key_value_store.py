@@ -10,6 +10,7 @@ are in place.
 import redhawk
 
 import anydbm
+import logging
 import os
 import shelve
 import sys
@@ -74,7 +75,7 @@ class KeyValueStore:
 
     if (not self.store.has_key(VERSION_KEY) or
       self.store[VERSION_KEY] != version):
-        sys.stderr.write("Versions of redhawk do not match. Clearing database.\n")
+        logging.error("Versions of redhawk do not match. Clearing database.\n")
         self.ClearStore()
     return
 
