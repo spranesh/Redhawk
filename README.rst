@@ -19,8 +19,12 @@ JQuery), or an xpath like syntax. A Typical use of Redhawk is as shown below::
 Redhawk is currently under heavy development. The code can be found on
 `github`_. 
 
-
 Redhawk currently requires python 2.6 or 2.7.
+
+NOTE: From Version 1.1.2 onwards, Redhawk supports parallel querying using the
+parallel-python (pp) module. This speeds up Redhawk's querying on large
+codebases. Querying for closures anywhere in Django (~2200 files) can now be
+done in ~20 seconds on a celeron netbook.
 
 Project Objectives
 ------------------
@@ -436,6 +440,15 @@ the source distribution.
 
 Change List
 ------------
+
+*v1.1.2*
+
+* Redhawk can now use parallel python (on the same machine), to perform
+  queries on codebases. This speeds up Redhawk (almost) proportionally to the
+  number of cores you have on your computer. Redhawk can now query for
+  closures in Django in just ~20 seconds.
+
+* Friendlier usage strings and help messages.
 
 *v1.1.1*
 
