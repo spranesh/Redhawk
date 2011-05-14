@@ -41,7 +41,29 @@ NOTE: The creation of an index for large projects is recommended. This can be
 done with the init, and add commands.  Though recommended, an index is NOT
 necessary. """)
 
+def SplitArgs(d, args):
+  s = len(args)
+  for i in range(len(args)):
+    if args[i] in d:
+      s = i
+      break
+
+  return args[:s], args[s:]
+
 def Main():
+  dispatch = { 
+      'add':   add.Main,
+      'init':  init.Main,
+      'listfiles': listfiles.Main,
+      'prompt': prompt.Main,
+      'query': query.Main,
+      'remove': remove.Main,
+      'show':  show.Main,
+      'where': where.Main,
+  }
+
+  (main_args, dispatch_args) = SplitArgs(dispatch, sys.argv[1:])
+
   parser = optparse.OptionParser(
       usage = usage,
       description = description)
@@ -68,7 +90,10 @@ def Main():
     print epilog
     sys.exit(0)
 
-  options, args = parser.parse_args(sys.argv[1:])
+  options, args = parser.parse_args(main_args)
+
+  if len(args):
+    parser.error("Unrecognised command: %s"%" ".join(args))
 
   if options.verbose == 1:
     log_level = logging.ERROR
@@ -85,21 +110,11 @@ def Main():
     print "Redhawk Version: v%s"%(redhawk.GetVersion())
     sys.exit(0)
 
-  if len(args) is 0:
+  if len(dispatch_args) is 0:
     parser.error("No Commands given")
 
-  dispatch = { 
-      'add':   add.Main,
-      'init':  init.Main,
-      'listfiles': listfiles.Main,
-      'prompt': prompt.Main,
-      'query': query.Main,
-      'remove': remove.Main,
-      'show':  show.Main,
-      'where': where.Main,
-    }
-  if args[0] in dispatch:
-    dispatch[args[0]](args[1:])
+  if dispatch_args[0] in dispatch:
+    dispatch[dispatch_args[0]](dispatch_args[1:])
   else:
     print "Command %s not found."%args[0]
     print usage
