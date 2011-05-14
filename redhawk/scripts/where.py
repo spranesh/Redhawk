@@ -7,15 +7,14 @@ import redhawk
 import os
 import optparse
 
-usage = S.MakeStringFromTemplate("""
-$prog where
-
-This command prints where the redhawk index (database) is located. The redhawk
-index is stored in $db.
+usage = "%prog where"
+description = S.MakeStringFromTemplate(
+"""Print where the redhawk index (database) is located. The redhawk index is
+stored in $db.
 """)
 
 def Main(args):
-  parser = optparse.OptionParser(usage)
+  parser = optparse.OptionParser(usage, description=description)
   options, args = parser.parse_args(args)
 
   if len(args):

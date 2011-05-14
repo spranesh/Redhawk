@@ -467,7 +467,7 @@ Change List
 
 .. [2] In fact the portion inside the `@{..}` is just appended to a 'lambda n:' and `eval`-ed to get a function.
 
-.. [3] Note that 'CallFunction's do not directly have a name. This is because it the function object, unlike that of a function definition, can be a value. It is possible to do (f.g[x])(y), and such.
+.. [3] Note that 'CallFunction's do not directly have a name. This is because the function object, unlike that of a function definition, can be a value. It is possible to do (f.g[x])(y), and such.
 
 
 .. _imgur: http://imgur.com/CBHCX

@@ -8,15 +8,14 @@ import redhawk.utils.key_value_store as KVStore
 
 import optparse
 
-usage = S.MakeStringFromTemplate("""
-$prog remove file1 ..
-
-Removes ASTs from the database.
-(If a directory is given, it traverses it recursively.)
-""")
+usage = "%prog remove [FILE...]"
+description = S.MakeStringFromTemplate(
+"""Remove LASTs of each FILE from the index (database).
+If a directory is given, all the files in it are recursively removed from the
+index.""")
 
 def Main(args):
-  parser = optparse.OptionParser(usage)
+  parser = optparse.OptionParser(usage, description=description)
   options, args = parser.parse_args(args)
 
   if not len(args):

@@ -7,16 +7,14 @@ import redhawk.utils.get_ast as G
 import optparse
 import os
 
-usage = S.MakeStringFromTemplate("""$prog show [options] <query> <file>
-
-This command is used to show an AST. An AST can either be printed (default),
-or converted to an image (this requires python-graphviz).
-""")
+usage = "%prog show [OPTIONS] FILE"
+description = S.MakeStringFromTemplate(
+"""Show or display an LAST. A LAST can either be printed (default), or
+converted to an image (requires python-graphviz).""")
 
 
 def Main(args):
-
-  parser = optparse.OptionParser(usage)
+  parser = optparse.OptionParser(usage, description=description)
 
   parser.add_option(
       "-e",
@@ -38,8 +36,8 @@ def Main(args):
       "-n",
       "--no-database",
       action="store_false",
-      dest="use_db",
-      default=True,
+      dest="no_db",
+      default=False,
       help = "Explicity tell redhawk to NOT use the database." + S.OPTIONS_DEFAULT_STRING)
 
   parser.add_option(
@@ -54,7 +52,7 @@ def Main(args):
   if len(args) != 1:
       parser.error("Exactly one file should be given.")
 
-  database_file = S.GetDatabase() if options.use_db else None
+  database_file = S.GetDatabase() if options.no_db == False else None
 
 
   ast_fetcher = G.CreateLASTFetcher(database_file, store_new = options.store_new)

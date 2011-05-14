@@ -13,16 +13,15 @@ import optparse
 import sys
 
 
-HELP = S.MakeStringFromTemplate("""
-Usage: $prog COMMAND [ARGS]
-
-$prog - An AST based navigation system. 
+usage = S.MakeStringFromTemplate(
+"""$prog [-v] COMMAND [OPTIONS] [ARGS...]
 
 The simplest use case is just:
 
   $ $prog query <query> files
 
 Supported commands are:
+
   init        Create an EMPTY AST index.
   add         Add files to an AST index.
   listfiles   List all the files in the AST index.
@@ -36,12 +35,11 @@ See $prog COMMAND --help for more detailed information about that command.
 
 NOTE: The creation of an index for large projects is recommended. This can be
 done with the init, and add commands.  Though recommended, an index is NOT
-necessary.
-""")
+necessary. """)
 
 def Main():
   if len(sys.argv) < 2 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
-    print HELP
+    print usage
     sys.exit(0)
 
   if "-v" in sys.argv[1:] or "--version" in sys.argv[1:]:

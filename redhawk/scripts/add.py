@@ -5,15 +5,12 @@ import redhawk.utils.get_ast as G
 
 import optparse
 
-usage = S.MakeStringFromTemplate("""
-$prog add file1 ..
-
-Add ASTs to the database.
-(If a directory is given, it traverses it recursively.)
-""")
+usage = "%prog add [FILE...]"
+description = """Add the LASTs of each FILE to the index (database).
+Directories given are traversed recursively."""
 
 def Main(args):
-  parser = optparse.OptionParser(usage)
+  parser = optparse.OptionParser(usage, description=description)
   options, args = parser.parse_args(args)
 
   if not len(args):

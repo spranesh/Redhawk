@@ -7,16 +7,15 @@ import redhawk.utils.util as U
 import os
 import optparse
 
-usage = S.MakeStringFromTemplate("""
-$prog listfiles
-
-This command is used to list the files in the database. It takes no command
-line options. The database is stored in a file called $db, in either the
-current directory or some parent directory.
+usage = "%prog listfiles"
+description = S.MakeStringFromTemplate(
+"""List the files in the index (database).
+The index is stored in the $db file, in either the current directory or
+some parent directory.
 """)
 
 def Main(args):
-  parser = optparse.OptionParser(usage)
+  parser = optparse.OptionParser(usage, description=description)
   options, args = parser.parse_args(args)
 
   if len(args):

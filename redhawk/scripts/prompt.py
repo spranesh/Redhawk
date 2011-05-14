@@ -11,13 +11,10 @@ import sys
 import tempfile
 import webbrowser
 
-usage = S.MakeStringFromTemplate("""$prog prompt [options] file1 file2 ..
-
-The prompt command is used to explore the ASTs, or for more complex queries
-using the selector API.
-
-Type help() at the prompt to know more.
-""")
+usage = "%prog prompt [OPTIONS] [FILE...]"
+description = S.MakeStringFromTemplate(
+"""Explore the LASTs using the Redhawk APIs in a python prompt. Use Help() in
+the prompt for more help.""")
 
 USE_DATABASE = False
 STORE_NEW = False
@@ -42,13 +39,13 @@ def ConvertCodeToAST(s, language):
 
 def Main(args):
   global STORE_NEW
-  parser = optparse.OptionParser(usage)
+  parser = optparse.OptionParser(usage, description=description)
   parser.add_option(
       "-n",
       "--no-database",
       action="store_false",
-      dest="use_db",
-      default=True,
+      dest="no_db",
+      default=False,
       help = "Explicity tell redhawk to NOT use the database." + S.OPTIONS_DEFAULT_STRING)
 
   parser.add_option(
@@ -62,7 +59,7 @@ def Main(args):
   options, args = parser.parse_args(args)
 
   database = None
-  if options.use_db:
+  if options.no_db == False:
     database = S.GetDatabase()
     USE_DATABASE = True
 

@@ -6,16 +6,13 @@ import redhawk
 import os
 import optparse
 
-usage = S.MakeStringFromTemplate("""
-$prog init
-
-This command is used to create an empty index in the CURRENT directory.
-It takes no command line options. The AST index is stored in a file called
-$db.
-""")
+usage = "%prog init"
+description = S.MakeStringFromTemplate(
+"""Create an empty LAST index in the CURRENT directory.  The LAST index is
+stored in $db.""")
 
 def Main(args):
-  parser = optparse.OptionParser(usage)
+  parser = optparse.OptionParser(usage, description=description)
   options, args = parser.parse_args(args)
 
   if len(args):

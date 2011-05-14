@@ -8,30 +8,18 @@ import redhawk.utils.task_runner as R
 import optparse
 import sys
 
-usage = S.MakeStringFromTemplate("""$prog query [options] <query> file1 file2 ..
+usage = "%prog query [OPTIONS] QUERY [FILE...]"
+description = S.MakeStringFromTemplate(
+"""Query each of the FILEs using the given XPath like QUERYs.
 
-Use $prog query -h for help.
-
-Brief description:
-This command is used to query the ASTs.
-
-For an introduction queries, see the redhawk homepage on PyPi -
-http://pypi.python.org/pypi/redhawk
-
-For a further discussion on queries, please read pydoc
-redhawk.common.xpath (assuming redhawk is installed on your path).
+For an introduction to queries, see the redhawk homepage on PyPi -
+http://pypi.python.org/pypi/redhawk. For a further discussion on queries,
+please read pydoc redhawk.common.xpath (assuming redhawk is installed on your
+path).
 """)
 
-def QueryFilesJob(database_file, parsed_query, files, store_new, context):
-  """ A wrapper around redhawk.scripts.query_core.QueryFiles.
-
-  This wrapper serves as a job in parallel python."""
-  return redhawk.scripts.query_core.QueryFiles(database_file,
-      parsed_query, files, store_new, context)
-
-
 def Main(args):
-  parser = optparse.OptionParser(usage)
+  parser = optparse.OptionParser(usage, description=description)
 
   parser.add_option(
       "-C",
@@ -45,8 +33,8 @@ def Main(args):
       "-n",
       "--no-database",
       action="store_false",
-      dest="use_db",
-      default=True,
+      dest="no_db",
+      default=False,
       help = "Explicity tell redhawk to NOT use the database." 
       + S.OPTIONS_DEFAULT_STRING)
 
@@ -100,7 +88,7 @@ def Main(args):
     sys.stderr.write("Query was parsed as: %s\n"%(parsed_query))
     sys.exit(1)
 
-  database_file = S.GetDatabase() if options.use_db else None
+  database_file = S.GetDatabase() if options.no_db == False else None
   files = args[1:]
 
   # def __init__(self,
