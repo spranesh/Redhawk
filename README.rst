@@ -496,6 +496,6 @@ Change List
 .. _github: http://www.github.com/spranesh/Redhawk
 .. _Python Graphviz: http://networkx.lanl.gov/pygraphviz/
 .. _pycparser: http://code.google.com/p/pycparser/ 
-.. _pycparser: http://pypi.python.org/pypi/pp
+.. _pp: http://pypi.python.org/pypi/pp
 .. _Python YAML: http://www.pyyaml.org
 .. _nosetests: http://somethingaboutorange.com/mrl/projects/nose/1.0.0/
