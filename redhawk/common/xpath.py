@@ -94,19 +94,28 @@ class NodeMatchQuery(Query):
     self.codegroup = codegroup or None
     self.position = position or None
 
-    self.function = None
+    # Try creating to only warn of errors.
+    self.__CreateFunctionFromCodeGroup()
+    return
+
+  def __CreateFunctionFromCodeGroup(self):
     if self.codegroup:
       try:
-        self.function = eval('lambda n: '+ self.codegroup, {}, {})
+        return eval('lambda n: '+ self.codegroup, {}, {})
       except StandardError, e:
         raise SyntaxError(str(e) + ": " + self.codegroup)
-    return
+    return None
+
 
   def Filter(self, it):
     it = Children(it) # The children of the given nodes are checked.
-    s = _selector.Selector(node_type = self.node_type,
-                           function = self.function,
-                           **self.attributes)
+    # Create lambda at runtime so that an object of the class 
+    # can be pickled - a parsed query is stuff we send to multiple processes
+    # in  parallel python.
+    s = _selector.Selector(
+        node_type = self.node_type,
+        function = self.__CreateFunctionFromCodeGroup(),
+        **self.attributes)
     matched_nodes = itertools.ifilter(s, it)
     if self.position is not None:
       matched_nodes = list(matched_nodes)
