@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-""" Test XPath."""
+""" Test XPath Parsing."""
 
 import redhawk.common.xpath as X
 
-import nose.tools
+import nose
 
 def RaisesSyntaxError(delayed_callable):
   assert(callable(delayed_callable))
