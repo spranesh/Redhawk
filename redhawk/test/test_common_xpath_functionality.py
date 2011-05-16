@@ -138,6 +138,28 @@ def TestLastLevel():
   l1 = list(Query("**/Constant"))
   l2 = list(Query("**/Constant/../Constant"))
   l3 = list(Query("**/Constant/../Constant"))
+  l1.sort()
+  l2.sort()
+  l3.sort()
+  assert(l1 == l2 == l3)
+  return
 
-  print l1, l2, l3
+
+def TestMultipleAttributes():
+  """ Test Mutiple Attributes."""
+  l = list(Query('**/@[value="0"]@[value="0"]'))
+  assert(len(l) == 1)
+  assert(l[0].GetName() == "Constant")
+
+def TestEqualityOfChildNode():
+  """ Test equality of [a] and a/.."""
+  l1 = list(Query('**/(Constant@[value="0"])'))
+  l2 = list(Query('**/Constant@[value="0"]/..'))
+  assert(len(l1) == len(l2) == 1)
+  assert(l1 == l2)
+  l1 = list(Query('**/(Constant@[value="1"])'))
+  l2 = list(Query('**/Constant@[value="1"]/..'))
+  l1.sort()
+  l2.sort()
+  assert(l1 == l2)
 

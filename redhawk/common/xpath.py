@@ -2,6 +2,69 @@
 
 """ An xpath like query system.
 
+Inspired from: http://effbot.org/zone/element-xpath.htm
+
+Syntax
+======
+Syntax: node type::  'DefineFunction'
+
+  Selects all CHILD elements of the given node type. For example,
+  'DefineFunction/FunctionArguments' selects all 'FunctionArguments' below a
+  'DefineFunction' (in turn directly below the Module level).
+
+Syntax: *
+
+  Selects all CHILD elements. For example '*/DefineVariable' selects all
+  'DefineVariable' grandchildren in the L-AST.
+
+Syntax: **
+  
+  Selects all DESCENDANT elements. For example '**/DefineVariable' finds all
+  'DefineVariable's in the L-AST.
+
+Syntax: .
+  Selects the CURRENT element. This is mostly useful just to indicate that the
+  path is a relative one.
+
+Syntax: ..
+  Selects the parent element. For example, 'A/B/..' would select all 'A'
+  which have 'B' as a child.
+
+Syntax: DefineVariable@[name1='value1']@[name2='value2']@{n.foo == 'blah'}[2]
+  Selects CHILD elements which match the node type 'DefineVariable', has
+  attribute name1, which has a value of 'value1', and an attribute name2,
+  which has a value of 'value2'. Furthermore it satifies the codeblock with n
+  as the child node. That is, 
+    (lambda n: n.foo == 'blah')(child_node)
+  is True. Among the list of all such children, it selects the 3rd child
+  (index 2).
+
+  Each of the node type, attribute value pairs, codegroup, and index is
+  optional as can be seen in the grammar below. The above syntax is called a
+  NodeQuery syntax.
+
+Syntax: (NodeQuery)
+  Return all nodes whose CHILD nodes satisfy NodeQuery. This is equivalent to
+  /NodeQuery/..
+
+
+Examples
+========
+Select all Functions one level below module level:
+
+  'DefineFunction'
+
+Select all methods:
+
+  '**/DefineClass/DefineFunction'
+
+Select all Closures (Funcdef within a Funcdef):
+
+  '**/DefineFunction/**/DefineFunction'
+
+
+Grammar
+=======
 
 XPathQuery = AtomicQuery ('/' AtomicQuery)*
 
