@@ -11,22 +11,16 @@ import nose
 """ The sample tree that we will test the selectors on:
 (define-function Factorial 
   ((define-variable n))
-  (compound 
-    (if 
-      (eq n 
-        (constant 0))
-      (compound 
-        (compound 
-          (return 
-            (constant 1))))
-      (compound 
-        (compound 
-          (return 
-            (* n 
-              (apply Factorial 
-                ((- n 
-                  (constant 1)))))))))))
-
+  ((if 
+    (eq n 
+      (constant 0))
+    ((return 
+      (constant 1)))
+    ((return 
+      (* n 
+        (apply Factorial 
+          ((- n 
+            (constant 1))))))))))
 """
 
 def TestEmptySelector():
