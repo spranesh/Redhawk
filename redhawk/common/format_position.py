@@ -63,7 +63,7 @@ def __FormatResult(filepath, line_index, context=3, lines = None):
     return "%s:0:"%(filepath)
 
   if context is 0:
-    return "%s:%d:%s"%(filepath, line_index+1, lines[line_index].strip())
+    return "%s:%d:%s"%(filepath, line_index+1, lines[line_index][:-1])
 
   # When there is a context
   max_line_number_size = len(str(line_index+context+1)) # Max line number length
