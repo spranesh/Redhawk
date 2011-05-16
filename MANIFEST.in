@@ -4,3 +4,4 @@ include MANIFEST.in
 include redhawk/common/*.yaml
 include redhawk/utils/fake_libc_include/*.h
 recursive-include redhawk/test/files *.c *.py
+recursive-include editors *

@@ -1,0 +1,46 @@
+*redhawk.txt* Plugin that integrates redhawk with Vim
+
+==============================================================================
+Author: Pranesh Srinivasan <spranesh@gmail.com>               *redhawk-author*
+License: Same terms as Vim itself (see |license|)
+
+==============================================================================
+INTRODUCTION                                                         *redhawk*
+
+
+NOTE: Redhawk must be installed in your path.
+Redhawk can be installed via PyPi: 
+  $ pip install redhawk
+
+The project hompage is here:http://pypi.python.org/pypi/redhawk
+Currently, only redhawk query is supported.
+EXAMPLE USAGE:
+
+1. Query for '**/DefineFunction' in each FILE:
+  Redhawk query '**/DefineFunction' [FILE]
+
+2. Query parallely for '**/DefineFunction' in each FILE:
+  Redhawk query '**/DefineFunction' [FILE] -p
+
+3. Query all buffers for '**/DefineFunction':
+  RedhawkBuf query '**/DefineFunction'
+
+4. Query all args for '**/DefineFunction':
+  RedhawkArgs query '**/DefineFunction'
+
+5. Replace all results of '**/DefineFunction'
+  Redhawk replace '**/DefineFunction' [FILE] -p
+
+6. Replace all results for '**/DefineFunction' in buffers:
+  RedhawkBuf replace '**/DefineFunction'
+
+7. Replace all results for '**/DefineFunction' in args:
+  RedhawkArgs replace '**/DefineFunction'
+
+If you do not have redhawk installed on your path, you could set it to
+/path/to/redhawk by setting the g:redhawk_program variable. Optional arguments
+that you might always want to use are set in g:redhawk_args. If you find that
+the default behaviour of the quickfix list popping up irritating, you can set
+g:redhawk_open_resultlist to 0 in yoour .vimrc
+
+See http://pypi.python.org/pypi/redhawk for more information.
