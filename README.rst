@@ -21,6 +21,9 @@ Redhawk is currently under heavy development. The code can be found on
 
 Redhawk currently requires python 2.6 or 2.7.
 
+A `Vim plugin`_ released in version 1.1.5, for query, and replace (using an
+editable quickfix list).
+
 NOTE: From Version 1.1.2 onwards, Redhawk supports parallel querying using the
 parallel-python (pp) module. This speeds up Redhawk's querying on large
 codebases. Querying for closures anywhere in Django (~2200 files) can now be
@@ -440,6 +443,17 @@ the source distribution.
 
 Change List
 ------------
+*v1.1.5*
+
+* `Vim plugin`_ released.
+
+* Patch to FormatPosition to not strip lines when context = 0.
+
+*v1.1.4*
+
+* Bugs fixed in xpath.py and pickling of NodeMatchQuery class for Parallel
+  Python.
+
 *v1.1.3*
 
 Bugs in the README's RST syntax fixed.
@@ -486,6 +500,7 @@ Bugs in the README's RST syntax fixed.
 .. [3] Note that 'CallFunction's do not directly have a name. This is because the function object, unlike that of a function definition, can be a value. It is possible to do (f.g[x])(y), and such.
 
 
+.. _Vim plugin: http://www.vim.org/scripts/script.php?script_id=3586
 .. _imgur: http://imgur.com/CBHCX
 .. _counter.py: https://github.com/spranesh/Redhawk/tree/master/redhawk/test/files/examples/counter.py
 .. _stats.c: https://github.com/spranesh/Redhawk/tree/master/redhawk/test/files/examples/stats.c

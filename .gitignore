@@ -12,3 +12,4 @@ yacctab.py
 MANIFEST
 dist/*
 *.egg-info
+*.tar.gz

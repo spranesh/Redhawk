@@ -13,34 +13,30 @@ Redhawk can be installed via PyPi:
   $ pip install redhawk
 
 The project hompage is here:http://pypi.python.org/pypi/redhawk
-Currently, only redhawk query is supported.
+Currently, only redhawk replace are supported.
 EXAMPLE USAGE:
 
 1. Query for '**/DefineFunction' in each FILE:
   Redhawk query '**/DefineFunction' [FILE]
 
-2. Query parallely for '**/DefineFunction' in each FILE:
-  Redhawk query '**/DefineFunction' [FILE] -p
-
-3. Query all buffers for '**/DefineFunction':
-  RedhawkBuf query '**/DefineFunction'
-
-4. Query all args for '**/DefineFunction':
-  RedhawkArgs query '**/DefineFunction'
-
-5. Replace all results of '**/DefineFunction'
-  Redhawk replace '**/DefineFunction' [FILE] -p
-
-6. Replace all results for '**/DefineFunction' in buffers:
+2. Replace all results for '**/DefineFunction' in buffers:
   RedhawkBuf replace '**/DefineFunction'
 
-7. Replace all results for '**/DefineFunction' in args:
-  RedhawkArgs replace '**/DefineFunction'
+3. Query parallely for '**/DefineFunction' in each FILE:
+  Redhawk query '**/DefineFunction' [FILE] -p
+
+List of Commands:
+Redhawk:        Query and replace from within Vim.
+RedhawkAdd:     Add to quick fix list.
+RedhawkArgs:    Add args as files to redhawk command.
+RedhawkBuf:     Add files in buffers to redhawk command.
+RedhawkArgsAdd: (similar)
+RedhawkBufAdd:  (similar)
 
 If you do not have redhawk installed on your path, you could set it to
 /path/to/redhawk by setting the g:redhawk_program variable. Optional arguments
 that you might always want to use are set in g:redhawk_args. If you find that
 the default behaviour of the quickfix list popping up irritating, you can set
-g:redhawk_open_resultlist to 0 in yoour .vimrc
+g:redhawk_open_resultlist to 0 in your .vimrc
 
 See http://pypi.python.org/pypi/redhawk for more information.
