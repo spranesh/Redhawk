@@ -6,7 +6,7 @@
 XPathQuery = AtomicQuery ('/' AtomicQuery)*
 
 AtomicQuery = LocationQuery
-            | [LocationQuery]     # ChildNodeMatchQuery query
+            | (LocationQuery)     # ChildNodeMatchQuery query
 
 LocationQuery =   .
                 | ..
@@ -43,7 +43,7 @@ def Parents(it):
   """ Return a generator to the parents of all the nodes in the passed
   iterable. Note that we first use a set to remove duplicates among the
   parents."""
-  return iter(set((n.GetParent() for n in it)))
+  return iter(set((n.GetParent() for n in it if n.GetParent() != None)))
 
 
 class Query:
@@ -75,8 +75,8 @@ class StarQuery(Query):
   def Filter(self, it):
     return Children(it)
 
-
 class StarStarQuery(Query):
+  """Match everything excluding the current node."""
   def Filter(self, it):
     """ We do not want duplicates. This means storing all the objects into a
     set. This is an expensive operation in memory, and in time O(n log n). We
@@ -87,6 +87,7 @@ class StarStarQuery(Query):
 
 
 class NodeMatchQuery(Query):
+  """ Select child elements that match."""
   # By default variables are '', if not found
   def __init__(self, node_type, attributes, codegroup, position):
     self.node_type = node_type or None
@@ -108,10 +109,10 @@ class NodeMatchQuery(Query):
 
 
   def Filter(self, it):
-    it = Children(it) # The children of the given nodes are checked.
     # Create lambda at runtime so that an object of the class 
     # can be pickled - a parsed query is stuff we send to multiple processes
     # in  parallel python.
+    it = Children(it)
     s = _selector.Selector(
         node_type = self.node_type,
         function = self.__CreateFunctionFromCodeGroup(),
@@ -131,6 +132,7 @@ class NodeMatchQuery(Query):
 
 
 class ChildNodeMatchQuery(Query):
+  """ Select nodes whose child element matches the given query."""
   def __init__(self, q):
     assert(isinstance(q, NodeMatchQuery))
     self.child_query = q
@@ -138,11 +140,8 @@ class ChildNodeMatchQuery(Query):
   def ToStr(self): return "Child: " + self.child_query.ToStr()
 
   def Filter(self, it):
-    # Query the children. Since child_query is a NodeMatchQuery, it
-    # automatically checks the children.
     filtered_children = self.child_query.Filter(it)
-    parents_of_filtered_children = Parents(filtered_children)
-    return parents_of_filtered_children
+    return Parents(filtered_children)
 
 # Parse xpath
 reg_identifier = re.compile(r"[a-zA-Z_][a-zA-Z0-9_]*")
@@ -208,9 +207,9 @@ location_query_parser = P.Choice(
 
 child_node_match_parser = P.Clean(
   P.Sequence(
-    (P.Literal("["), None),
+    (P.Literal("("), None),
     (node_query_parser, "Expected a node query"),
-    (P.Literal("]"), "Expected closing ']'")),
+    (P.Literal(")"), "Expected closing ')'")),
   lambda x: ChildNodeMatchQuery(x[1]))
 
 atomic_query_parser = P.Choice(
@@ -231,6 +230,17 @@ xpath_query_parser = P.Clean(
     (P.Finished(), "Left over munchies! Or maybe too few. Who's to know?")),
   lambda x: [x[0]] + x[1])
 
+
+def ApplyParsedXPathQuery(trees, xpath_query):
+  """ Apply a parsed XPath Query to a list (sequence) of `trees`."""
+  filtered_nodes = iter(trees[:])
+
+  for q in xpath_query:
+    filtered_nodes = q.Filter(filtered_nodes)
+
+  return filtered_nodes
+
+
 def ParseXPath(s):
   """ Parse an XPath Query."""
   if s[0] == '/':
@@ -244,13 +254,6 @@ def ParseXPath(s):
     sys.exit(1)
   return
 
-def ApplyParsedXPathQuery(trees, xpath_query):
-  """ Apply a parsed XPath Query to a list (sequence) of `trees`."""
-  assert(type(xpath_query) == list)
-  filtered_nodes = iter(trees[:])
-  for q in xpath_query:
-    filtered_nodes = q.Filter(filtered_nodes)
-  return list(filtered_nodes)
 
 def XPath(trees, xpath_string):
   """ Parse and apply the xpath query in `xpath_string` to the list (sequence)

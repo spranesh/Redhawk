@@ -105,8 +105,15 @@ factorial_tree = N.DefineFunction(
      body = [ifelse])
 
 
-T.TreeConverter().AttachParents(factorial_tree)
-tree = factorial_tree
+module_tree = N.Module(position=None,
+    filename='sample_last.py',
+    children=[factorial_tree])
+
+T.TreeConverter().AttachParents(module_tree)
+
+tree = module_tree.GetChildren()[0]
+
+__all__ = ['tree', 'module_tree']
 
 if __name__ == '__main__':
-  print factorial_tree.ToStr()
+  print module_tree.ToStr()

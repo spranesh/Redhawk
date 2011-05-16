@@ -75,22 +75,22 @@ def TestNodeQueryParser():
 
 def TestChildNodeMatchParser():
   assert(isinstance(
-    X.child_node_match_parser("[DefineVariable]")[0],
+    X.child_node_match_parser("(DefineVariable)")[0],
     X.ChildNodeMatchQuery))
 
   assert(isinstance(
     X.child_node_match_parser(
-      "[ForEach@[foo='blah']@{codegroup}[12]]")[0],
+      "(ForEach@[foo='blah']@{codegroup}[12])")[0],
     X.ChildNodeMatchQuery))
 
   RaisesSyntaxError(lambda: X.child_node_match_parser(
-    "[..]"))
+    "(..)"))
 
   RaisesSyntaxError(lambda: X.child_node_match_parser(
-    "[.]"))
+    "(.)"))
 
   RaisesSyntaxError(lambda: X.child_node_match_parser(
-    "[**]"))
+    "(**)"))
 
 def TestAtomicQueryParser():
   # Test this function rather thoroughly
@@ -112,7 +112,7 @@ def TestAtomicQueryParser():
 
   assert(isinstance(
     X.child_node_match_parser(
-      "[ForEach@[foo='blah']@{codegroup}[12]]")[0],
+      "(ForEach@[foo='blah']@{codegroup}[12])")[0],
     X.ChildNodeMatchQuery))
 
   assert(isinstance(
@@ -127,7 +127,7 @@ def TestAtomicQueryParser():
 
 def TestSlashSepAtomicQueriesParser():
   result = X.slash_sep_atomic_queries_parser(
-      "/./../*/**/[DefineVariable]/@[foo='blah']")[0]
+      "/./../*/**/(DefineVariable)/@[foo='blah']")[0]
   assert(isinstance(result[0], X.DotQuery))
   assert(isinstance(result[1], X.DotDotQuery))
   assert(isinstance(result[2], X.StarQuery))
@@ -138,10 +138,13 @@ def TestSlashSepAtomicQueriesParser():
   RaisesSyntaxError(lambda: X.slash_sep_atomic_queries_parser(
     "/../"))
 
+def TestPosition():
+  query = X.ParseXPath("[12]")
+  print query
 
 def TestParseXPath():
   # Thoroughly test final function
-  query = ("./../*/**/[DefineVariable]/@[foo='blah']"
+  query = ("./../*/**/(DefineVariable)/@[foo='blah']"
           + "/@{n.blah == None}/@{n.blah == None}")
   # No leading or trailing slash
   RaisesSyntaxError(lambda: X.ParseXPath(query + "/"))
