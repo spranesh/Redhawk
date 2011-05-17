@@ -103,6 +103,7 @@ def StartShell(local_vars, banner=''):
   except ImportError:
     import readline, rlcompleter, code 
     readline.parse_and_bind("tab: complete")
+    readline.set_completer(rlcompleter.Completer(local_vars).complete)
     code.interact(local=local_vars, banner=banner)
 
 
