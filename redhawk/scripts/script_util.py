@@ -81,6 +81,7 @@ def IsFileSupported(filepath):
 def GetSupportedFiles(paths):
   """ Return a list of files, (after walking through directories), that are
   supported by redhawk."""
+  assert(type(paths) is list)
   for p in paths:
     if os.path.isdir(p):
       for root, dirs, files in os.walk(p):

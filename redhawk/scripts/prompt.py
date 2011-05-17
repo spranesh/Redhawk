@@ -70,7 +70,10 @@ def Main(args):
     trees = []
   else:
     ast_fetcher = G.CreateLASTFetcher(database, store_new = STORE_NEW)
-    trees = [ast_fetcher.GetAST(f, key=S.GetKey(f, database)) for f in args]
+
+    trees = []
+    for f in S.GetSupportedFiles(args):
+      trees.append(ast_fetcher.GetAST(f, key=S.GetKey(f, database)))
     ast_fetcher.Close()
   return EnterShell(trees)
 
