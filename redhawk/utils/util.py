@@ -92,20 +92,30 @@ def LogWarning(s, stream=sys.stderr):
   return
 
 
-def StartShell(local_vars, banner=''):
+def StartShell(local_vars, banner='', try_ipython=True):
   """ Start a shell, with the given local variables. It prints the given
   banner as a welcome message."""
 
-  try:
+  def IPythonShell(namespace, banner):
     from IPython.Shell import IPShell
-    ipshell = IPShell(user_ns = local_vars)
-    ipshell.mainloop(banner)
-  except ImportError:
+    ipshell = IPShell(user_ns = namespace)
+    ipshell.mainloop(banner=banner)
+
+  def PythonShell(namespace, banner):
     import readline, rlcompleter, code 
     readline.parse_and_bind("tab: complete")
-    readline.set_completer(rlcompleter.Completer(local_vars).complete)
-    code.interact(local=local_vars, banner=banner)
+    readline.set_completer(rlcompleter.Completer(namespace).complete)
+    code.interact(local=namespace, banner=banner)
 
+  if try_ipython:
+    try:
+      IPythonShell(local_vars, banner)
+      return
+    except ImportError, e:
+      pass
+  else:
+    PythonShell(local_vars, banner)
+  return
 
 def FindFileInDirectoryOrAncestors(filename, dirname, perm=os.R_OK | os.W_OK):
   """ Tries to find the file `filename` in the given directory `dirname` or

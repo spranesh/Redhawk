@@ -56,6 +56,15 @@ def Main(args):
       default=False,
       help = "Store new files that redhawk comes across in the database." + S.OPTIONS_DEFAULT_STRING)
 
+  parser.add_option(
+      "--no-ipython",
+      action="store_true",
+      dest="no_ipython",
+      default=False,
+      help = "Do not use IPython as a shell, even if installed."
+      + S.OPTIONS_DEFAULT_STRING)
+
+
   options, args = parser.parse_args(args)
 
   database = None
@@ -75,7 +84,7 @@ def Main(args):
     for f in S.GetSupportedFiles(args):
       trees.append(ast_fetcher.GetAST(f, key=S.GetKey(f, database)))
     ast_fetcher.Close()
-  return EnterShell(trees)
+  return EnterShell(trees, try_ipython = not options.no_ipython)
 
 
 def Help(display=True):
@@ -94,7 +103,7 @@ Built in Modules:
     S - redhawk.common.selector 
     F - redhawk.common.format_position 
 
-To view this again, use the Help function.  """
+To view this again, use the Help() function.  """
 
   if display:
     print s
@@ -102,7 +111,7 @@ To view this again, use the Help function.  """
     return s
   
 
-def EnterShell(trees):
+def EnterShell(trees, try_ipython):
   local_vars = {
       'trees' : trees,
       'ConvertFileToAST': ConvertFileToAST,
@@ -112,7 +121,10 @@ def EnterShell(trees):
       'S':selector,
       'F':format_position,
     }
-  U.StartShell(local_vars, banner=Help(display=False))
+  U.StartShell(
+      local_vars,
+      banner=Help(display=False),
+      try_ipython = try_ipython)
 
 
 if __name__ == '__main__':
