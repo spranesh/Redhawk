@@ -84,6 +84,8 @@ def Main(args):
     for f in S.GetSupportedFiles(args):
       trees.append(ast_fetcher.GetAST(f, key=S.GetKey(f, database)))
     ast_fetcher.Close()
+
+  sys.argv = [] # So that IPython does not try to parse our options.
   return EnterShell(trees, try_ipython = not options.no_ipython)
 
 
