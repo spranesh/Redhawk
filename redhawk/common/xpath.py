@@ -328,7 +328,7 @@ def Main():
   """ Only for testing."""
 
   import format_position as F
-  import redhawk.utils.get_ast as G
+  import redhawk.common.get_ast as G
 
   if len(sys.argv) < 2:
     print """ %s <xpath-query> [files].

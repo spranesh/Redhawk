@@ -41,7 +41,7 @@ setup(
         'files/examples/*',
         'files/python/*',
        ],
-      'redhawk.utils': [
+      'redhawk.c': [
         'fake_libc_include/*'
        ],
       'redhawk.common': [

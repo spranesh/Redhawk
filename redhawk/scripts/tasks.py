@@ -43,13 +43,13 @@ redhawk.utils.task_runner
 import redhawk.common.format_position
 import redhawk.common.xpath
 import redhawk.scripts.script_util
-import redhawk.utils.get_ast
+import redhawk.common.get_ast
 
 IMPORTS = [
 'redhawk.common.format_position',
 'redhawk.common.xpath',
 'redhawk.scripts.script_util',
-'redhawk.utils.get_ast']
+'redhawk.common.get_ast']
 
 
 def Query(files, database_file, parsed_query, store_new, context):
@@ -60,7 +60,7 @@ def Query(files, database_file, parsed_query, store_new, context):
 
   Print `context` number of lines on either of side of matching results.
   """
-  ast_fetcher = redhawk.utils.get_ast.CreateLASTFetcher(database_file, store_new = store_new)
+  ast_fetcher = redhawk.common.get_ast.CreateLASTFetcher(database_file, store_new = store_new)
   for f in files:
     key = redhawk.scripts.script_util.GetKey(f, database_file)
     ast = ast_fetcher.GetAST(f, key)

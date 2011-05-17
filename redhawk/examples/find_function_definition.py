@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import redhawk.common.selector as S
-import redhawk.utils.get_ast as G
+import redhawk.common.get_ast as G
 import redhawk.utils.util as U
 
 import sys

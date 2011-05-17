@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """ Implementation of a key value store, with version-numbers.
-This is used by get_ast.py for storing trees.
+This is used by redhawk.common.get_ast.py for storing trees.
 
 This Abstraction assumes that Permissions to read and write from the datastore
 are in place.

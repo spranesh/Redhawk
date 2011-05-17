@@ -4,7 +4,7 @@
 
 import redhawk
 import redhawk.python.python_tree_converter as P
-import redhawk.utils.get_ast as G
+import redhawk.common.get_ast as G
 import redhawk.utils.key_value_store as KVStore
 
 import nose.tools

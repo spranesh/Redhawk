@@ -2,7 +2,7 @@
 import script_util as S
 import redhawk.common.selector as selector
 import redhawk.common.format_position as format_position
-import redhawk.utils.get_ast as G
+import redhawk.common.get_ast as G
 import redhawk.utils.util as U
 
 import optparse

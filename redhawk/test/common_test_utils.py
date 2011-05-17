@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import redhawk.utils.get_ast as G
-import redhawk.utils.parse_ast as P
+import redhawk.common.get_ast as G
+import redhawk.common.get_parser as P
+import redhawk.utils.util as U
 
 import os
 import glob
@@ -16,17 +17,15 @@ def GetAllLASTs():
 
 
 def GetLASTFromFile(filename, language, database):
-  """ We first fetch the tree's language specific AST, and use the ConvertAST
-  function in parse_ast. This convoluted approach is taken since the language
-  specific ASTs are cached by tests."""
+  """ We first fetch the tree's language specific AST, and use the Convert
+  function of the parser returned by get_parser. This convoluted approach is
+  taken since the language specific ASTs are cached by tests."""
   language_specific_tree = G.GetLanguageSpecificTree(filename
                                                     ,database
                                                     ,language=language
                                                     ,key = None)
-  return P.ConvertAST(language_specific_tree
-                        ,language
-                        ,filename)
-
+  language = language or U.GuessLanguage(filename)
+  return P.GetParser(language).Convert(language_specific_tree)
 
 if __name__ == '__main__':
   files_found = list(GetAllLASTs())

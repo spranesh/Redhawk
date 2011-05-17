@@ -2,7 +2,7 @@
 """ Implementation of redhawk show"""
 import script_util as S
 
-import redhawk.utils.get_ast as G
+import redhawk.common.get_ast as G
 
 import optparse
 import os

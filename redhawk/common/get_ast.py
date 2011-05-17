@@ -33,20 +33,31 @@ these functions. In such a case, it will simply fetch the required tree, by
 parsing (and converting) it.
 """
 
-import parse_ast
+import get_parser
 import redhawk
-import util
-import key_value_store as KVStore
+import redhawk.utils.util as U
+import redhawk.utils.key_value_store as KVStore
 
 import logging
 import os
 import shelve
 
 
+def __ParseLAST(filename, language):
+  """ Parses LAST for the given language."""
+  parser = get_parser.GetParser(language = language, filename = filename)
+  return parser.GetLAST(filename)
+
+def __ParseLanguageSpecificTree(filename, language):
+  """ Parses Language Specific Tree for the given language."""
+  parser = get_parser.GetParser(language = language, filename = filename)
+  print parser
+  return parser.Parse(filename)
+
 def GetLAST(filename, database, key=None, language=None, store_new = True):
   """ Get a Single LAST. Similar to creating a LAST fetcher instance using
   CreateLASTFetcher, and then using GetAST."""
-  last_parser = lambda filename: parse_ast.GetLAST(filename, language)
+  last_parser = lambda filename: __ParseLAST(filename, language)
   if database == None:
     return last_parser(filename)
 
@@ -56,19 +67,19 @@ def GetLAST(filename, database, key=None, language=None, store_new = True):
   return ast
 
 
-
 def GetLanguageSpecificTree(filename, database, key=None, language=None,
     store_new = True):
   """ Get a Single Language Specific Tree. Similar to creating a Language
   Specific Tree fetcher instance using CreateLanguageSpecificFetcher, and then
   using GetAST."""
-  specific_parser = lambda filename: parse_ast.ParseFile(filename, language)
+  specific_parser = lambda filename: __ParseLanguageSpecificTree(filename, language)
   if database is None:
     return specific_parser(filename)
   ast_fetcher = CreateLanguageSpecificFetcher(database, language, store_new = store_new)
   ast = ast_fetcher.GetAST(filename, key)
   ast_fetcher.Close()
   return ast
+
 
 def CreateLASTFetcher(database, language = None, store_new = True):
   """ A factory method for creating a LAST fetcher (It handles the parser
@@ -87,8 +98,9 @@ def CreateLASTFetcher(database, language = None, store_new = True):
   
   return ASTFetcher(
       database_file = database, 
-      parser = lambda filename: parse_ast.GetLAST(filename, language),
+      parser = lambda filename: __ParseLAST(filename, language),
       store_new = store_new)
+
 
 
 def CreateLanguageSpecificFetcher(database, language=None, store_new =
@@ -107,7 +119,7 @@ def CreateLanguageSpecificFetcher(database, language=None, store_new =
   comes across."""
   return ASTFetcher(
       database_file = database,
-      parser = lambda filename: parse_ast.ParseFile(filename, language),
+      parser = lambda filename: __ParseLanguageSpecificTree(filename, language),
       store_new = store_new)
 
 
@@ -170,7 +182,7 @@ class ASTFetcher:
     if not self.database:
       return self.parser(filename)
 
-    digest = util.GetHashDigest(filename)
+    digest = U.GetHashDigest(filename)
     key = key or os.path.basename(filename)
   
     if self.database.HasKey(key):

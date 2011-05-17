@@ -2,7 +2,7 @@
 
 import script_util as S
 import redhawk
-import redhawk.utils.get_ast as G
+import redhawk.common.get_ast as G
 import redhawk.utils.util as U
 import redhawk.utils.key_value_store as KVStore
 

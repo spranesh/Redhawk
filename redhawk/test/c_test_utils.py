@@ -2,7 +2,7 @@
 
 import redhawk
 import redhawk.c.c_tree_converter as C
-import redhawk.utils.get_ast as G
+import redhawk.common.get_ast as G
 import redhawk.utils.key_value_store as KVStore
 
 import os
