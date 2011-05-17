@@ -136,6 +136,15 @@ class S:
     """ Calls _selector.RunSelector on the tree with the given selector."""
     return _selector.RunSelector(self.selector, tree)
 
+  def Apply(self, trees):
+    """ This applies the selector on a LIST of trees to return a dictionary of 
+    tree -> list of resultant trees."""
+    assert(type(trees) is list)
+    d = {}
+    for t in trees:
+      d[t] = list(self(t))
+    return d
+
   def And(self, s):
     """ Returns a NEW selector that requires the current s-object be valid,
     and the `s` s-object also to be valid.

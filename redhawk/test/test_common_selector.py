@@ -170,3 +170,27 @@ def TestHasDescendant():
   assert(len(l1) == 1)
   assert(l1[0].GetName() == 'Return')
   return
+
+def TestApply():
+  return_node = S.S(node_type = N.Return)
+  # Test on a single module node
+  d = return_node.Apply([tree])
+  assert(len(d) == 1) # we passed in only one tree.
+  assert(d.has_key(tree))
+  assert(isinstance(d[tree][0], N.Return))
+  assert(isinstance(d[tree][1], N.Return))
+  assert(len(d[tree]) == 2) # 2 return statements.
+
+  return_statements = d[tree]
+  constant_node = S.S(node_type = N.Constant)
+  d = constant_node.Apply(return_statements)
+
+  assert(len(d) == 2) # 2 return statements were passed in
+  k1, k2 = return_statements
+  assert(d.has_key(k1) and d.has_key(k2))
+  assert(len(d[k1]) == 1)
+  assert(len(d[k2]) == 1)
+  c1, c2 = d[k1][0], d[k2][0]
+  assert(c1 != c2)
+  assert(c1.value == c2.value == "1")
+  return
