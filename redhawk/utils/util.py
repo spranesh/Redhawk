@@ -97,12 +97,12 @@ def StartShell(local_vars, banner=''):
   banner as a welcome message."""
 
   try:
-    from IPython.Shell import IPShellEmbed
-    ipshell = IPShellEmbed([])
-    ipshell.set_banner(banner)
-    ipshell(local_ns=local_vars)
+    from IPython.Shell import IPShell
+    ipshell = IPShell(user_ns = local_vars)
+    ipshell.mainloop(banner)
   except ImportError:
-    import code
+    import readline, rlcompleter, code 
+    readline.parse_and_bind("tab: complete")
     code.interact(local=local_vars, banner=banner)
 
 
