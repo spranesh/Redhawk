@@ -174,23 +174,22 @@ def TestHasDescendant():
 def TestApply():
   return_node = S.S(node_type = N.Return)
   # Test on a single module node
-  d = return_node.Apply([tree])
-  assert(len(d) == 1) # we passed in only one tree.
-  assert(d.has_key(tree))
-  assert(isinstance(d[tree][0], N.Return))
-  assert(isinstance(d[tree][1], N.Return))
-  assert(len(d[tree]) == 2) # 2 return statements.
+  result = list(return_node.Apply([tree]))
+  assert(len(result) == 2) # 2 return statements
+  (r1, t1), (r2, t2) = result
+  assert(t1 == tree and t2 == tree)
+  assert(isinstance(r1, N.Return))
+  assert(isinstance(r2, N.Return))
 
-  return_statements = d[tree]
   constant_node = S.S(node_type = N.Constant)
-  d = constant_node.Apply(return_statements)
+  d = list(constant_node.Apply([r1, r2]))
 
-  assert(len(d) == 2) # 2 return statements were passed in
-  k1, k2 = return_statements
-  assert(d.has_key(k1) and d.has_key(k2))
-  assert(len(d[k1]) == 1)
-  assert(len(d[k2]) == 1)
-  c1, c2 = d[k1][0], d[k2][0]
+  assert(len(d) == 2) # 2 constant nodes should have been found.
+  (c1, p1), (c2, p2) = d
+  assert(p1 != p2)
+  assert(p1 == r1 or p2 == r1)
+  assert(p1 == r2 or p2 == r2)
+
   assert(c1 != c2)
   assert(c1.value == c2.value == "1")
   return

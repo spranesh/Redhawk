@@ -133,17 +133,31 @@ class S:
 
 
   def __call__(self, tree):
-    """ Calls _selector.RunSelector on the tree with the given selector."""
+    """ Calls _selector.RunSelector on a tree (or list of trees) with the
+    given selector."""
     return _selector.RunSelector(self.selector, tree)
 
   def Apply(self, trees):
-    """ This applies the selector on a LIST of trees to return a dictionary of 
-    tree -> list of resultant trees."""
+    """ This applies the selector on a LIST of `trees`. This method returns an
+    For each resulting node, n, a pair is returned:
+
+      (n, tree in `trees` from which n was selected)
+
+    This method, thus returns an iterator to a pair of trees.
+
+    Example: Suppose t1 contains two nodes, n1, n2 that match some selector,
+    s. And t2 contains three nodes, m1, m2, m3, that match the selector, s.
+
+    Then s.Apply([t1, t2]) returns an *iterator* to the *set*:
+
+      (n1, t1), (n2, t1), (m1, t2), (m2, t2), (m2, t3)
+
+    The order of nodes is NOT guaranteed."""
+
     assert(type(trees) is list)
-    d = {}
     for t in trees:
-      d[t] = list(self(t))
-    return d
+      for n in self(t):
+        yield (n, t)
 
   def And(self, s):
     """ Returns a NEW selector that requires the current s-object be valid,
