@@ -52,7 +52,7 @@ def GetHashDigest(filename):
     fp.close()
     return digest
   except IOError, e:
-    sys.stderr.write(e)
+    sys.stderr.write(str(e))
     sys.exit(1)
   return
 
