@@ -234,7 +234,7 @@ This gives us::
     counter.py:1:def CounterClosure(init=0):
 
 
-Note:
+NOTE:
 
 1. The results are not necessarily in a sorted order, with respect to
    line number. This does not hamper the use of Redhawk for searching and
@@ -349,6 +349,49 @@ This gives us::
     counter.py:22:c1 = CounterClosure()
     counter.py:23:c2 = CounterClass()
 
+*Example 10*
+Let us find all Function definitions whose first argument is `self`::
+
+    $ redhawk query '**/DefineFunction/FunctionArguments/@[name="self"][0]' counter.py
+
+This gives us::
+
+    counter.py:12:  def Bump(self):
+    counter.py:9:  def __init__(self, init=0):
+
+The last `[0]` is square brackets, indicates the position of that node with
+respect to its parent.
+
+*Example 11*
+Let us find all Function definitions whose last argument is `self`. The
+following query is *WRONG*::
+
+    $ redhawk query '**/DefineFunction/FunctionArguments/@[name="self"][-1]' counter.py
+
+The above query gives us no output. Why? Looking at the `node`_ configuration
+file, we see that, `FunctionArguments` has three children --- `arguments`,
+`var_arguments`, `kwd_arguments`, the latter two of which are `None`
+everywhere in the file as no variable or keyword arguments are used. Thus, the
+children of `FunctionArguments` everywhere in the `counter.py` file takes the
+form `[[..], None, None]`. What we really want, is the last element of the first
+element, the `arguments` list. This can be expressed as follows::
+
+    $ redhawk query '**/DefineFunction/FunctionArguments/@[name="self"][0, -1]' counter.py
+
+This gives us::
+
+    counter.py:12:  def Bump(self):
+
+In hindsight, the query in the previous example could have also been expressed
+as::
+
+    $ redhawk query '**/DefineFunction/FunctionArguments/@[name="self"][0, 0]' counter.py
+
+
+NOTE: For convenience's sake, even `[0, -1, 0]`, or `[0, -1, 0, 0, .. , 0]`
+is defined to return the same result. Read the 'Position Syntax' section in
+the documentation of `redhawk.common.xpath` for more information.
+
 
 An abstract grammar of the query language can be found via::
 
@@ -387,9 +430,10 @@ We are greeted with a help banner::
     
     Built in Modules:
         S - redhawk.common.selector
+        X - redhawk.common.xpath
         F - redhawk.common.format_position
     
-    To view this again, use the Help function.
+    To view this again, use the Help() function.
     
 
 In the prompt, we define our selectors. (See `pydoc redhawk.common.selector`
@@ -403,7 +447,7 @@ for what selectors are, and how they can be composed)::
 We then apply the selector on the file. The asts of the files passed are in
 the `trees argument`. Since this file was the first, it is in `trees[0]`::
 
-    In [4]: results = list(reqd_selector(trees[0]))
+    In [4]: results = list(reqd_selector(trees))
     In [5]: results[0]
 
 gives us::
