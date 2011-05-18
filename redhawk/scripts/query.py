@@ -75,6 +75,14 @@ def Main(args):
       help = "Number of files passed in each chunk to a free worker (applicable only if -p is used)." 
       + S.OPTIONS_DEFAULT_STRING)
 
+  parser.add_option(
+      "--show-parsed-query",
+      action="store_true",
+      dest="show_parsed_query",
+      default=False,
+      help = "Show the parsed query and exit"
+      + S.OPTIONS_DEFAULT_STRING)
+
   options, args = parser.parse_args(args)
   if not len(args):
       parser.error("No query or files given.")
@@ -83,9 +91,13 @@ def Main(args):
     options.parallel = False
 
   parsed_query = X.ParseXPath(args[0])
+  if options.show_parsed_query:
+    for q in parsed_query:
+      print q
+    sys.exit(0)
+
   if len(args) == 1:
     sys.stderr.write("No files given\n\n")
-    sys.stderr.write("Query was parsed as: %s\n"%(parsed_query))
     sys.exit(1)
 
   database_file = S.GetDatabase() if options.no_db == False else None
