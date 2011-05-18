@@ -443,6 +443,14 @@ the source distribution.
 
 Change List
 ------------
+*v1.1.6*
+
+* Major internal refactoring involving get_ast.py
+* Prompt command accepts directories, and can be told not to use IPython.
+* A new selector function called Apply to make prompt usage easier.
+
+* Bug fixes wrt IPython shell and error handling.
+
 *v1.1.5*
 
 * `Vim plugin`_ released.
