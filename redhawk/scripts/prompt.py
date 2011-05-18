@@ -3,6 +3,7 @@ import script_util as S
 import redhawk.common.selector as selector
 import redhawk.common.format_position as format_position
 import redhawk.common.get_ast as G
+import redhawk.common.xpath as X
 import redhawk.utils.util as U
 
 import optparse
@@ -103,6 +104,7 @@ Built in Functions:
 
 Built in Modules:
     S - redhawk.common.selector 
+    X - redhawk.common.xpath
     F - redhawk.common.format_position 
 
 To view this again, use the Help() function.  """
@@ -122,6 +124,7 @@ def EnterShell(trees, try_ipython):
       'ShowASTAsImage':S.ShowASTAsImage,
       'S':selector,
       'F':format_position,
+      'X':X
     }
   U.StartShell(
       local_vars,
