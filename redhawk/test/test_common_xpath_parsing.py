@@ -41,14 +41,16 @@ def TestNumberParser():
   return
 
 def TestPositionParser():
-  assert(X.position_parser("[1231]") == (1231, ""))
-  assert(X.position_parser("[1231]fg") == (1231, "fg"))
-
-  # Test Syntax Errors thrown up
-  e1, e2 = False, False
+  assert(X.position_parser("[1231]") == ([1231], ""))
+  assert(X.position_parser("[1231]fg") == ([1231], "fg"))
+  assert(X.position_parser("[1231, 1231]") == ([1231, 1231], ""))
+  assert(X.position_parser("[1, 2,   4]fg") == ([1, 2, 4], "fg"))
+  assert(X.position_parser("[-1, 2, -4]fg") == ([-1, 2, -4], "fg"))
 
   RaisesSyntaxError(lambda: X.position_parser("["))
-  RaisesSyntaxError(lambda: X.position_parser("[1231"))
+  RaisesSyntaxError(lambda: X.position_parser("[, ]"))
+  RaisesSyntaxError(lambda: X.position_parser("[]"))
+  RaisesSyntaxError(lambda: X.position_parser("[, ]"))
 
 
 def TestAttrMatchParser():

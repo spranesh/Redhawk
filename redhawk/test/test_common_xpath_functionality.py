@@ -48,12 +48,6 @@ def TestSelector():
   assert(l0 == l1)
   assert(l2 == l3)
 
-  # for x in l1, l2, l4:
-  #   print x
-  #   for y in x:
-  #     print y.ToStr()
-  #   print "----"
-
   assert(len(l1) == 1 and len(l2) == 1 and len(l4) == 2)
   assert(l2 == l3)
 
@@ -65,6 +59,27 @@ def TestSelector():
   assert(r4.GetName() == 'Constant')
   return
 
+def TestPositionSelector():
+  l0 = list(Query('**/DefineFunction/[0]'))
+  l1 = list(Query('**/DefineFunction/[1]'))
+  l2 = list(Query('**/DefineFunction/[2]'))
+
+  assert(len(l0) == len(l1) == 1)
+  assert(l0[0].GetName() == 'FunctionArguments')
+  assert(l1[0].GetName() == 'IfElse')
+  assert(l2 == [])
+
+  l0 = list(Query('**/DefineFunction/FunctionArguments/[0, 0]'))
+  assert(len(l0) == 1)
+  assert(l0[0].GetName() == 'DefineVariable')
+
+  # We should be getting a return which is a child of the else clause
+  r = list(Query('**/IfElse/Return[2]'))
+  q = list(Query('**/IfElse/Return[2, 0]'))
+  assert(len(r) == 1)
+  assert(r == q)
+  assert(r[0].GetChildren()[0].GetName() == 'Expression')
+  return
 
 def TestDot():
   """ Test Dot """

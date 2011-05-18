@@ -86,6 +86,19 @@ def IfElse(condition, iftrue, iffalse):
     return CallIfPossible(iffalse)
 
 
+def IndexInto(li, indices):
+  """ Index into a list (or list of lists) using the indices given. If the
+  indices are out of bounds, or are too many in number, return None, instead
+  of throwing an error. 0 is a special case."""
+  for i in indices:
+    if type(li) != list and i == 0:
+      return li
+    if type(li) != list or i >= len(li):
+      return None
+
+    li = li[i]
+  return li
+
 def LogWarning(s, stream=sys.stderr):
   """ Log a warning to `stream` (default: sys.stderr.)"""
   stream.write("[WARNING]: %s\n"%(s))

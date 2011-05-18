@@ -52,6 +52,31 @@ def TestIfElse():
                 lambda: 3) == 2)
 
 
+def TestIndexInto():
+  li = [1, 2, 3, 4, 5]
+  for i in range(len(li)):
+    assert(U.IndexInto(li, [i]) == li[i])
+  assert(U.IndexInto(li, [1, 2]) == None)
+
+  li = [[1, 2], [3, [4, 5], [6, 7]], [[[8]], 9], 10]
+  assert(U.IndexInto(li, [10, 19]) == None)
+  assert(U.IndexInto(li, [0]) == [1, 2])
+  assert(U.IndexInto(li, [0, 0]) == 1)
+  assert(U.IndexInto(li, [0, 1]) == 2)
+  assert(U.IndexInto(li, [0, 2]) == None)
+  assert(U.IndexInto(li, [1, 0]) == 3)
+  assert(U.IndexInto(li, [1, 1]) == [4, 5])
+  assert(U.IndexInto(li, [1, 2]) == [6, 7])
+  assert(U.IndexInto(li, [2, 0]) == [[8]])
+  assert(U.IndexInto(li, [2, 0, 1]) == None)
+  assert(U.IndexInto(li, [2, 0, 0]) == [8])
+  assert(U.IndexInto(li, [2, 0, 0, 0]) == 8)
+  assert(U.IndexInto(li, [2, 1]) == 9)
+  assert(U.IndexInto(li, [2, 1, 0, 0]) == 9)
+  assert(U.IndexInto(li, [3]) == 10)
+  assert(U.IndexInto(li, [4]) == None)
+  
+
 def TestFindFileInDirectoryOrAncestors():
   """ Test FindFileInDirectoryOrAncestors"""
   # Create an empty temp directory

@@ -63,6 +63,44 @@ Select all Closures (Funcdef within a Funcdef):
   '**/DefineFunction/**/DefineFunction'
 
 
+Position Syntax
+---------------
+
+The position in a Node Query is a comma separated list of numbers.  
+
+  1. The position given indicates the position of the given node, among it's
+     parents children. They are ZERO-indexed, and can be negative.
+
+  2. If only one position is given, i.e, the position list is of the form [i],
+     then the children of that node will be flattened out, and the ith child will
+     be returned. 
+
+  3. The zero index is special. Any node returned by [2, 1] will be returned
+     by [2, 1, 0] and [2, 1, 0, 0] and so forth. Note that [2, 0, 0] may be
+     different from [2, 0].
+
+     In other words, the 0 index, in a mutli-index query succeeds even if it
+     is a list or not.
+
+  4. If more than one position list is given, then the children will be
+     traversed in the order of the positions given.
+     
+Examples:
+
+Select all second arguments to a function:
+  '**/DefineFunction/FunctionArguments/[1]'
+
+Select all fifth arguments to a function:
+  '**/DefineFunction/FunctionArguments/[4]'
+
+Select all first keyword arguments to a function. Keyword Arguments is the
+3rd child in a FunctionArguments node, as can be seen in _node_cfg.yaml. This
+succeeds even though keyword arguments is not a list, because of the
+zero-index speciality.
+
+  '**/DefineFunction/FunctionArguments/[2, 0]'
+
+
 Grammar
 =======
 
@@ -78,8 +116,9 @@ LocationQuery =   .
                 | NodeQuery
 
 
-NodeQuery = identifier? @[identifier=string]* @{codeblock}? [number]
+NodeQuery = identifier? @[identifier=string]* @{codeblock}? Position*
 
+Position = [ comma-separated-list-of-numbers ]
 """
 import _selector
 import traverse
@@ -152,11 +191,11 @@ class StarStarQuery(Query):
 class NodeMatchQuery(Query):
   """ Select child elements that match."""
   # By default variables are '', if not found
-  def __init__(self, node_type, attributes, codegroup, position):
+  def __init__(self, node_type, attributes, codegroup, position_list):
     self.node_type = node_type or None
     self.attributes = dict(attributes)
     self.codegroup = codegroup or None
-    self.position = position or None
+    self.position_list = position_list or None
 
     # Try creating to only warn of errors.
     self.__CreateFunctionFromCodeGroup()
@@ -181,17 +220,31 @@ class NodeMatchQuery(Query):
         function = self.__CreateFunctionFromCodeGroup(),
         **self.attributes)
     matched_nodes = itertools.ifilter(s, it)
-    if self.position is not None:
-      matched_nodes = list(matched_nodes)
-      if self.position < len(matched_nodes):
-        return iter([matched_nodes[self.position]])
+
+    if not self.position_list:
+      return matched_nodes
+
+    return self.__GetNodesInPosition(matched_nodes)
+
+  def __GetNodesInPosition(self, matched_nodes):
+    for n in matched_nodes:
+      parents = n.GetParent()
+      if parents is None:
+        continue
+
+      if len(self.position_list) == 1:
+        children = parents.GetFlattenedChildren()
       else:
-        return iter([])
-    return matched_nodes
+        children = parents.GetChildren()
+
+      indexed_node = U.IndexInto(children, self.position_list)
+      if indexed_node == n:
+        yield n
+
 
   def ToStr(self):
-    return "node_type = %s, attributes = %s, codegroup = %s, position = %s"%(
-        self.node_type , self.attributes, self.codegroup, self.position)
+    return "node_type = %s, attributes = %s, codegroup = %s, position_list = %s"%(
+        self.node_type , self.attributes, self.codegroup, self.position_list)
 
 
 class ChildNodeMatchQuery(Query):
@@ -211,6 +264,7 @@ reg_identifier = re.compile(r"[a-zA-Z_][a-zA-Z0-9_]*")
 reg_string     = re.compile(r"'[^']*'|" + r'"[^"]*"')
 reg_codeblock  = re.compile(r"@{[^}]*}")
 reg_number     = re.compile(r"-?[0-9]+")
+reg_position   = re.compile(r"[0-9,\- ]+")
 
 # Warn people of Empty Codeblocks
 def CleanAndWarnEmptyCodeBlock(s):
@@ -218,10 +272,21 @@ def CleanAndWarnEmptyCodeBlock(s):
   if not r: raise SyntaxError("Empty Code block found.")
   return r
 
+def CleanPosition(s):
+  numbers = []
+  for n in s.split(","):
+    try:
+      numbers.append(int(n))
+    except ValueError, e:
+      raise SyntaxError("Unable to parse '%s' into a number in position syntax : '%s'"
+          %(n, s))
+  return numbers
+
 string_parser = P.Clean(P.Regex(reg_string), lambda x: x[1:-1])
 codeblock_parser = P.Clean(P.Regex(reg_codeblock), CleanAndWarnEmptyCodeBlock)
 identifier_parser = P.Regex(reg_identifier)
 number_parser = P.Clean(P.Regex(reg_number), lambda x: int(x))
+position_parser = P.Clean(P.Regex(reg_position), CleanPosition)
 
 attr_match_parser = P.Clean(
   P.Sequence(
@@ -235,7 +300,7 @@ attr_match_parser = P.Clean(
 position_parser = P.Clean(
     P.Sequence(
       (P.Literal("["), None),
-      (number_parser, "Number expected"),
+      (position_parser, "expected a position: comma-separated-list-of-numbers. "),
       (P.Literal("]"), "Closing ']' expected")
       ),
     lambda x: x[1])
