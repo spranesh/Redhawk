@@ -350,7 +350,7 @@ This gives us::
     counter.py:23:c2 = CounterClass()
 
 *Example 10*
-Let us find all Function definitions whose first argument is `self`::
+Let us find all Function definitions whose first argument is `self` [4]_::
 
     $ redhawk query '**/DefineFunction/FunctionArguments/@[name="self"][0]' counter.py
 
@@ -373,8 +373,10 @@ file, we see that, `FunctionArguments` has three children --- `arguments`,
 `var_arguments`, `kwd_arguments`, the latter two of which are `None`
 everywhere in the file as no variable or keyword arguments are used. Thus, the
 children of `FunctionArguments` everywhere in the `counter.py` file takes the
-form `[[..], None, None]`. What we really want, is the last element of the first
-element, the `arguments` list. This can be expressed as follows::
+form `[[..], None, None]`.
+
+What we really want, is the last element of the first element, the `arguments`
+list. This can be expressed as follows [4]_::
 
     $ redhawk query '**/DefineFunction/FunctionArguments/@[name="self"][0, -1]' counter.py
 
@@ -388,9 +390,9 @@ as::
     $ redhawk query '**/DefineFunction/FunctionArguments/@[name="self"][0, 0]' counter.py
 
 
-NOTE: For convenience's sake, even `[0, -1, 0]`, or `[0, -1, 0, 0, .. , 0]`
-is defined to return the same result. Read the 'Position Syntax' section in
-the documentation of `redhawk.common.xpath` for more information.
+Note: For convenience's sake, even `[0, -1, 0]`, or `[0, -1, 0, 0, .. , 0]` is
+defined to return the same result. Read the 'Position Syntax' section in the
+documentation of `redhawk.common.xpath` for more information.
 
 
 An abstract grammar of the query language can be found via::
@@ -550,6 +552,9 @@ Bugs in the README's RST syntax fixed.
 .. [2] In fact the portion inside the `@{..}` is just appended to a 'lambda n:' and `eval`-ed to get a function.
 
 .. [3] Note that 'CallFunction's do not directly have a name. This is because the function object, unlike that of a function definition, can be a value. It is possible to do (f.g[x])(y), and such.
+
+.. [4] These queries actually finds us the argument, and not the function itself. But this shouldn't matter when we have the definition on the same line.
+
 
 
 .. _Vim plugin: http://www.vim.org/scripts/script.php?script_id=3586
