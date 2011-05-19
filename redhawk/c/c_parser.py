@@ -26,4 +26,5 @@ class CParser(parser.Parser):
     except pycparser.plyparser.ParseError, e:
       error = "Error parsing file %s with pycparser (with cpp). Skipping\n"%(filename)
       logging.warning(error)
+      logging.debug(str(e))
       return None

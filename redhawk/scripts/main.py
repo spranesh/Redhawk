@@ -94,13 +94,16 @@ def Main():
   if len(args):
     parser.error("Unrecognised command: %s"%" ".join(args))
 
+  log_level = logging.CRITICAL
   if options.verbose == 1:
-    log_level = logging.ERROR
+    log_level = logging.CRITICAL
   if options.verbose == 2:
-    log_level = logging.WARNING
+    log_level = logging.ERROR
   if options.verbose == 3:
-    log_level = logging.INFO
+    log_level = logging.WARNING
   if options.verbose == 4:
+    log_level = logging.INFO
+  if options.verbose > 4:
     log_level = logging.DEBUG
 
   logging.basicConfig(level=log_level)
