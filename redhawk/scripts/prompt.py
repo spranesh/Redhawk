@@ -5,6 +5,8 @@ import redhawk.common.format_position as format_position
 import redhawk.common.get_ast as G
 import redhawk.common.xpath as X
 import redhawk.utils.util as U
+import redhawk.common.node as N
+import redhawk.common.types as T
 
 import optparse
 import os
@@ -107,6 +109,9 @@ Built in Modules:
     X - redhawk.common.xpath
     F - redhawk.common.format_position 
 
+    N - redhawk.common.node
+    T - redhawk.common.types
+
 To view this again, use the Help() function.  """
 
   if display:
@@ -124,7 +129,9 @@ def EnterShell(trees, try_ipython):
       'ShowASTAsImage':S.ShowASTAsImage,
       'S':selector,
       'F':format_position,
-      'X':X
+      'X':X,
+      'N': N,
+      'T': T,
     }
   U.StartShell(
       local_vars,
