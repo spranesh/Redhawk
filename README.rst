@@ -29,6 +29,8 @@ parallel-python (pp) module. This speeds up Redhawk's querying on large
 codebases. Querying for closures anywhere in Django (~2200 files) can now be
 done in ~20 seconds on a celeron netbook.
 
+An introductory set of videos, have been uploaded to `Youtube`_.
+
 Project Objectives
 ------------------
 
@@ -574,3 +576,4 @@ Bugs in the README's RST syntax fixed.
 .. _pp: http://pypi.python.org/pypi/pp
 .. _Python YAML: http://www.pyyaml.org
 .. _nosetests: http://somethingaboutorange.com/mrl/projects/nose/1.0.0/
+.. _Youtube: http://www.youtube.com/watch?v=azaXpahrxww
