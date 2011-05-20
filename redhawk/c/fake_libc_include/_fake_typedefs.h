@@ -2,6 +2,7 @@
 #define _FAKE_TYPEDEFS_H
 
 typedef int size_t;
+typedef int va_list;
 typedef int __builtin_va_list;
 typedef int __gnuc_va_list;
 typedef int __int8_t;
