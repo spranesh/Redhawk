@@ -21,15 +21,18 @@ Redhawk is currently under heavy development. The code can be found on
 
 Redhawk currently requires python 2.6 or 2.7.
 
+Project News
+------------
+
+An introductory set of videos, have been uploaded to `Youtube`_.
+
 A `Vim plugin`_ released in version 1.1.5, for query, and replace (using an
 editable quickfix list).
 
-NOTE: From Version 1.1.2 onwards, Redhawk supports parallel querying using the
+From Version 1.1.2 onwards, Redhawk supports parallel querying using the
 parallel-python (pp) module. This speeds up Redhawk's querying on large
 codebases. Querying for closures anywhere in Django (~2200 files) can now be
 done in ~20 seconds on a celeron netbook.
-
-An introductory set of videos, have been uploaded to `Youtube`_.
 
 Project Objectives
 ------------------
@@ -491,6 +494,18 @@ the source distribution.
 
 Change List
 ------------
+*v1.2.1*
+
+* The Lua source code written in ANSI-compliant C, can now be Redhawk-ed!
+
+*v1.2.0*
+
+* Added new position functionality to xpath.py! (See Examples 10, and 11 aboev for
+  example usage).
+* Added to the default imports in prompt.py: redhawk.common.nodes, redhawk.common.types, redhawk.common.xpath
+* Added a --show-parsed-query option to redhawk query.
+* Made only critical messages appear in the default verbose level.
+
 *v1.1.6*
 
 * Major internal refactoring involving get_ast.py
