@@ -32,7 +32,7 @@ def Main(args):
   parser.add_option(
       "-n",
       "--no-database",
-      action="store_false",
+      action="store_true",
       dest="no_db",
       default=False,
       help = "Explicity tell redhawk to NOT use the database." 
@@ -102,16 +102,6 @@ def Main(args):
 
   database_file = S.GetDatabase() if options.no_db == False else None
   files = args[1:]
-
-  # def __init__(self,
-  #     task,
-  #     parallel=False,
-  #     num_workers="autodetect",
-  #     chunk=80,
-  #     servers = None,
-  #     module_deps = None,
-  #     function_deps = None,
-  #     verbose = False):
 
   runner = R.TaskRunner(T.Query,
       parallel=options.parallel,

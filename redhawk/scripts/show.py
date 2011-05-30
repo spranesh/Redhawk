@@ -35,7 +35,7 @@ def Main(args):
   parser.add_option(
       "-n",
       "--no-database",
-      action="store_false",
+      action="store_true",
       dest="no_db",
       default=False,
       help = "Explicity tell redhawk to NOT use the database." + S.OPTIONS_DEFAULT_STRING)
