@@ -7,6 +7,7 @@ import redhawk.common.traverse as traverse
 import redhawk.common.tree_converter as tree_converter
 import redhawk.common.types as T
 import redhawk.utils.util as U
+import logging
 
 # Map C operators into the LAST operators
 BINARY_OPERATOR_CONVERSIONS = {
@@ -51,7 +52,9 @@ UNARY_OPERATOR_CONVERSIONS = {
 def GetCoords(t):
   assert(t is not None)
   c = t.coord
-  assert(c is not None)
+  if c is None:
+    logging.debug('%s does not have a coordinate'%(t))
+    return None
   return NP.NodePosition(c.file, c.line, c.column)
 
 class CTreeConverter(tree_converter.TreeConverter):
