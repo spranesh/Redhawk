@@ -51,11 +51,12 @@ def __FormatResult(filepath, line_index, context=3, lines = None):
   The lines in the file can be optionally passed in for performance."""
 
   # If modules are found (the file itself), return only the filename.
+  filepath = U.GetRelativeFilePath(filepath)
   if line_index is -1:
     return "%s:0:"%(filepath)
 
   if lines is None:
-    fp = U.OpenSourceFile(filepath)
+    fp = open(filepath)
     lines = fp.readlines()
     fp.close()
 

@@ -174,12 +174,10 @@ def GetDBPathRelativeToCurrentDirectory(filepath):
   abs_filepath = os.path.join(database_dir, filepath)
   return os.path.relpath(abs_filepath, os.curdir)
 
-def OpenSourceFile(filepath):
+def GetRelativeFilePath(filepath):
   """ Try to open the file. If not, we try to open the filepath as one
   relative to the redhawk database."""
-  try:
-    return open(filepath)
-  except IOError, e:
-    pass
-  
-  return open(GetDBPathRelativeToCurrentDirectory(filepath))
+  if os.path.exists(filepath):
+    return os.path.relpath(filepath)
+
+  return GetDBPathRelativeToCurrentDirectory(filepath)
