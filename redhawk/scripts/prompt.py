@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-import script_util as S
+from __future__ import absolute_import
+from __future__ import print_function
+from . import script_util as S
 import redhawk.common.selector as selector
 import redhawk.common.format_position as format_position
 import redhawk.common.get_ast as G
@@ -115,7 +117,7 @@ Built in Modules:
 To view this again, use the Help() function.  """
 
   if display:
-    print s
+    print(s)
   else:
     return s
   

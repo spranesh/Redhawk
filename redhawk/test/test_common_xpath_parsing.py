@@ -2,6 +2,8 @@
 
 """ Test XPath Parsing."""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.common.xpath as X
 
 import nose
@@ -11,7 +13,7 @@ def RaisesSyntaxError(delayed_callable):
   raises = False
   try:
     delayed_callable()
-  except SyntaxError, e:
+  except SyntaxError as e:
     raises = True
 
   assert raises, "Expression Does not Raise Syntax Error"
@@ -142,7 +144,7 @@ def TestSlashSepAtomicQueriesParser():
 
 def TestPosition():
   query = X.ParseXPath("[12]")
-  print query
+  print(query)
 
 def TestParseXPath():
   # Thoroughly test final function

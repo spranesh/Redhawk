@@ -2,7 +2,8 @@
 
 """ Miscellaneous Node Tests for the tree conversion. """
 
-import c_test_utils as CT
+from __future__ import absolute_import
+from . import c_test_utils as CT
 
 def TestReturnConstant(): 
   """ Test `return 0`"""

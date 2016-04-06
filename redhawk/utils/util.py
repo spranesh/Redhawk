@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk
 
 import hashlib
@@ -6,6 +8,7 @@ import operator
 import os
 import sys
 import traceback 
+from functools import reduce
 
 def AssertWithError(condition, error):
   """ If condition is false, exit with error."""
@@ -51,7 +54,7 @@ def GetHashDigest(filename):
     digest = hashlib.sha1(fp.read()).hexdigest()
     fp.close()
     return digest
-  except IOError, e:
+  except IOError as e:
     sys.stderr.write(str(e))
     sys.exit(1)
   return
@@ -124,7 +127,7 @@ def StartShell(local_vars, banner='', try_ipython=True):
     try:
       IPythonShell(local_vars, banner)
       return
-    except ImportError, e:
+    except ImportError as e:
       pass
   else:
     PythonShell(local_vars, banner)
@@ -162,8 +165,8 @@ def AdjustFilePathToBaseDirectory(filepath, base_dir):
 
   return os.path.relpath(filepath, base_dir)
 
-  print filepath
-  print cur_dir
+  print(filepath)
+  print(cur_dir)
 
 def GetDBPathRelativeToCurrentDirectory(filepath):
   database_dir = os.path.dirname(

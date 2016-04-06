@@ -2,7 +2,8 @@
 
 """ Tests conversion of full programs. """
 
-import c_test_utils as CT
+from __future__ import absolute_import
+from . import c_test_utils as CT
 
 tests = [("prog001.c", "Function to return 0")
         ,("prog002.c", "Static function to return 0")

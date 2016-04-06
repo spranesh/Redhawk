@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """ Implementation of the C Parser class."""
-import c_tree_converter
+from __future__ import absolute_import
+from . import c_tree_converter
 import redhawk.common.parser as parser
 
 import pycparser
@@ -53,7 +54,7 @@ class CParser(parser.Parser):
     try:
       parser = pycparser.c_parser.CParser()
       return parser.parse(cpp_text, filename)
-    except pycparser.plyparser.ParseError, e:
+    except pycparser.plyparser.ParseError as e:
       error = "Error parsing file %s with pycparser (with cpp). Skipping\n"%(filename)
       logging.warning(error)
       logging.debug(str(e))

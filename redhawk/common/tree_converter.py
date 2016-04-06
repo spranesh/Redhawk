@@ -1,7 +1,10 @@
 #!/usr/bin/env python
-import node as N
-import node_position as NP
+from __future__ import absolute_import
+from __future__ import print_function
+from . import node as N
+from . import node_position as NP
 import redhawk.utils.util as U
+from six.moves import map
 
 class TreeConverter:
   """ The base tree converter class."""
@@ -22,8 +25,8 @@ class TreeConverter:
       if c is not None:
         try:
           self.AttachParents(c, tree)
-        except AttributeError, e:
-          print c, parent, tree
+        except AttributeError as e:
+          print(c, parent, tree)
           raise AttributeError(e)
     return
 
@@ -56,4 +59,4 @@ class TreeConverter:
   def ConvertListOfStatements(self, statements):
     """ Convert a list of statements, to a list of LAST nodes.
     Note that this function returns a List and not a Node."""
-    return map(self.ConvertTree, statements)
+    return list(map(self.ConvertTree, statements))

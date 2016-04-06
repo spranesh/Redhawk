@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-import script_util as S
+from __future__ import absolute_import
+from __future__ import print_function
+from . import script_util as S
 
 import redhawk.common.xpath as X
 import redhawk.scripts.tasks as T
@@ -93,7 +95,7 @@ def Main(args):
   parsed_query = X.ParseXPath(args[0])
   if options.show_parsed_query:
     for q in parsed_query:
-      print q
+      print(q)
     sys.exit(0)
 
   if len(args) == 1:

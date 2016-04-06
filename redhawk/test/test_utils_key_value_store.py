@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.utils.key_value_store as KV
 import redhawk.scripts.script_util as S
 import redhawk
@@ -151,7 +153,7 @@ class TestKeyValueStore:
     fp = sys.stderr
     sys.stderr = sys.stdout
 
-    print "Expected Error :"
+    print("Expected Error :")
     self.store = KV.KeyValueStore(self.temp_file, redhawk.GetVersion())
 
     sys.stderr = fp

@@ -2,8 +2,10 @@
 
 """ Test xpath query functionality."""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.common.selector as S
-from sample_last import module_tree
+from .sample_last import module_tree
 import redhawk.common.xpath as X
 
 
@@ -40,11 +42,11 @@ def TestSelector():
   l3 = list(Query('**/@{n.value == "0"}'))
   l4 = list(Query('**/@{n.value == "1"}'))
 
-  print l0
-  print l1
-  print l2
-  print l3
-  print l4
+  print(l0)
+  print(l1)
+  print(l2)
+  print(l3)
+  print(l4)
   assert(l0 == l1)
   assert(l2 == l3)
 
@@ -128,14 +130,14 @@ def TestCombinations():
 def TestChildNodeQuery():
   """ Test Child node query """
   l = list(Query("**/Return/(CallFunction)/../.."))
-  print l
+  print(l)
   
 def TestIfElse():
   """ Test that sure **, Path, and numbering give same result."""
   l1 = list(Query("**/IfElse"))
   l2 = list(Query("DefineFunction/IfElse"))
   l3 = list(Query("DefineFunction/[1]"))
-  print l1, l2, l3
+  print(l1, l2, l3)
   assert(l1 == l2 == l3)
 
 def TestStarStarCurrentLevel():

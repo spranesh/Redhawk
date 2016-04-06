@@ -1,8 +1,11 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.utils.util as U
 import redhawk.utils.code_generator_backend as C
 
 import pprint
 import yaml
+from six.moves import zip
 
 FILES = [# (input config file, out file, header file)
            ("_node_cfg.yaml", "node.py", "_node_header.py")
@@ -22,15 +25,15 @@ def GetClasses(file_body):
         * docstring
       All attributes except the docstring is a list.
   """
-  nodes = yaml.load(file_body).items()
+  nodes = list(yaml.load(file_body).items())
   nodes.sort()
 
   for (name, c) in nodes:
-    U.AssertWithError(c.has_key('sexp'), "%s does not have sexp"%name)
+    U.AssertWithError('sexp' in c, "%s does not have sexp"%name)
 
     # Print appropriate warnings
     for w_key in "docstring args children".split():
-      if not c.has_key(w_key):
+      if w_key not in c:
         U.LogWarning('%s does not have %s'%(name, w_key))
 
 
@@ -228,13 +231,12 @@ def GenerateClass(name, attrs):
 def GetYAMLFileAsPythonCode(filename):
   """ Return the YAML file as a string of Python Code."""
   return "\n".join(
-      map(lambda a: GenerateClass(a[0], a[1]),
-        GetClasses(open(filename).read())))
+      [GenerateClass(a[0], a[1]) for a in GetClasses(open(filename).read())])
 
 
 def Main():
   for (ip_file, op_file, header_file) in FILES:
-    print(ip_file, op_file, header_file)
+    print((ip_file, op_file, header_file))
     op = open(op_file, "w")
     op.write(open(header_file).read())
     op.write("\n")

@@ -1,8 +1,10 @@
 """ Test the parser_combinator.py in redhawk/utils."""
 
+from __future__ import absolute_import
 import nose.tools
 import redhawk.utils.parser_combinator as P
 import re
+from six.moves import map
 
 digits = re.compile("[0-9]+")
 bracketed = re.compile("{[^}]*}")
@@ -46,7 +48,7 @@ def TestOnePlus():
   assert(digits_parser("a01231") == (None, "a01231"))
 
 def TestSequence():
-  a, b, c = map(P.Literal, list("abc"))
+  a, b, c = list(map(P.Literal, list("abc")))
   abc_parser = P.Sequence(
       (a, None),
       (b, None),
@@ -58,7 +60,7 @@ def TestSequence():
 
 @nose.tools.raises(SyntaxError)
 def TestSequenceFailure():
-  a, b, c = map(P.Literal, list("abc"))
+  a, b, c = list(map(P.Literal, list("abc")))
   abc_parser = P.Sequence(
       (a, None),
       (b, "b was expected to be found"),

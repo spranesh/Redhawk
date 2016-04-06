@@ -120,8 +120,10 @@ NodeQuery = identifier? @[identifier=string]* @{codeblock}? Position*
 
 Position = [ comma-separated-list-of-numbers ]
 """
-import _selector
-import traverse
+from __future__ import absolute_import
+from __future__ import print_function
+from . import _selector
+from . import traverse
 
 import redhawk.utils.parser_combinator as P
 import redhawk.utils.util as U
@@ -205,7 +207,7 @@ class NodeMatchQuery(Query):
     if self.codegroup:
       try:
         return eval('lambda n: '+ self.codegroup, {}, {})
-      except StandardError, e:
+      except Exception as e:
         raise SyntaxError(str(e) + ": " + self.codegroup)
     return None
 
@@ -277,7 +279,7 @@ def CleanPosition(s):
   for n in s.split(","):
     try:
       numbers.append(int(n))
-    except ValueError, e:
+    except ValueError as e:
       raise SyntaxError("Unable to parse '%s' into a number in position syntax : '%s'"
           %(n, s))
   return numbers
@@ -377,8 +379,8 @@ def ParseXPath(s):
     raise SyntaxError("Queries should not end with a '/'")
   try:
     return xpath_query_parser(s)[0]
-  except SyntaxError, e:
-    print "Syntax Error: %s"%(e)
+  except SyntaxError as e:
+    print("Syntax Error: %s"%(e))
     sys.exit(1)
   return
 
@@ -392,19 +394,19 @@ def XPath(trees, xpath_string):
 def Main():
   """ Only for testing."""
 
-  import format_position as F
+  from . import format_position as F
   import redhawk.common.get_ast as G
 
   if len(sys.argv) < 2:
-    print """ %s <xpath-query> [files].
+    print(""" %s <xpath-query> [files].
 
     If files are not given, the parsed xpath-query is printed.
-    Otherwise the concerned lines in each file is printed."""%(sys.argv[0])
+    Otherwise the concerned lines in each file is printed."""%(sys.argv[0]))
     sys.exit(1)
 
   parsed_query = ParseXPath(sys.argv[1])
   if len(sys.argv) == 2:
-    print parsed_query
+    print(parsed_query)
     return
 
   for f in sys.argv[2:]:

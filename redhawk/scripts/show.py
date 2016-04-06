@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """ Implementation of redhawk show"""
-import script_util as S
+from __future__ import absolute_import
+from __future__ import print_function
+from . import script_util as S
 
 import redhawk.common.get_ast as G
 
@@ -63,7 +65,7 @@ def Main(args):
     options.image = True
 
   if not options.image:
-    print ast.ToStr()
+    print(ast.ToStr())
 
   else:
     S.ShowASTAsImage(ast, options.eog)

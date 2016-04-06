@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.common.node as N
 import redhawk.common.tree_converter as T
 
@@ -116,4 +118,4 @@ tree = module_tree.GetChildren()[0]
 __all__ = ['tree', 'module_tree']
 
 if __name__ == '__main__':
-  print module_tree.ToStr()
+  print(module_tree.ToStr())

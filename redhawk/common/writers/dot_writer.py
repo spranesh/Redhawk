@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
+from __future__ import absolute_import
 import redhawk.common.node as N
 import redhawk.common.types as T
 import redhawk.utils.util as U
-import writer
+from . import writer
 
 import itertools
 import pygraphviz
+from six.moves import map
 
 def WriteToDot(tree):
   s = DotWriter()
@@ -51,7 +53,7 @@ class DotWriter(writer.Writer):
 
   def __CreateGraphNode(self, **attrs):
     """ Create a graph node with the give attributes."""
-    node_index = self.node_name_counter.next()
+    node_index = next(self.node_name_counter)
     self.graph.add_node(node_index, **attrs)
     return node_index
     
@@ -109,8 +111,8 @@ class DotWriter(writer.Writer):
       if type(child) is list:
         empty_node = self.__CreateEmptyGraphNode()
         self.graph.add_edge(node_index, empty_node)
-        map(lambda a: self.AddASTNodeToGraph(empty_node, a),
-              child)
+        list(map(lambda a: self.AddASTNodeToGraph(empty_node, a),
+              child))
 
       elif isinstance(child, N.Node):
         self.AddASTNodeToGraph(node_index, child)

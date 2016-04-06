@@ -6,7 +6,8 @@
     Note that these tests only check that conversion works, and not that the
     resultant tree is actually correct (yet)."""
 
-import c_test_utils as CT
+from __future__ import absolute_import
+from . import c_test_utils as CT
 
 TEST_FILE = "declarations.c"
 

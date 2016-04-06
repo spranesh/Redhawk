@@ -7,9 +7,15 @@ This Abstraction assumes that Permissions to read and write from the datastore
 are in place.
 """
 
+from __future__ import absolute_import
 import redhawk
 
-import anydbm
+try:
+    import anydbm
+except ImportError:
+    # anydbm was renamed to dbm in Python 3
+    import dbm as anydbm
+
 import logging
 import os
 import shelve
@@ -61,7 +67,7 @@ def IsValidStore(store_file):
   try:
     store = _OpenStore(store_file)
     _CloseStoreObject(store)
-  except anydbm.error, e:
+  except anydbm.error as e:
     return False
   return True
 
@@ -73,7 +79,7 @@ class KeyValueStore:
     self.store_file = store_file
     self.store = _OpenStore(store_file)
 
-    if (not self.store.has_key(VERSION_KEY) or
+    if (VERSION_KEY not in self.store or
       self.store[VERSION_KEY] != version):
         logging.error("Versions of redhawk do not match. Clearing database.\n")
         self.ClearStore()
@@ -97,7 +103,7 @@ class KeyValueStore:
     return self.store[VERSION_KEY]
 
   def HasKey(self, key):
-    return self.store.has_key(key)
+    return key in self.store
 
   def Get(self, key):
     assert(key != VERSION_KEY)
