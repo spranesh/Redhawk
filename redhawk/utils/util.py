@@ -7,7 +7,7 @@ import hashlib
 import operator
 import os
 import sys
-import traceback 
+import traceback
 from functools import reduce
 
 def AssertWithError(condition, error):
@@ -50,7 +50,7 @@ def Flatten(li):
 def GetHashDigest(filename):
   """ Get the sha1 digest of `filename`)"""
   try:
-    fp = open(filename)
+    fp = open(filename, mode='rb')
     digest = hashlib.sha1(fp.read()).hexdigest()
     fp.close()
     return digest
@@ -70,7 +70,7 @@ def GuessLanguage(filename):
         extension"%filename)
 
   return {'c'   : 'c'
-         ,'py'  : 'python'}[extension] 
+         ,'py'  : 'python'}[extension]
 
 
 def IfElse(condition, iftrue, iffalse):
@@ -118,7 +118,7 @@ def StartShell(local_vars, banner='', try_ipython=True):
     ipshell.mainloop(banner=banner)
 
   def PythonShell(namespace, banner):
-    import readline, rlcompleter, code 
+    import readline, rlcompleter, code
     readline.parse_and_bind("tab: complete")
     readline.set_completer(rlcompleter.Completer(namespace).complete)
     code.interact(local=namespace, banner=banner)
