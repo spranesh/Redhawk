@@ -81,7 +81,7 @@ class TestKeyValueStore:
     setUp()
     self.temp_file = GetTempFile()
     KV.CreateNewStore(self.temp_file, redhawk.GetVersion())
-    store = shelve.open(self.temp_file, 'c')
+    store = shelve.open(self.temp_file, 'c', protocol=-1)
     store['dog'] = 'woof'
     store['cat'] = 'meow'
     store.close()
@@ -128,6 +128,7 @@ class TestKeyValueStore:
     self.store.Set('pig', 'grunt')
     self.store.Write()
     assert(self.store.Get('pig') == 'grunt')
+    self.store.Close()
     store2 = KV.KeyValueStore(self.temp_file, redhawk.GetVersion())
     assert(store2.Get('pig') == 'grunt')
     store2.Close()
