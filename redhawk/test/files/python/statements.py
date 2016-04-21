@@ -19,3 +19,13 @@ def f(a): pass
 raise AttributeError("Oh noes! Attribute Error!")
 global x, y
 exec(2 + 3)
+try:
+    x
+except Exception as e:
+    pass
+else:
+    pass
+finally:
+    pass
+with x as y, z as a:
+    pass
