@@ -5,10 +5,10 @@
 from __future__ import absolute_import
 from . import c_test_utils as CT
 
-def TestReturnConstant(): 
+def TestReturnConstant():
   """ Test `return 0`"""
   t = CT.SetUp("prog001.c")
-  main = t.children()[0]
+  main = t.ext[0]
   return_node = main.body.block_items[0]
   return CT.ConvertTree(return_node)
 
@@ -20,5 +20,5 @@ def TestFileAST1():
 def TestFunctionDefinition1():
   """ Test Function Definition."""
   t = CT.SetUp("prog001.c")
-  return CT.ConvertTree(t.children()[0])
+  return CT.ConvertTree(t.ext[0])
 

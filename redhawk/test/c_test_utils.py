@@ -12,7 +12,7 @@ import sys
 
 RELATIVE_TEST_PATH = "test/files/c/"
 PICKLE_FILE = "test/files/asts_c.redhawk_db"
-  
+
 def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
   """ SetUp returns a parsed C Program."""
   if not os.path.exists(PICKLE_FILE):

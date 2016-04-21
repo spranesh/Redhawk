@@ -19,4 +19,4 @@ def TestDeclarations():
   t = CT.SetUp(TEST_FILE)
   for (i, description) in enumerate(test_descriptions):
     ConvertDeclaration.description = "Test `%s`"%(description.strip())
-    yield ConvertDeclaration, t.children()[i]
+    yield ConvertDeclaration, t.ext[i]
