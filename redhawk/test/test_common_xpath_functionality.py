@@ -11,17 +11,17 @@ import redhawk.common.xpath as X
 
 """ The sample tree that we will test the selectors on:
 (module
-  (define-function Factorial 
+  (define-function Factorial
     ((define-variable n))
-    ((if 
-      (eq n 
+    ((if
+      (eq n
         (constant 0))
-      ((return 
+      ((return
         (constant 1)))
-      ((return 
-        (* n 
-          (apply Factorial 
-            ((- n 
+      ((return
+        (* n
+          (apply Factorial
+            ((- n
               (constant 1)))))))))))
 """
 
@@ -131,7 +131,7 @@ def TestChildNodeQuery():
   """ Test Child node query """
   l = list(Query("**/Return/(CallFunction)/../.."))
   print(l)
-  
+
 def TestIfElse():
   """ Test that sure **, Path, and numbering give same result."""
   l1 = list(Query("**/IfElse"))
@@ -145,8 +145,8 @@ def TestStarStarCurrentLevel():
   l1 = list(Query("**/FunctionArguments"))
   l2 = list(Query("**/DefineFunction/**/FunctionArguments"))
   assert(len(l1) == 2)
-  l1.sort()
-  l2.sort()
+  l1 = set(l1)
+  l2 = set(l2)
   assert(l1 == l2)
   return
 
@@ -155,9 +155,9 @@ def TestLastLevel():
   l1 = list(Query("**/Constant"))
   l2 = list(Query("**/Constant/../Constant"))
   l3 = list(Query("**/Constant/../Constant"))
-  l1.sort()
-  l2.sort()
-  l3.sort()
+  l1 = set(l1)
+  l2 = set(l2)
+  l3 = set(l3)
   assert(l1 == l2 == l3)
   return
 
@@ -176,7 +176,7 @@ def TestEqualityOfChildNode():
   assert(l1 == l2)
   l1 = list(Query('**/(Constant@[value="1"])'))
   l2 = list(Query('**/Constant@[value="1"]/..'))
-  l1.sort()
-  l2.sort()
+  l1 = set(l1)
+  l2 = set(l2)
   assert(l1 == l2)
 
