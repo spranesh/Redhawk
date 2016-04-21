@@ -34,7 +34,7 @@ VERSION_KEY = '__redhawk__version__'
 
 # Shelve open, and close abstraction barriers.
 def _OpenStore(store_file):
-  return shelve.open(store_file, 'c')
+  return shelve.open(store_file, 'c', protocol=-1)
 
 def _CloseStoreObject(store_object):
   store_object.close()
