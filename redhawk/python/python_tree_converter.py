@@ -487,11 +487,11 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                                         name = k.arg,
                                         init = self.ConvertTree(k.value)))
 
-
+    # TODO: cleanup py2/py3 differencies (python 3.5 ast doesn't have starargs and kwargs)
     argument_node = N.FunctionArguments(position = self.gc.GC(tree.args[0]) if len(tree.args) > 0 else None,
                                         arguments = arguments,
-                                        var_arguments = self.ConvertTree(tree.starargs),
-                                        kwd_arguments = self.ConvertTree(tree.kwargs))
+                                        var_arguments = self.ConvertTree(getattr(tree, 'starargs', None)),
+                                        kwd_arguments = self.ConvertTree(getattr(tree, 'kwargs', None)))
 
 
     return N.CallFunction(position = self.gc.GC(tree),
