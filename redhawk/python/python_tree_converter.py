@@ -578,6 +578,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertRaise(self, tree):
     """ Convert the Raise(expr? type, expr? inst, expr? tback)"""
     #TODO(spranesh): We currently ignore inst, and tback
+    # TODO: cleanup py2/py3 differencies
     # in Python 2, it's tree.type, in Python 3 it's tree.exc
     tp = tree.type if hasattr(tree, 'type') else tree.exc
     return N.Raise(position = self.gc.GC(tree),
@@ -586,6 +587,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
   def ConvertExcepthandler(self, tree):
     """ Convert the ExceptHandler(expr? type, expr? name, stmt* body) node."""
+    # TODO: cleanup py2/py3 differencies
     if isinstance(tree.name, str):
         # in Python 3, tree.name is string
         name = N.DefineVariable(position=self.gc.GC(tree), name=tree.name)
@@ -624,6 +626,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
   def ConvertWith(self, tree):
     """ Convert With(expr context_expr, expr? optional_vars, stmt* body) node."""
+    # TODO: cleanup py2/py3 differencies
     if hasattr(tree, 'optional_vars'):
       # Python 2 -> if there are more assignments, multiple nested with statements are created
       assign_node = ast.Assign(
