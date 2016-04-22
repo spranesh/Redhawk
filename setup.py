@@ -55,7 +55,6 @@ setup(
       # 'nose>=0.11',
       # ,'pygraphviz>=0.99' # Optional Dependency
       'pycparser>=2.02',
-      'six',
     ],
 
     classifiers = [

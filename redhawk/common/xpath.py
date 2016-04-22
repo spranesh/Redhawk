@@ -132,8 +132,6 @@ import itertools
 import re
 import sys
 
-from six.moves import filter
-
 # All our filter functions are from sequences to sequences
 #   Filter :: Iterable -> Iterable
 
@@ -223,7 +221,7 @@ class NodeMatchQuery(Query):
         node_type = self.node_type,
         function = self.__CreateFunctionFromCodeGroup(),
         **self.attributes)
-    matched_nodes = filter(s, it)
+    matched_nodes = list(filter(s, it))
 
     if not self.position_list:
       return matched_nodes
