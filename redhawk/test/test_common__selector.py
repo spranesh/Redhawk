@@ -2,9 +2,10 @@
 
 """ Test the _selector module."""
 
+from __future__ import absolute_import
 import redhawk.common._selector as S
 import redhawk.common.node as N
-from sample_last import tree
+from .sample_last import tree
 
 import nose
 

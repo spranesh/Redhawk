@@ -2,10 +2,12 @@
 
 """ Implementation of the XML Writer"""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.common.node as N
 import redhawk.common.types as T
 import redhawk.utils.util as U
-import writer
+from . import writer
 
 import lxml.etree as ET
 
@@ -34,7 +36,7 @@ class XMLWriter(writer.Writer):
     else:
       assert(isinstance(child, N.Node) or child == None)
       if child == None:
-        print "We have a none child?"
+        print("We have a none child?")
         ET.SubElement(parent_element, "None")
       else:
         self.__ConvertToElement(child, parent_element)
@@ -43,7 +45,7 @@ class XMLWriter(writer.Writer):
   def __AddPositionToElement(self, tree, parent_element):
     try:
       line, column, f = tree.position.GetLine(), tree.position.GetColumn(), tree.position.GetFile()
-    except AttributeError, e:
+    except AttributeError as e:
       line, column, f = None, None, None
 
     attributes = {
@@ -60,8 +62,8 @@ class XMLWriter(writer.Writer):
     attributes = dict([(key, val) for (key, val) 
       in tree.GetXMLAttributes()[1].items() if type(val) is str])
 
-    print attributes
-    print tree.GetName()
+    print(attributes)
+    print(tree.GetName())
     node_element = ET.SubElement(parent_element, tree.GetName(), attrib=attributes)
     self.__AddPositionToElement(tree, node_element)
     self.__AddChildToElement(tree.GetChildren(), node_element)

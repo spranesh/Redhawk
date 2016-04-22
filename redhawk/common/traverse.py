@@ -2,6 +2,7 @@
 
 """ Traversal Algorithms for walking the AST."""
 
+from __future__ import absolute_import
 import redhawk.utils.util as U
 from collections import deque
 

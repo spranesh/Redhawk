@@ -7,7 +7,8 @@
     The header is stored in _types_header.py
 """
 
-import node
+from __future__ import absolute_import
+from . import node
 
 class Type(node.Node):
   """ The Base Type class."""

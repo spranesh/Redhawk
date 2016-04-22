@@ -40,6 +40,7 @@ The tasks in this module are to be executed through the TaskRunner class in
 redhawk.utils.task_runner
 """
 
+from __future__ import absolute_import
 import redhawk.common.format_position
 import redhawk.common.xpath
 import redhawk.scripts.script_util

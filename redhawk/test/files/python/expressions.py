@@ -32,7 +32,7 @@ x if condition else y
 (g for g in it)
 (3*g for g in [1, 2, 3, 4])
 lambda x: 2*x
-lambda (x, y): x + y
+lambda x_y: x_y[0] + x_y[1]
 lambda x, *y: y
 li[0]
 li[-1]

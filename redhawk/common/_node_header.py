@@ -5,7 +5,8 @@
     The header is stored in node_header.py
 """
 
-import writers.scheme_writer as S
+from __future__ import absolute_import
+from .writers import scheme_writer as S
 import redhawk.utils.util as U
 
 import copy
@@ -45,7 +46,7 @@ ALLOWED_OPERATORS = {
     ,'GTE'                 : ('>=', 2)
 
     # TODO(spranesh): Should we make this an if-else?
-    ,'TERNARY_IF'          : ('ternary-if', 3) 
+    ,'TERNARY_IF'          : ('ternary-if', 3)
 
     ,'PRE_INCREMENT'       : ('pre-increment', 1)
     ,'POST_INCREMENT'      : ('post-increment', 1)
@@ -128,7 +129,7 @@ class Node:
     return copy.deepcopy(self)
 
   def GetAttributes(self):
-    """ Return the lower case attributes of the class as a 
+    """ Return the lower case attributes of the class as a
     pair - (class-name, dictionary-of-attributes). """
     #TODO(spranesh): Any extra attributes we are missing?
     d = {}

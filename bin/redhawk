@@ -2,7 +2,7 @@
 import sys
 try:
   import redhawk.scripts.main as main
-except ImportError, e:
+except ImportError as e:
   sys.stderr.write("Could not import redhawk.scripts.main\n")
   sys.stderr.write("Is redhawk installed on your path?\n")
 

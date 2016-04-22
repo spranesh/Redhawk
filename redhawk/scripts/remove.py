@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import script_util as S
+from __future__ import absolute_import
+from __future__ import print_function
+from . import script_util as S
 import redhawk
 import redhawk.common.get_ast as G
 import redhawk.utils.util as U
@@ -31,9 +33,9 @@ def Main(args):
   for f in S.GetSupportedFiles(args):
     key = S.GetKey(f, database_file)
     if store.HasKey(key):
-      print "Removing: %s"%(U.GetDBPathRelativeToCurrentDirectory(f))
+      print("Removing: %s"%(U.GetDBPathRelativeToCurrentDirectory(f)))
       store.RemoveKey(key)
     else:
-      print "Not found: %s"%(U.GetDBPathRelativeToCurrentDirectory(f))
+      print("Not found: %s"%(U.GetDBPathRelativeToCurrentDirectory(f)))
   store.Close()
   return

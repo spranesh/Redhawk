@@ -1,4 +1,5 @@
 """ Test the code_generator_backend.py in redhawk/utils."""
+from __future__ import absolute_import
 import redhawk.utils.code_generator_backend as C
 
 class TestCodeGeneratorBackend:

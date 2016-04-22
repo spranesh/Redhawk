@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """ Convert C-Tree to ast. """
 
+from __future__ import absolute_import
 import redhawk.common.node as N
 import redhawk.common.node_position as NP
 import redhawk.common.traverse as traverse
@@ -81,28 +82,28 @@ class CTreeConverter(tree_converter.TreeConverter):
   def ConvertFileast(self, tree):
     return N.Module(position = NP.NodePosition(self.filename, 1, 1),
         filename = self.filename,
-        children = map(self.ConvertTree, tree.children()))
+        children = self.ConvertListOfStatements(tree.children()))
 
   def ConvertReturn(self, tree):
-    return N.Return(GetCoords(tree), 
+    return N.Return(GetCoords(tree),
         return_expression = self.ConvertTree(tree.expr))
 
   def ConvertConstant(self, tree):
-    return N.Constant(GetCoords(tree), 
+    return N.Constant(GetCoords(tree),
         value = tree.value, type = T.BaseType(tree.type))
 
   def ConvertId(self, tree):
     #TODO(spranesh): Is this assert always true?
     if tree.name == 'NULL':
-      return N.Constant(GetCoords(tree), 
-          value = tree.name, 
+      return N.Constant(GetCoords(tree),
+          value = tree.name,
           type = T.Pointer(T.BaseType('NULL')))
     else:
-      return N.ReferVariable(GetCoords(tree), 
+      return N.ReferVariable(GetCoords(tree),
           name = tree.name)
 
   def ConvertDecl(self, tree):
-    # We have to check if the child is a 
+    # We have to check if the child is a
     #   a. a function declaration
     #   b. a structure declaration
     # Otherwise it is a normal declaration
@@ -122,9 +123,9 @@ class CTreeConverter(tree_converter.TreeConverter):
     if isinstance(t, N.Union):
       t.storage, t.quals = None, None
       return t
-    else: 
-      return N.DefineVariable(GetCoords(tree), 
-        name = tree.name, 
+    else:
+      return N.DefineVariable(GetCoords(tree),
+        name = tree.name,
         init = self.ConvertTree(tree.init),
         type = t,
         storage = tree.storage,
@@ -141,7 +142,7 @@ class CTreeConverter(tree_converter.TreeConverter):
     """ Returns Type Object """
     try:
       return T.BaseType(base_type = tree.names[0])
-    except IndexError, e:
+    except IndexError as e:
       # Default type is int in C
       return T.BaseType(base_type = 'int')
 
@@ -149,12 +150,12 @@ class CTreeConverter(tree_converter.TreeConverter):
     """ Returns Type Object """
     # child is either an IdentifierType or a Struct
     t = self.ConvertTree(tree.type)
-    assert(isinstance(t, T.BaseType) 
-        or isinstance(t, T.EnumeratorType) 
-        or isinstance(t, T.StructureType) 
+    assert(isinstance(t, T.BaseType)
+        or isinstance(t, T.EnumeratorType)
+        or isinstance(t, T.StructureType)
         or isinstance(t, T.UnionType)
-        or isinstance(t, N.Enumerator) 
-        or isinstance(t, N.Structure) 
+        or isinstance(t, N.Enumerator)
+        or isinstance(t, N.Structure)
         or isinstance(t, N.Union))
     return t
 
@@ -173,27 +174,27 @@ class CTreeConverter(tree_converter.TreeConverter):
     return None
 
   def ConvertParamlist(self, tree):
-    """ Handle Function Arguments. 
+    """ Handle Function Arguments.
         In case the last is an ellipsis param, we store it as a var_arg
         of name va_list."""
     try:
       position = GetCoords(tree)
-    except AssertionError, e:
+    except AssertionError as e:
       position = None
 
     #TODO(spranesh): Cheap Hack?
     if tree.params[-1].__class__.__name__ == 'EllipsisParam':
       try:
         va_list_position = GetCoords(tree.params[-1])
-      except AssertionError, e:
+      except AssertionError as e:
         va_list_position = None
 
       return N.FunctionArguments(position = position,
-          arguments = map(self.ConvertTree, tree.params[:-1]),
+          arguments = self.ConvertListOfStatements(tree.params[:-1]),
           var_arguments = [N.DefineVariable(va_list_position, 'va_list')])
 
     return N.FunctionArguments(position = position,
-         arguments = map(self.ConvertTree, tree.params))
+         arguments = self.ConvertListOfStatements(tree.params))
 
   def ConvertFuncdecl(self, tree):
     """ Handle Function Declarations."""
@@ -251,13 +252,13 @@ class CTreeConverter(tree_converter.TreeConverter):
     assert(tree.op in BINARY_OPERATOR_CONVERSIONS)
     return N.Expression(position = GetCoords(tree),
         operator = BINARY_OPERATOR_CONVERSIONS[tree.op],
-        children = map(self.ConvertTree, [tree.left, tree.right]))
-    
+        children = self.ConvertListOfStatements([tree.left, tree.right]))
+
   def ConvertUnaryop(self, tree):
     assert(tree.op in UNARY_OPERATOR_CONVERSIONS)
     return N.Expression(position = GetCoords(tree),
         operator = UNARY_OPERATOR_CONVERSIONS[tree.op],
-        children = map(self.ConvertTree, [tree.expr]))
+        children = self.ConvertListOfStatements([tree.expr]))
 
   def ConvertAssignment(self, tree):
     op = tree.op
@@ -283,7 +284,7 @@ class CTreeConverter(tree_converter.TreeConverter):
   def ConvertFunccall(self, tree):
     arguments = []
     if tree.args:
-      arguments = map(self.ConvertTree, tree.args.exprs)
+      arguments = self.ConvertListOfStatements(tree.args.exprs)
 
     return N.CallFunction(position = GetCoords(tree),
         function = self.ConvertTree(tree.name),
@@ -291,7 +292,7 @@ class CTreeConverter(tree_converter.TreeConverter):
           arguments = arguments))
 
   def ConvertStruct(self, tree):
-    # If the pycparser's structure's decls is None, 
+    # If the pycparser's structure's decls is None,
     #     the structure is being referred to.
     # Else
     #     it is a structure declaration.
@@ -302,14 +303,14 @@ class CTreeConverter(tree_converter.TreeConverter):
     else:
       return N.Structure(position = GetCoords(tree),
           name = tree.name,
-          members = map(self.ConvertTree, tree.decls))
-         
+          members = self.ConvertListOfStatements(tree.decls))
+
   def ConvertStructref(self, tree):
     op = tree.type  # a.b or a->b
     assert(op in BINARY_OPERATOR_CONVERSIONS)
     return N.Expression(position = GetCoords(tree),
         operator = BINARY_OPERATOR_CONVERSIONS[op],
-        children = map(self.ConvertTree, [tree.name, tree.field]))
+        children = self.ConvertListOfStatements([tree.name, tree.field]))
 
   def ConvertIf(self, tree):
     return N.IfElse(position = GetCoords(tree),
@@ -361,7 +362,7 @@ class CTreeConverter(tree_converter.TreeConverter):
 
   def ConvertExprlist(self, tree):
     return N.List(position = GetCoords(tree),
-        values = map(self.ConvertTree, tree.exprs))
+        values = self.ConvertListOfStatements(tree.exprs))
 
   def ConvertArrayref(self, tree):
     return N.Expression(position = GetCoords(tree),
@@ -380,7 +381,7 @@ class CTreeConverter(tree_converter.TreeConverter):
     else:
       return N.Enumerator(position = GetCoords(tree),
           name = tree.name,
-          values = map(self.ConvertTree, tree.values.enumerators))
+          values = self.ConvertListOfStatements(tree.values.enumerators))
 
   def ConvertEnumerator(self, tree):
     return N.DeclareSymbol(position = GetCoords(tree),
@@ -413,10 +414,10 @@ class CTreeConverter(tree_converter.TreeConverter):
     else:
       return N.Union(position = GetCoords(tree),
           name = tree.name,
-          members = map(self.ConvertTree, tree.decls))
+          members = self.ConvertListOfStatements(tree.decls))
 
   def ConvertTernaryop(self, tree):
     return N.Expression(position = GetCoords(tree),
         operator = 'TERNARY_IF',
-        children = map(self.ConvertTree, [tree.cond, tree.iftrue,
+        children = self.ConvertListOfStatements([tree.cond, tree.iftrue,
           tree.iffalse]))

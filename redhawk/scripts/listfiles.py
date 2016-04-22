@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-import script_util as S
+from __future__ import absolute_import
+from __future__ import print_function
+from . import script_util as S
 import redhawk
 import redhawk.utils.key_value_store as KVStore
 import redhawk.utils.util as U
@@ -29,6 +31,6 @@ def Main(args):
 
   store = KVStore.KeyValueStore(database_file, redhawk.GetVersion())
   for i in store.GetKeys():
-    print U.GetDBPathRelativeToCurrentDirectory(i)
+    print(U.GetDBPathRelativeToCurrentDirectory(i))
   store.Close()
   return

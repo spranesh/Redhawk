@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-import node as N
-import node_position as NP
+from __future__ import absolute_import
+from __future__ import print_function
+from . import node as N
+from . import node_position as NP
 import redhawk.utils.util as U
 
 class TreeConverter:
@@ -22,8 +24,8 @@ class TreeConverter:
       if c is not None:
         try:
           self.AttachParents(c, tree)
-        except AttributeError, e:
-          print c, parent, tree
+        except AttributeError as e:
+          print(c, parent, tree)
           raise AttributeError(e)
     return
 
@@ -31,7 +33,7 @@ class TreeConverter:
   def Convert(self, tree):
     """ Calls ConvertTree, and attaches parent links using AttachParents.
     This is the method to be called by outside methods, and functions.
-    
+
     This also exercises the GetFlattenedChildren at each node, and creates the
     necessary cache at each node. If this is not done during the database
     creation time, it is rather pointless, since every node is most likely to be
@@ -56,4 +58,4 @@ class TreeConverter:
   def ConvertListOfStatements(self, statements):
     """ Convert a list of statements, to a list of LAST nodes.
     Note that this function returns a List and not a Node."""
-    return map(self.ConvertTree, statements)
+    return [self.ConvertTree(statement) for statement in statements]

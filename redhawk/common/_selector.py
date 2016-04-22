@@ -49,8 +49,9 @@ Note that combining selectors is rather inefficient right now. This will be
 fixed in the future.
 """
 
+from __future__ import absolute_import
 import redhawk.utils.util as U
-import traverse
+from . import traverse
 
 
 def RunSelector(s, trees):
@@ -110,7 +111,7 @@ def Selector(node_type = None
     # Function
     try:
       match = function == None or function(node)
-    except AttributeError, e:
+    except AttributeError as e:
       match = False 
       if not match_only_common_attributes:
         raise AttributeError(e)
@@ -176,7 +177,7 @@ def HasDescendant(s1, s2):
       return False
 
     dfs = traverse.DFS(x)
-    dfs.next() # Skip the current node
+    next(dfs) # Skip the current node
     for node in dfs:
       if s2(node):
         return True

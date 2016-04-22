@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.utils.util as U
 import redhawk.utils.code_generator_backend as C
 
@@ -22,15 +24,15 @@ def GetClasses(file_body):
         * docstring
       All attributes except the docstring is a list.
   """
-  nodes = yaml.load(file_body).items()
+  nodes = list(yaml.load(file_body).items())
   nodes.sort()
 
   for (name, c) in nodes:
-    U.AssertWithError(c.has_key('sexp'), "%s does not have sexp"%name)
+    U.AssertWithError('sexp' in c, "%s does not have sexp"%name)
 
     # Print appropriate warnings
     for w_key in "docstring args children".split():
-      if not c.has_key(w_key):
+      if w_key not in c:
         U.LogWarning('%s does not have %s'%(name, w_key))
 
 
@@ -39,10 +41,10 @@ def GetClasses(file_body):
                      ,'children' : ''
                      ,'optargs' : ''
                      ,'super': 'Node'
-                     ,'xml' : None 
-                     ,'json': None 
+                     ,'xml' : None
+                     ,'json': None
                      ,'dot':  None }
-              
+
     default_fields.update(c)
     c = default_fields
 
@@ -154,9 +156,9 @@ def WriteListReturnMethod(c, name, li, args):
           c.Write("li.append([':%s'] + self.%s)"%(extend_list, extend_list))
         else:
           c.Write("li.append(")
-          WriteList(c, a[1:], 
-              prefix='self.', 
-              frame=args, 
+          WriteList(c, a[1:],
+              prefix='self.',
+              frame=args,
               start_of_list=["'%s'"%(':' + condition)])
           c.Write(")")
         c.NewLine()
@@ -166,7 +168,7 @@ def WriteListReturnMethod(c, name, li, args):
         WriteList(c, a, prefix="self.", frame=args)
         c.Write(")")
         c.NewLine()
-  
+
   c.WriteLine("return li")
   c.Dedent()
   c.NewLine()
@@ -228,8 +230,7 @@ def GenerateClass(name, attrs):
 def GetYAMLFileAsPythonCode(filename):
   """ Return the YAML file as a string of Python Code."""
   return "\n".join(
-      map(lambda a: GenerateClass(a[0], a[1]),
-        GetClasses(open(filename).read())))
+      [GenerateClass(a[0], a[1]) for a in GetClasses(open(filename).read())])
 
 
 def Main():

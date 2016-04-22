@@ -3,6 +3,7 @@
 Mapping of Various Parsers to languages.
 """
 
+from __future__ import absolute_import
 import redhawk.python.python_parser as python_parser
 import redhawk.c.c_parser as c_parser
 import redhawk.utils.util as U

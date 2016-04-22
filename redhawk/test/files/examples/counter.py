@@ -22,7 +22,7 @@ if __name__ == '__main__':
   c1 = CounterClosure()
   c2 = CounterClass()
   c3 = CounterIter()
-  assert(c1() == c2.Bump() == c3.next())
-  assert(c1() == c2.Bump() == c3.next())
-  assert(c1() == c2.Bump() == c3.next())
+  assert(c1() == c2.Bump() == next(c3))
+  assert(c1() == c2.Bump() == next(c3))
+  assert(c1() == c2.Bump() == next(c3))
   

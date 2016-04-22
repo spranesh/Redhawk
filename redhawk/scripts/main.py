@@ -1,15 +1,17 @@
 #!/usr/bin/env python
-import add
-import init
-import listfiles
-import prompt
-import query
-import remove
-import show
-import where
+from __future__ import absolute_import
+from __future__ import print_function
+from . import add
+from . import init
+from . import listfiles
+from . import prompt
+from . import query
+from . import remove
+from . import show
+from . import where
 
 import redhawk
-import script_util as S
+from . import script_util as S
 
 import logging
 import optparse
@@ -51,7 +53,7 @@ def SplitArgs(d, args):
   return args[:s], args[s:]
 
 def Main():
-  dispatch = { 
+  dispatch = {
       'add':   add.Main,
       'init':  init.Main,
       'listfiles': listfiles.Main,
@@ -86,7 +88,7 @@ def Main():
   # Hack to get redhawk to show formatted help with optparse
   if len(sys.argv) == 1 or sys.argv[1] in "-h --help".split():
     parser.print_help()
-    print epilog
+    print(epilog)
     sys.exit(0)
 
   options, args = parser.parse_args(main_args)
@@ -109,7 +111,7 @@ def Main():
   logging.basicConfig(level=log_level)
 
   if options.version:
-    print "Redhawk Version: v%s"%(redhawk.GetVersion())
+    print("Redhawk Version: v%s"%(redhawk.GetVersion()))
     sys.exit(0)
 
   if len(dispatch_args) is 0:
@@ -118,8 +120,8 @@ def Main():
   if dispatch_args[0] in dispatch:
     dispatch[dispatch_args[0]](dispatch_args[1:])
   else:
-    print "Command %s not found."%args[0]
-    print usage
+    print("Command %s not found."%args[0])
+    print(usage)
     sys.exit(1)
   return
 

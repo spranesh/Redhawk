@@ -2,6 +2,8 @@
 
 """ Test Python Conversions."""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk
 import redhawk.python.python_tree_converter as P
 import redhawk.common.get_ast as G
@@ -15,13 +17,13 @@ import os
 import sys
 
 RELATIVE_TEST_PATH = "test/files/python"
-  
+
 def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
   """ SetUp returns a parsed python Program."""
   PICKLE_FILE = "test/files/asts_python.redhawk_db"
   if not os.path.exists(PICKLE_FILE):
     KVStore.CreateNewStore(PICKLE_FILE, redhawk.GetVersion())
-    
+
   return G.GetLanguageSpecificTree(os.path.join(rel_path, filename),
       PICKLE_FILE,
       language='python')
@@ -30,11 +32,11 @@ def SetUp(filename, rel_path=RELATIVE_TEST_PATH):
 def ConvertTree(t, filename=None, verbose=True):
   """ Convert the Python-AST into the L-AST."""
   if verbose:
-    print ast.dump(t)
+    print(ast.dump(t))
   c = P.PythonTreeConverter(filename)
   a = c.Convert(t)
   if verbose:
-    print a.ToStr(), "\n\n"
+    print(a.ToStr(), "\n\n")
   return a
 
 

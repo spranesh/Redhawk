@@ -72,7 +72,8 @@ should be fixed in the future).
 (See _selector.py for implementation details).
 """
 
-import _selector
+from __future__ import absolute_import
+from . import _selector
 
 # Shorthand use of the selector API.
 class S:

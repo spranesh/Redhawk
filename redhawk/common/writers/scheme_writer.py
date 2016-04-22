@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import writer
+from __future__ import absolute_import
+from . import writer
 
 import redhawk.utils.code_generator_backend as C
 

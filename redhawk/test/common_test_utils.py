@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.common.get_ast as G
 import redhawk.common.get_parser as P
 import redhawk.utils.util as U
@@ -29,6 +31,6 @@ def GetLASTFromFile(filename, language, database):
 
 if __name__ == '__main__':
   files_found = list(GetAllLASTs())
-  print "Files Found:"
+  print("Files Found:")
   for x in files_found:
-    print x, x.filename
+    print(x, x.filename)

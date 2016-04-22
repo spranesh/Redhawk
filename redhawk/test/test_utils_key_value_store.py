@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.utils.key_value_store as KV
 import redhawk.scripts.script_util as S
 import redhawk
@@ -79,7 +81,7 @@ class TestKeyValueStore:
     setUp()
     self.temp_file = GetTempFile()
     KV.CreateNewStore(self.temp_file, redhawk.GetVersion())
-    store = shelve.open(self.temp_file, 'c')
+    store = shelve.open(self.temp_file, 'c', protocol=-1)
     store['dog'] = 'woof'
     store['cat'] = 'meow'
     store.close()
@@ -126,6 +128,7 @@ class TestKeyValueStore:
     self.store.Set('pig', 'grunt')
     self.store.Write()
     assert(self.store.Get('pig') == 'grunt')
+    self.store.Close()
     store2 = KV.KeyValueStore(self.temp_file, redhawk.GetVersion())
     assert(store2.Get('pig') == 'grunt')
     store2.Close()
@@ -151,7 +154,7 @@ class TestKeyValueStore:
     fp = sys.stderr
     sys.stderr = sys.stdout
 
-    print "Expected Error :"
+    print("Expected Error :")
     self.store = KV.KeyValueStore(self.temp_file, redhawk.GetVersion())
 
     sys.stderr = fp

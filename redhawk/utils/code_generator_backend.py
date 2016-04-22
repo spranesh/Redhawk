@@ -31,5 +31,5 @@ class CodeGeneratorBackend:
 
   def Dedent(self):
     if self.level == 0:
-      raise SyntaxError, "internal error in code generator"
+      raise SyntaxError("internal error in code generator")
     self.level = self.level - 1

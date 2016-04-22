@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
 import redhawk.common.node as N
 import redhawk.common.node_position as NP
 import redhawk.common.tree_converter as tree_converter
@@ -7,11 +8,11 @@ import redhawk.common.types as T
 import ast
 
 # Map Python AST operators into the L-AST operators
-# Add | Sub | Mult | Div | Mod | Pow | LShift 
+# Add | Sub | Mult | Div | Mod | Pow | LShift
 #                  | RShift | BitOr | BitXor | BitAnd | FloorDiv
-# 
+#
 # Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
-# And | Or 
+# And | Or
 BINARY_OPERATOR_CONVERSIONS = {
       'Add'       : 'ADD'
      ,'Sub'       : 'MINUS'
@@ -51,7 +52,7 @@ UNARY_OPERATOR_CONVERSIONS = {
      ,'UAdd'   : 'UNARY_PLUS'
      ,'USub'   : 'UNARY_MINUS'
 }
-                              
+
 
 class TransformCoord:
   """ A class to help transform coordinates from the python ast to the L-AST.
@@ -65,7 +66,7 @@ class TransformCoord:
     """ Get Coord."""
     try:
       return NP.NodePosition(self.filename, c.lineno, c.col_offset)
-    except AttributeError, e:
+    except AttributeError as e:
       return None
 
 
@@ -122,7 +123,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
             | BitXor | BitAnd | FloorDiv"""
     return N.Expression(position = self.gc.GC(tree),
         operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
-        children = map(self.ConvertTree, [tree.left, tree.right]))
+        children = self.ConvertListOfStatements([tree.left, tree.right]))
 
 
   def ConvertName(self, tree):
@@ -133,11 +134,23 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         name = tree.id)
 
 
+  def ConvertNameconstant(self, tree):
+    # New AST type in Python 3
+    # TODO: is this correct?
+    return N.ReferVariable(self.gc.GC(tree), name=str(tree.value))
+
+
+  def ConvertArg(self, tree):
+    # New AST type in Python 3
+    # TODO: is this correct?
+    return N.DefineVariable(self.gc.GC(tree), name=tree.arg)
+
+
   def ConvertBoolop(self, tree):
     """ Convert the BoolOp(boolop op, expr* values) node. (And | Or) """
     return N.Expression(position = self.gc.GC(tree),
         operator = BINARY_OPERATOR_CONVERSIONS[GetClassName(tree.op)],
-        children = map(self.ConvertTree, tree.values))
+        children = self.ConvertListOfStatements(tree.values))
 
 
   def __ConvertBinaryOperation(self, op, position, left, right):
@@ -146,14 +159,14 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     NOT_BINARY_OPERATORS dictionary, and a BOOLEAN_NOT."""
     expr = N.Expression(position = position,
         operator = None,
-        children = map(self.ConvertTree, [left, right]))
+        children = self.ConvertListOfStatements([left, right]))
 
     if op in NOT_BINARY_OPERATORS:
       expr.operator = NOT_BINARY_OPERATORS[op]
       expr = N.Expression(position = position,
           operator = 'BOOLEAN_NOT',
           children = [expr])
-                          
+
     else:
       expr.operator = BINARY_OPERATOR_CONVERSIONS[op]
 
@@ -163,7 +176,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertCompare(self, tree):
     """ Convert the Compare(expr left, cmpop* ops, expr* comparators) node.
 
-    Each of the ops are \in   Eq | NotEq | Lt | LtE | Gt | GtE | Is 
+    Each of the ops are \in   Eq | NotEq | Lt | LtE | Gt | GtE | Is
                             | IsNot | In | NotIn
 
     More than one comparison is possible. Like 3 < x < 4.
@@ -173,7 +186,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     if len(tree.ops) is 1:
       return self.__ConvertBinaryOperation(position = self.gc.GC(tree),
           op = GetClassName(tree.ops[0]),
-          left = tree.left, 
+          left = tree.left,
           right = tree.comparators[0])
 
     comparisons = []
@@ -201,26 +214,26 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertTuple(self, tree):
     """ Convert the Tuple(expr* elts, expr_context ctx) node."""
     return N.Tuple(position = self.gc.GC(tree),
-        members = map(self.ConvertTree, tree.elts))
+        members = self.ConvertListOfStatements(tree.elts))
 
 
   def ConvertList(self, tree):
     """ Convert the List(expr* elts, expr_context ctx) node."""
     return N.List(position = self.gc.GC(tree),
-        values = map(self.ConvertTree, tree.elts))
+        values = self.ConvertListOfStatements(tree.elts))
 
   def ConvertDict(self, tree):
     """ Convert the Dict(expr* keys, expr* values) node."""
     return N.Dict(position = self.gc.GC(tree),
-        keys = map(self.ConvertTree, tree.keys),
-        values = map(self.ConvertTree, tree.values))
- 
+        keys = self.ConvertListOfStatements(tree.keys),
+        values = self.ConvertListOfStatements(tree.values))
+
 
   def ConvertAssign(self, tree):
     """ Convert the Assign(expr* targets, expr value) node."""
     if len(tree.targets) > 1:
       left = N.Tuple(position = self.gc.GC(tree.targets),
-          members = map(self.ConvertTree, tree.targets))
+          members = self.ConvertListOfStatements(tree.targets))
     else:
       left = self.ConvertTree(tree.targets[0])
 
@@ -291,7 +304,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     """ Convert the IfExp(expr test, expr body, expr orelse) node."""
     return N.Expression(position = self.gc.GC(tree),
         operator = 'TERNARY_IF',
-        children = map(self.ConvertTree, [tree.test, tree.body,
+        children = self.ConvertListOfStatements([tree.test, tree.body,
           tree.orelse]))
 
 
@@ -302,18 +315,18 @@ class PythonTreeConverter(tree_converter.TreeConverter):
       return None
 
     return N.Compound(position = self.gc.GC(li[0]),
-        compound_items = map(self.ConvertTree, li))
+        compound_items = self.ConvertListOfStatements(li))
 
 
   def ConvertModule(self, tree):
     return N.Module(position = NP.NodePosition(self.filename, 1, 1),
         filename = self.filename,
-        children = map(self.ConvertTree, tree.body))
+        children = self.ConvertListOfStatements(tree.body))
 
 
   def ConvertInteractive(self, tree):
     return N.Module(None,
-        children = map(self.ConvertTree, tree.body))
+        children = self.ConvertListOfStatements(tree.body))
 
 
   def ConvertExpression(self, tree):
@@ -323,14 +336,14 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertComprehension(self, tree):
     """ Convert the comprehension(expr target, expr iter, expr* ifs) node into
     a Generator.
-    
+
     Note that the ifs must be combined into a single condition."""
 
     condition = None
     if tree.ifs != []:
       condition = N.Expression(position = self.gc.GC(tree.ifs[0]),
         operator = 'BOOLEAN_AND',
-        children = map(self.ConvertTree, tree.ifs))
+        children = self.ConvertListOfStatements(tree.ifs))
 
     return N.Generator(position = None,
         target = self.ConvertTree(tree.target),
@@ -340,15 +353,15 @@ class PythonTreeConverter(tree_converter.TreeConverter):
 
   def __ConvertXComprehension(self, tree, elt, type):
     """ Convert a comprehension of type elt, whose LHS can be expressed as the
-    converted expression elt. 
-    
+    converted expression elt.
+
     (A helper function for ConvertListComprehension, ConvertDictComprehension,
     and ConvertSetComprehension.)"""
 
     return N.Comprehension(position = self.gc.GC(tree),
         expr = elt,
         type = type,
-        generators = map(self.ConvertTree, tree.generators))
+        generators = self.ConvertListOfStatements(tree.generators))
 
 
   def ConvertListcomp(self, tree):
@@ -380,9 +393,9 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertDictcomp(self, tree):
     """ Convert the DictComp(expr key, expr value, comprehension* generators)
     node.
-    
+
     Type is 'dict'.
-    
+
     The value is stored as a pair expression."""
     elt = N.Tuple(position = self.gc.GC(tree),
         members = [self.ConvertTree(tree.key)
@@ -391,7 +404,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     return self.__ConvertXComprehension(tree,
         elt = elt,
         type = 'dict')
-        
+
 
   def __ConvertArguments(self, args, position):
     """ Convert the Python argument node to the FunctionArguments L-AST node. The
@@ -425,11 +438,11 @@ class PythonTreeConverter(tree_converter.TreeConverter):
         FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
         arguments = (expr* args, identifier? vararg, identifier? kwarg, expr*
-        defaults) 
+        defaults)
 
         position, name, arguments, body
         """
-    
+
 
     argument_node = self.__ConvertArguments(tree.args, self.gc.GC(tree))
     # Convert body
@@ -451,7 +464,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                                     decorator = self.ConvertTree(d),
                                     function = node)
     return node
-      
+
 
   def ConvertCall(self, tree):
     """ Convert a function call:
@@ -474,11 +487,11 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                                         name = k.arg,
                                         init = self.ConvertTree(k.value)))
 
-
+    # TODO: cleanup py2/py3 differencies (python 3.5 ast doesn't have starargs and kwargs)
     argument_node = N.FunctionArguments(position = self.gc.GC(tree.args[0]) if len(tree.args) > 0 else None,
                                         arguments = arguments,
-                                        var_arguments = self.ConvertTree(tree.starargs),
-                                        kwd_arguments = self.ConvertTree(tree.kwargs))
+                                        var_arguments = self.ConvertTree(getattr(tree, 'starargs', None)),
+                                        kwd_arguments = self.ConvertTree(getattr(tree, 'kwargs', None)))
 
 
     return N.CallFunction(position = self.gc.GC(tree),
@@ -499,7 +512,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                     value = self.ConvertTree(tree.body))
 
   def ConvertFor(self, tree):
-    """ Convert 
+    """ Convert
 
     For(expr target, expr iter, stmt* body, stmt* orelse)
 
@@ -524,7 +537,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
                    condition = self.ConvertTree(tree.test),
                    body = self.ConvertListOfStatements(tree.body))
 
- 
+
   def ConvertBreak(self, tree):
     """ Convert the Continue statement. (Duh?)"""
     return N.Break(position = self.gc.GC(tree))
@@ -550,7 +563,7 @@ class PythonTreeConverter(tree_converter.TreeConverter):
   def ConvertDelete(self, tree):
     """ Convert the Delete(expr* targets) statement."""
     return N.Delete(position = self.gc.GC(tree),
-                    targets = map(self.ConvertTree, tree.targets))
+                    targets = self.ConvertListOfStatements(tree.targets))
 
   def ConvertPrint(self, tree):
     """ Convert the Print(expr? dest, expr* values, bool nl)
@@ -558,85 +571,112 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     """
     # TODO(spranesh): We currently ignore nl
     return N.Print(position = self.gc.GC(tree),
-                   values = map(self.ConvertTree, tree.values),
+                   values = self.ConvertListOfStatements(tree.values),
                    stream = self.ConvertTree(tree.dest))
 
 
   def ConvertRaise(self, tree):
     """ Convert the Raise(expr? type, expr? inst, expr? tback)"""
     #TODO(spranesh): We currently ignore inst, and tback
+    # TODO: cleanup py2/py3 differencies
+    # in Python 2, it's tree.type, in Python 3 it's tree.exc
+    tp = tree.type if hasattr(tree, 'type') else tree.exc
     return N.Raise(position = self.gc.GC(tree),
-                   exception_type = self.ConvertTree(tree.type))
+                   exception_type = self.ConvertTree(tp))
 
 
   def ConvertExcepthandler(self, tree):
     """ Convert the ExceptHandler(expr? type, expr? name, stmt* body) node."""
+    # TODO: cleanup py2/py3 differencies
+    if isinstance(tree.name, str):
+        # in Python 3, tree.name is string
+        name = N.DefineVariable(position=self.gc.GC(tree), name=tree.name)
+    else:
+        name = self.ConvertTree(tree.name)
     return N.ExceptionHandler(position = self.gc.GC(tree),
                               body = self.ConvertListOfStatements(tree.body),
-                              name = self.ConvertTree(tree.name),
+                              name = name,
                               type = self.ConvertTree(tree.type))
 
 
   def ConvertTryexcept(self, tree):
-    """ Convert the 
+    """ Convert the
     TryExcept(stmt* body, excepthandler* handlers, stmt* orelse)
     node. """
-    return N.TryCatch(position = self.gc.GC(tree),
-                      body = self.ConvertListOfStatements(tree.body),
-                      exception_handlers = map(self.ConvertTree, tree.handlers),
-                      orelse = self.ConvertListOfStatements(tree.orelse))
-
+    return self.ConvertTry(tree)
 
   def ConvertTryfinally(self, tree):
     """ Convert the | TryFinally(stmt* body, stmt* finalbody) node."""
-    return N.Finally(position = self.gc.GC(tree),
-                     body = self.ConvertListOfStatements(tree.body),
-                     final_body = self.ConvertListOfStatements(tree.finalbody))
+    return self.ConvertTry(tree)
 
+  def ConvertTry(self, tree):
+    # New AST type in Python 3
+    # TODO: is this correct?
+    # TODO: cleanup py2/py3 differencies (in Python 2, there are Tryexcept and Tryfinally,
+    #  which don't have either final_body or exception_handlers/orelse; in Python 3 there
+    #  is just Try, which has everything)
+    return N.Try(position=self.gc.GC(tree),
+                 body = self.ConvertListOfStatements(tree.body),
+                 exception_handlers = self.ConvertListOfStatements(getattr(tree, 'handlers', [])),
+                 orelse = self.ConvertListOfStatements(getattr(tree, 'orelse', [])),
+                 final_body = self.ConvertListOfStatements(getattr(tree, 'finalbody', [])))
 
   def ConvertWith(self, tree):
     """ Convert With(expr context_expr, expr? optional_vars, stmt* body) node."""
-    assign_node = ast.Assign(
+    # TODO: cleanup py2/py3 differencies
+    if hasattr(tree, 'optional_vars'):
+      # Python 2 -> if there are more assignments, multiple nested with statements are created
+      assign_node = ast.Assign(
         [tree.optional_vars],
         tree.context_expr,
         lineno = tree.lineno,
         col_offset = tree.col_offset)
+    else:
+      # Python 3 -> no nested with statements, everything at once
+      targets = []
+      values = []
+      for item in tree.items:
+        targets.append(item.optional_vars)
+        values.append(item.context_expr)
+      targets = ast.Tuple(elts=targets, lineno=tree.lineno, col_offset=tree.col_offset)
+      values = ast.Tuple(elts=values, lineno=tree.lineno, col_offset=tree.col_offset)
+      assign_node = ast.Assign([targets], values, lineno=tree.lineno, col_offset=tree.col_offset)
 
     defvars = [self.ConvertTree(assign_node)]
     return N.Let(position = self.gc.GC(tree),
-                 defvars = defvars, 
+                 defvars = defvars,
                  body = self.ConvertListOfStatements(tree.body))
 
   def ConvertClassdef(self, tree):
-    """ Convert the 
+    """ Convert the
       ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
     node."""
 
     c = N.DefineClass(position = self.gc.GC(tree),
                       name = tree.name,
-                      inherits = map(self.ConvertTree, tree.bases),
-                      body = map(self.ConvertTree, tree.body))
-    
+                      inherits = self.ConvertListOfStatements(tree.bases),
+                      body = self.ConvertListOfStatements(tree.body))
+
     return self.__EncapsulateNodeInDecorators(c, tree.decorator_list[::-1])
 
   def ConvertAlias(self, tree):
     """ Convert alias = (identifier name, identifier? asname)"""
-    return N.ModuleAlias(position = None, 
-                         name = tree.name, 
+    return N.ModuleAlias(position = None,
+                         name = tree.name,
                          asmodule = tree.asname)
 
   def ConvertImport(self, tree):
     """ Convert Import(alias* names) node."""
     return N.Import(position = self.gc.GC(tree),
-                    import_aliases = map(self.ConvertAlias, tree.names))
+                    import_aliases = list(map(self.ConvertAlias, tree.names)))
 
   def ConvertImportfrom(self, tree):
-    """ Convert the 
+    """ Convert the
       ImportFrom(identifier? module, alias* names, int? level)
     node."""
     return N.ImportFrom(position = self.gc.GC(tree),
                         module = tree.module,
-                        import_aliases = map(self.ConvertAlias, tree.names))
+                        import_aliases = list(map(self.ConvertAlias, tree.names)))
 
   def ConvertGlobal(self, tree):
     return N.ContextVariables(position = self.gc.GC(tree),

@@ -5,7 +5,8 @@
     The header is stored in node_header.py
 """
 
-import writers.scheme_writer as S
+from __future__ import absolute_import
+from .writers import scheme_writer as S
 import redhawk.utils.util as U
 
 import copy
@@ -45,7 +46,7 @@ ALLOWED_OPERATORS = {
     ,'GTE'                 : ('>=', 2)
 
     # TODO(spranesh): Should we make this an if-else?
-    ,'TERNARY_IF'          : ('ternary-if', 3) 
+    ,'TERNARY_IF'          : ('ternary-if', 3)
 
     ,'PRE_INCREMENT'       : ('pre-increment', 1)
     ,'POST_INCREMENT'      : ('post-increment', 1)
@@ -128,7 +129,7 @@ class Node:
     return copy.deepcopy(self)
 
   def GetAttributes(self):
-    """ Return the lower case attributes of the class as a 
+    """ Return the lower case attributes of the class as a
     pair - (class-name, dictionary-of-attributes). """
     #TODO(spranesh): Any extra attributes we are missing?
     d = {}
@@ -664,32 +665,6 @@ class Expression(Node):
     return li
 
 
-
-class Finally(ExceptionsStatement):
-  """Final part of an exception try-catch."""
-  def __init__(self, position, body, final_body):
-    self.position = position
-    self.body = body
-    self.final_body = final_body
-    return
-
-  def GetChildren(self):
-    li = []
-    li.append(self.body)
-    li.append(self.final_body)
-    return li
-
-  def GetSExp(self):
-    li = []
-    li.append('finally')
-    if self.body:
-      li.append([':body', self.body])
-    if self.final_body:
-      li.append([':final_body', self.final_body])
-    return li
-
-
-
 class For(ControlFlowStatement):
   """A For Loop."""
   def __init__(self, position, init, condition, step, body):
@@ -1207,20 +1182,21 @@ class Switch(ControlFlowStatement):
 
 
 
-class TryCatch(ExceptionsStatement):
-  """A Try-Catch block."""
-  def __init__(self, position, body, exception_handlers, orelse):
+class Try(ExceptionsStatement):
+  """In Python 3, there is no TryCatch/TryFinally; just Try"""
+  def __init__(self, position, body, exception_handlers, orelse, final_body):
     self.position = position
     self.body = body
     self.exception_handlers = exception_handlers
     self.orelse = orelse
-    return
+    self.final_body = final_body
 
   def GetChildren(self):
     li = []
     li.append(self.body)
     li.append(self.exception_handlers)
     li.append(self.orelse)
+    li.append(self.final_body)
     return li
 
   def GetSExp(self):
@@ -1231,8 +1207,9 @@ class TryCatch(ExceptionsStatement):
       li.append([':exception_handlers', self.exception_handlers])
     if self.orelse:
       li.append([':orelse', self.orelse])
+    if self.final_body:
+      li.append([':final_body', self.final_body])
     return li
-
 
 
 class Tuple(Node):

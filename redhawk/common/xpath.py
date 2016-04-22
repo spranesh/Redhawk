@@ -18,7 +18,7 @@ Syntax: *
   'DefineVariable' grandchildren in the L-AST.
 
 Syntax: **
-  
+
   Selects all DESCENDANT elements. For example '**/DefineVariable' finds all
   'DefineVariable's in the L-AST.
 
@@ -34,7 +34,7 @@ Syntax: DefineVariable@[name1='value1']@[name2='value2']@{n.foo == 'blah'}[2]
   Selects CHILD elements which match the node type 'DefineVariable', has
   attribute name1, which has a value of 'value1', and an attribute name2,
   which has a value of 'value2'. Furthermore it satifies the codeblock with n
-  as the child node. That is, 
+  as the child node. That is,
     (lambda n: n.foo == 'blah')(child_node)
   is True. Among the list of all such children, it selects the 3rd child
   (index 2).
@@ -66,14 +66,14 @@ Select all Closures (Funcdef within a Funcdef):
 Position Syntax
 ---------------
 
-The position in a Node Query is a comma separated list of numbers.  
+The position in a Node Query is a comma separated list of numbers.
 
   1. The position given indicates the position of the given node, among it's
      parents children. They are ZERO-indexed, and can be negative.
 
   2. If only one position is given, i.e, the position list is of the form [i],
      then the children of that node will be flattened out, and the ith child will
-     be returned. 
+     be returned.
 
   3. The zero index is special. Any node returned by [2, 1] will be returned
      by [2, 1, 0] and [2, 1, 0, 0] and so forth. Note that [2, 0, 0] may be
@@ -84,7 +84,7 @@ The position in a Node Query is a comma separated list of numbers.
 
   4. If more than one position list is given, then the children will be
      traversed in the order of the positions given.
-     
+
 Examples:
 
 Select all second arguments to a function:
@@ -120,8 +120,10 @@ NodeQuery = identifier? @[identifier=string]* @{codeblock}? Position*
 
 Position = [ comma-separated-list-of-numbers ]
 """
-import _selector
-import traverse
+from __future__ import absolute_import
+from __future__ import print_function
+from . import _selector
+from . import traverse
 
 import redhawk.utils.parser_combinator as P
 import redhawk.utils.util as U
@@ -205,13 +207,13 @@ class NodeMatchQuery(Query):
     if self.codegroup:
       try:
         return eval('lambda n: '+ self.codegroup, {}, {})
-      except StandardError, e:
+      except Exception as e:
         raise SyntaxError(str(e) + ": " + self.codegroup)
     return None
 
 
   def Filter(self, it):
-    # Create lambda at runtime so that an object of the class 
+    # Create lambda at runtime so that an object of the class
     # can be pickled - a parsed query is stuff we send to multiple processes
     # in  parallel python.
     it = Children(it)
@@ -219,7 +221,7 @@ class NodeMatchQuery(Query):
         node_type = self.node_type,
         function = self.__CreateFunctionFromCodeGroup(),
         **self.attributes)
-    matched_nodes = itertools.ifilter(s, it)
+    matched_nodes = list(filter(s, it))
 
     if not self.position_list:
       return matched_nodes
@@ -277,7 +279,7 @@ def CleanPosition(s):
   for n in s.split(","):
     try:
       numbers.append(int(n))
-    except ValueError, e:
+    except ValueError as e:
       raise SyntaxError("Unable to parse '%s' into a number in position syntax : '%s'"
           %(n, s))
   return numbers
@@ -350,7 +352,7 @@ slash_sep_atomic_queries_parser = P.OnePlus(
         (P.Literal("/"), None),
         (atomic_query_parser, "Invalid Atomic Query.")),
     lambda x: x[1]))
-      
+
 xpath_query_parser = P.Clean(
   P.Sequence(
     (atomic_query_parser, "Invalid Atomic Query"),
@@ -377,8 +379,8 @@ def ParseXPath(s):
     raise SyntaxError("Queries should not end with a '/'")
   try:
     return xpath_query_parser(s)[0]
-  except SyntaxError, e:
-    print "Syntax Error: %s"%(e)
+  except SyntaxError as e:
+    print("Syntax Error: %s"%(e))
     sys.exit(1)
   return
 
@@ -392,19 +394,19 @@ def XPath(trees, xpath_string):
 def Main():
   """ Only for testing."""
 
-  import format_position as F
+  from . import format_position as F
   import redhawk.common.get_ast as G
 
   if len(sys.argv) < 2:
-    print """ %s <xpath-query> [files].
+    print(""" %s <xpath-query> [files].
 
     If files are not given, the parsed xpath-query is printed.
-    Otherwise the concerned lines in each file is printed."""%(sys.argv[0])
+    Otherwise the concerned lines in each file is printed."""%(sys.argv[0]))
     sys.exit(1)
 
   parsed_query = ParseXPath(sys.argv[1])
   if len(sys.argv) == 2:
-    print parsed_query
+    print(parsed_query)
     return
 
   for f in sys.argv[2:]:

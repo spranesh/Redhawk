@@ -54,7 +54,8 @@ setup(
       # 'PyYAML>=3.09',
       # 'nose>=0.11',
       # ,'pygraphviz>=0.99' # Optional Dependency
-      'pycparser>=2.02' ],
+      'pycparser>=2.02',
+    ],
 
     classifiers = [
       "Development Status :: 3 - Alpha",

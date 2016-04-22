@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 """ Functions and Constants common to all the executables."""
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk
 import redhawk.utils.util as U
 
@@ -33,8 +35,8 @@ def ShowImage(filename, eog=False):
 
   try:
     import Image
-  except ImportError, e:
-    print "Cannot find the Image module. Opening in your web-browser."
+  except ImportError as e:
+    print("Cannot find the Image module. Opening in your web-browser.")
     webbrowser.open(filename)
     return
   
@@ -45,7 +47,7 @@ def ShowImage(filename, eog=False):
 def ShowASTAsImage(ast, eog=False):
     try:
       import redhawk.common.writers.dot_writer as D
-    except ImportError, e:
+    except ImportError as e:
       ExitWithError(PYGRAPHVIZ_NOT_FOUND + "\n\nError: " + str(e))
 
     temp_name = tempfile.mktemp(suffix='.png')
@@ -71,9 +73,9 @@ def IsFileSupported(filepath):
   returns False"""
   try:
     U.GuessLanguage(filepath)
-  except KeyError, e:
+  except KeyError as e:
     return False
-  except ValueError, e:
+  except ValueError as e:
     return False
   return True
 
@@ -101,7 +103,7 @@ def GetDatabase():
   """ Return the location to the redhawk database if any."""
   try:
     return U.FindFileInDirectoryOrAncestors(DB_NAME, os.curdir)
-  except IOError, e:
+  except IOError as e:
     logging.warning("""The redhawk database exists, but does not have read & write
     permissions. Fix this to prevent re-parsing. Carrying on..""")
     return None

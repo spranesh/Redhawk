@@ -2,7 +2,8 @@
 
 """ Test Expressions """
 
-import c_test_utils as CT
+from __future__ import absolute_import
+from . import c_test_utils as CT
 
 TEST_FILE = "expressions.c"
 
@@ -16,4 +17,4 @@ def TestExpressions():
   t = CT.SetUp(TEST_FILE)
   for (i, description) in enumerate(test_descriptions):
     ConvertTree.description = "Test `%s`"%(description.strip())
-    yield ConvertTree, t.children()[0].body.block_items[i]
+    yield ConvertTree, t.ext[0].body.block_items[i]

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import absolute_import
 import redhawk.utils.get_ast as G
 
 import ast

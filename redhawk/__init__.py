@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 
 __version__ = '1.2.1'

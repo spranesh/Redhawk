@@ -9,6 +9,7 @@ The first argument of a task is expected to be an iterable, which will be
 chunked, before calling the workers in case of a parallel task run.
 """
 
+from __future__ import absolute_import
 import os
 import sys
 
@@ -72,7 +73,7 @@ class TaskRunner:
     if parallel:
       try:
         import pp
-      except ImportError, e:
+      except ImportError as e:
         sys.stderr.write(pp_not_found_error)
         sys.exit(1)
 

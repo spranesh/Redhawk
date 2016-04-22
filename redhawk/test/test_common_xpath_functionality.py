@@ -2,24 +2,26 @@
 
 """ Test xpath query functionality."""
 
+from __future__ import absolute_import
+from __future__ import print_function
 import redhawk.common.selector as S
-from sample_last import module_tree
+from .sample_last import module_tree
 import redhawk.common.xpath as X
 
 
 """ The sample tree that we will test the selectors on:
 (module
-  (define-function Factorial 
+  (define-function Factorial
     ((define-variable n))
-    ((if 
-      (eq n 
+    ((if
+      (eq n
         (constant 0))
-      ((return 
+      ((return
         (constant 1)))
-      ((return 
-        (* n 
-          (apply Factorial 
-            ((- n 
+      ((return
+        (* n
+          (apply Factorial
+            ((- n
               (constant 1)))))))))))
 """
 
@@ -40,11 +42,11 @@ def TestSelector():
   l3 = list(Query('**/@{n.value == "0"}'))
   l4 = list(Query('**/@{n.value == "1"}'))
 
-  print l0
-  print l1
-  print l2
-  print l3
-  print l4
+  print(l0)
+  print(l1)
+  print(l2)
+  print(l3)
+  print(l4)
   assert(l0 == l1)
   assert(l2 == l3)
 
@@ -128,14 +130,14 @@ def TestCombinations():
 def TestChildNodeQuery():
   """ Test Child node query """
   l = list(Query("**/Return/(CallFunction)/../.."))
-  print l
-  
+  print(l)
+
 def TestIfElse():
   """ Test that sure **, Path, and numbering give same result."""
   l1 = list(Query("**/IfElse"))
   l2 = list(Query("DefineFunction/IfElse"))
   l3 = list(Query("DefineFunction/[1]"))
-  print l1, l2, l3
+  print(l1, l2, l3)
   assert(l1 == l2 == l3)
 
 def TestStarStarCurrentLevel():
@@ -143,8 +145,8 @@ def TestStarStarCurrentLevel():
   l1 = list(Query("**/FunctionArguments"))
   l2 = list(Query("**/DefineFunction/**/FunctionArguments"))
   assert(len(l1) == 2)
-  l1.sort()
-  l2.sort()
+  l1 = set(l1)
+  l2 = set(l2)
   assert(l1 == l2)
   return
 
@@ -153,9 +155,9 @@ def TestLastLevel():
   l1 = list(Query("**/Constant"))
   l2 = list(Query("**/Constant/../Constant"))
   l3 = list(Query("**/Constant/../Constant"))
-  l1.sort()
-  l2.sort()
-  l3.sort()
+  l1 = set(l1)
+  l2 = set(l2)
+  l3 = set(l3)
   assert(l1 == l2 == l3)
   return
 
@@ -174,7 +176,7 @@ def TestEqualityOfChildNode():
   assert(l1 == l2)
   l1 = list(Query('**/(Constant@[value="1"])'))
   l2 = list(Query('**/Constant@[value="1"]/..'))
-  l1.sort()
-  l2.sort()
+  l1 = set(l1)
+  l2 = set(l2)
   assert(l1 == l2)
 
