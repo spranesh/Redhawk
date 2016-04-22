@@ -58,4 +58,4 @@ class TreeConverter:
   def ConvertListOfStatements(self, statements):
     """ Convert a list of statements, to a list of LAST nodes.
     Note that this function returns a List and not a Node."""
-    return list(map(self.ConvertTree, statements))
+    return [self.ConvertTree(statement) for statement in statements]
