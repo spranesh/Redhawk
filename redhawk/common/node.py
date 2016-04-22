@@ -665,32 +665,6 @@ class Expression(Node):
     return li
 
 
-
-class Finally(ExceptionsStatement):
-  """Final part of an exception try-catch."""
-  def __init__(self, position, body, final_body):
-    self.position = position
-    self.body = body
-    self.final_body = final_body
-    return
-
-  def GetChildren(self):
-    li = []
-    li.append(self.body)
-    li.append(self.final_body)
-    return li
-
-  def GetSExp(self):
-    li = []
-    li.append('finally')
-    if self.body:
-      li.append([':body', self.body])
-    if self.final_body:
-      li.append([':final_body', self.final_body])
-    return li
-
-
-
 class For(ControlFlowStatement):
   """A For Loop."""
   def __init__(self, position, init, condition, step, body):
@@ -1208,20 +1182,21 @@ class Switch(ControlFlowStatement):
 
 
 
-class TryCatch(ExceptionsStatement):
-  """A Try-Catch block."""
-  def __init__(self, position, body, exception_handlers, orelse):
+class Try(ExceptionsStatement):
+  """In Python 3, there is no TryCatch/TryFinally; just Try"""
+  def __init__(self, position, body, exception_handlers, orelse, final_body):
     self.position = position
     self.body = body
     self.exception_handlers = exception_handlers
     self.orelse = orelse
-    return
+    self.final_body = final_body
 
   def GetChildren(self):
     li = []
     li.append(self.body)
     li.append(self.exception_handlers)
     li.append(self.orelse)
+    li.append(self.final_body)
     return li
 
   def GetSExp(self):
@@ -1232,25 +1207,9 @@ class TryCatch(ExceptionsStatement):
       li.append([':exception_handlers', self.exception_handlers])
     if self.orelse:
       li.append([':orelse', self.orelse])
+    if self.final_body:
+      li.append([':final_body', self.final_body])
     return li
-
-
-class Try(TryCatch):
-    """In Python 3, there is no TryCatch/TryFinally; just Try"""
-    def __init__(self, position, body, exception_handlers, orelse, final_body):
-        super(Try, self).__init__(position, body, exception_handlers, orelse)
-        self.final_body = final_body
-
-    def GetChildren(self):
-        res = super(Try, self).GetChildren()
-        res.append(self.final_body)
-        return res
-
-    def GetSExp(self):
-        res = super(Try, self).GetSExp()
-        if self.final_body:
-            res.append([':final_body', self.final_body])
-        return res
 
 
 class Tuple(Node):

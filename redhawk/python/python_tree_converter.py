@@ -603,26 +603,23 @@ class PythonTreeConverter(tree_converter.TreeConverter):
     """ Convert the
     TryExcept(stmt* body, excepthandler* handlers, stmt* orelse)
     node. """
-    return N.TryCatch(position = self.gc.GC(tree),
-                      body = self.ConvertListOfStatements(tree.body),
-                      exception_handlers = self.ConvertListOfStatements(tree.handlers),
-                      orelse = self.ConvertListOfStatements(tree.orelse))
-
+    return self.ConvertTry(tree)
 
   def ConvertTryfinally(self, tree):
     """ Convert the | TryFinally(stmt* body, stmt* finalbody) node."""
-    return N.Finally(position = self.gc.GC(tree),
-                     body = self.ConvertListOfStatements(tree.body),
-                     final_body = self.ConvertListOfStatements(tree.finalbody))
+    return self.ConvertTry(tree)
 
   def ConvertTry(self, tree):
     # New AST type in Python 3
     # TODO: is this correct?
+    # TODO: cleanup py2/py3 differencies (in Python 2, there are Tryexcept and Tryfinally,
+    #  which don't have either final_body or exception_handlers/orelse; in Python 3 there
+    #  is just Try, which has everything)
     return N.Try(position=self.gc.GC(tree),
                  body = self.ConvertListOfStatements(tree.body),
-                 exception_handlers = self.ConvertListOfStatements(tree.handlers),
-                 orelse = self.ConvertListOfStatements(tree.orelse),
-                 final_body = self.ConvertListOfStatements(tree.finalbody))
+                 exception_handlers = self.ConvertListOfStatements(getattr(tree, 'handlers', [])),
+                 orelse = self.ConvertListOfStatements(getattr(tree, 'orelse', [])),
+                 final_body = self.ConvertListOfStatements(getattr(tree, 'finalbody', [])))
 
   def ConvertWith(self, tree):
     """ Convert With(expr context_expr, expr? optional_vars, stmt* body) node."""
