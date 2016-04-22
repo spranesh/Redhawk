@@ -9,7 +9,6 @@ import redhawk.common.tree_converter as tree_converter
 import redhawk.common.types as T
 import redhawk.utils.util as U
 import logging
-from six.moves import map
 
 # Map C operators into the LAST operators
 BINARY_OPERATOR_CONVERSIONS = {
@@ -86,25 +85,25 @@ class CTreeConverter(tree_converter.TreeConverter):
         children = list(map(self.ConvertTree, tree.children())))
 
   def ConvertReturn(self, tree):
-    return N.Return(GetCoords(tree), 
+    return N.Return(GetCoords(tree),
         return_expression = self.ConvertTree(tree.expr))
 
   def ConvertConstant(self, tree):
-    return N.Constant(GetCoords(tree), 
+    return N.Constant(GetCoords(tree),
         value = tree.value, type = T.BaseType(tree.type))
 
   def ConvertId(self, tree):
     #TODO(spranesh): Is this assert always true?
     if tree.name == 'NULL':
-      return N.Constant(GetCoords(tree), 
-          value = tree.name, 
+      return N.Constant(GetCoords(tree),
+          value = tree.name,
           type = T.Pointer(T.BaseType('NULL')))
     else:
-      return N.ReferVariable(GetCoords(tree), 
+      return N.ReferVariable(GetCoords(tree),
           name = tree.name)
 
   def ConvertDecl(self, tree):
-    # We have to check if the child is a 
+    # We have to check if the child is a
     #   a. a function declaration
     #   b. a structure declaration
     # Otherwise it is a normal declaration
@@ -124,9 +123,9 @@ class CTreeConverter(tree_converter.TreeConverter):
     if isinstance(t, N.Union):
       t.storage, t.quals = None, None
       return t
-    else: 
-      return N.DefineVariable(GetCoords(tree), 
-        name = tree.name, 
+    else:
+      return N.DefineVariable(GetCoords(tree),
+        name = tree.name,
         init = self.ConvertTree(tree.init),
         type = t,
         storage = tree.storage,
@@ -151,12 +150,12 @@ class CTreeConverter(tree_converter.TreeConverter):
     """ Returns Type Object """
     # child is either an IdentifierType or a Struct
     t = self.ConvertTree(tree.type)
-    assert(isinstance(t, T.BaseType) 
-        or isinstance(t, T.EnumeratorType) 
-        or isinstance(t, T.StructureType) 
+    assert(isinstance(t, T.BaseType)
+        or isinstance(t, T.EnumeratorType)
+        or isinstance(t, T.StructureType)
         or isinstance(t, T.UnionType)
-        or isinstance(t, N.Enumerator) 
-        or isinstance(t, N.Structure) 
+        or isinstance(t, N.Enumerator)
+        or isinstance(t, N.Structure)
         or isinstance(t, N.Union))
     return t
 
@@ -175,7 +174,7 @@ class CTreeConverter(tree_converter.TreeConverter):
     return None
 
   def ConvertParamlist(self, tree):
-    """ Handle Function Arguments. 
+    """ Handle Function Arguments.
         In case the last is an ellipsis param, we store it as a var_arg
         of name va_list."""
     try:
@@ -254,7 +253,7 @@ class CTreeConverter(tree_converter.TreeConverter):
     return N.Expression(position = GetCoords(tree),
         operator = BINARY_OPERATOR_CONVERSIONS[tree.op],
         children = list(map(self.ConvertTree, [tree.left, tree.right])))
-    
+
   def ConvertUnaryop(self, tree):
     assert(tree.op in UNARY_OPERATOR_CONVERSIONS)
     return N.Expression(position = GetCoords(tree),
@@ -293,7 +292,7 @@ class CTreeConverter(tree_converter.TreeConverter):
           arguments = arguments))
 
   def ConvertStruct(self, tree):
-    # If the pycparser's structure's decls is None, 
+    # If the pycparser's structure's decls is None,
     #     the structure is being referred to.
     # Else
     #     it is a structure declaration.
@@ -305,7 +304,7 @@ class CTreeConverter(tree_converter.TreeConverter):
       return N.Structure(position = GetCoords(tree),
           name = tree.name,
           members = list(map(self.ConvertTree, tree.decls)))
-         
+
   def ConvertStructref(self, tree):
     op = tree.type  # a.b or a->b
     assert(op in BINARY_OPERATOR_CONVERSIONS)

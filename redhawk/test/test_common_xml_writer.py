@@ -10,7 +10,6 @@ import random
 import itertools
 import tempfile
 import os
-from six.moves import range
 
 class TestXMLWriter:
   def __init__(self):

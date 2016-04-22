@@ -11,7 +11,6 @@ import random
 import itertools
 import tempfile
 import os
-from six.moves import range
 
 class TestDotWriter:
   def __init__(self):

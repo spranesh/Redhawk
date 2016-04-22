@@ -5,7 +5,6 @@ import redhawk.utils.code_generator_backend as C
 
 import pprint
 import yaml
-from six.moves import zip
 
 FILES = [# (input config file, out file, header file)
            ("_node_cfg.yaml", "node.py", "_node_header.py")
@@ -42,10 +41,10 @@ def GetClasses(file_body):
                      ,'children' : ''
                      ,'optargs' : ''
                      ,'super': 'Node'
-                     ,'xml' : None 
-                     ,'json': None 
+                     ,'xml' : None
+                     ,'json': None
                      ,'dot':  None }
-              
+
     default_fields.update(c)
     c = default_fields
 
@@ -157,9 +156,9 @@ def WriteListReturnMethod(c, name, li, args):
           c.Write("li.append([':%s'] + self.%s)"%(extend_list, extend_list))
         else:
           c.Write("li.append(")
-          WriteList(c, a[1:], 
-              prefix='self.', 
-              frame=args, 
+          WriteList(c, a[1:],
+              prefix='self.',
+              frame=args,
               start_of_list=["'%s'"%(':' + condition)])
           c.Write(")")
         c.NewLine()
@@ -169,7 +168,7 @@ def WriteListReturnMethod(c, name, li, args):
         WriteList(c, a, prefix="self.", frame=args)
         c.Write(")")
         c.NewLine()
-  
+
   c.WriteLine("return li")
   c.Dedent()
   c.NewLine()
@@ -236,7 +235,7 @@ def GetYAMLFileAsPythonCode(filename):
 
 def Main():
   for (ip_file, op_file, header_file) in FILES:
-    print((ip_file, op_file, header_file))
+    print(ip_file, op_file, header_file)
     op = open(op_file, "w")
     op.write(open(header_file).read())
     op.write("\n")

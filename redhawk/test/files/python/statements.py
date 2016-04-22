@@ -1,7 +1,5 @@
 # Test Statements
 from __future__ import print_function
-from __future__ import absolute_import
-from six.moves import range
 a = b + c
 (a, b) = b, a+b
 b += 1

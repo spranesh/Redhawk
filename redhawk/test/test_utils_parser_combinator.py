@@ -4,7 +4,6 @@ from __future__ import absolute_import
 import nose.tools
 import redhawk.utils.parser_combinator as P
 import re
-from six.moves import map
 
 digits = re.compile("[0-9]+")
 bracketed = re.compile("{[^}]*}")

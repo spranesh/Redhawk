@@ -1,6 +1,5 @@
 # Test Try, Except
 
-from __future__ import print_function
 try:
   x = a.x
   y = a.y

@@ -6,7 +6,6 @@ import redhawk.common.tree_converter as tree_converter
 import redhawk.common.types as T
 
 import ast
-from six.moves import map
 
 # Map Python AST operators into the L-AST operators
 # Add | Sub | Mult | Div | Mod | Pow | LShift

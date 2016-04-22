@@ -7,7 +7,6 @@ import redhawk.utils.util as U
 import nose.tools
 import tempfile
 import os
-from six.moves import range
 
 def TestConcat():
   """ Test Concat."""
@@ -78,7 +77,7 @@ def TestIndexInto():
   assert(U.IndexInto(li, [2, 1, 0, 0]) == 9)
   assert(U.IndexInto(li, [3]) == 10)
   assert(U.IndexInto(li, [4]) == None)
-  
+
 
 def TestFindFileInDirectoryOrAncestors():
   """ Test FindFileInDirectoryOrAncestors"""
@@ -98,13 +97,13 @@ def TestFindFileInDirectoryOrAncestors():
   print(root_dir, a_dir, b_dir, filepath)
 
   # Check if test_file can be found
-  assert(U.FindFileInDirectoryOrAncestors("test_file", b_dir) == 
+  assert(U.FindFileInDirectoryOrAncestors("test_file", b_dir) ==
       filepath)
 
-  # Ensure that adding /. to the path does not 
+  # Ensure that adding /. to the path does not
   # change the result of the test
   c_dir = os.path.join(b_dir, os.path.curdir)
-  assert(U.FindFileInDirectoryOrAncestors("test_file", c_dir) == 
+  assert(U.FindFileInDirectoryOrAncestors("test_file", c_dir) ==
       filepath)
 
   # Change Permissions to 000 and ensure that an
@@ -119,7 +118,7 @@ def TestFindFileInDirectoryOrAncestors():
 
   # Remove the file and temporary directories
   os.remove(filepath)
-  assert(U.FindFileInDirectoryOrAncestors("test_file", b_dir) == 
+  assert(U.FindFileInDirectoryOrAncestors("test_file", b_dir) ==
      None)
   os.removedirs(b_dir)
   return

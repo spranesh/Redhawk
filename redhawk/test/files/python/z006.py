@@ -1,6 +1,5 @@
 # Test Classes
 
-from __future__ import print_function
 class Animal:
   pass
 

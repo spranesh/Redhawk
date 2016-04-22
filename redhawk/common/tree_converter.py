@@ -4,7 +4,6 @@ from __future__ import print_function
 from . import node as N
 from . import node_position as NP
 import redhawk.utils.util as U
-from six.moves import map
 
 class TreeConverter:
   """ The base tree converter class."""
@@ -34,7 +33,7 @@ class TreeConverter:
   def Convert(self, tree):
     """ Calls ConvertTree, and attaches parent links using AttachParents.
     This is the method to be called by outside methods, and functions.
-    
+
     This also exercises the GetFlattenedChildren at each node, and creates the
     necessary cache at each node. If this is not done during the database
     creation time, it is rather pointless, since every node is most likely to be

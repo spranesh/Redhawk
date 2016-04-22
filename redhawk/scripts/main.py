@@ -16,7 +16,6 @@ from . import script_util as S
 import logging
 import optparse
 import sys
-from six.moves import range
 
 
 usage = "%prog [-h] [--version] [-v..] COMMAND [OPTIONS] [ARGS...]"
@@ -54,7 +53,7 @@ def SplitArgs(d, args):
   return args[:s], args[s:]
 
 def Main():
-  dispatch = { 
+  dispatch = {
       'add':   add.Main,
       'init':  init.Main,
       'listfiles': listfiles.Main,
