@@ -86,6 +86,11 @@ Dependencies
 
 * `nosetests`_ is required for running the test suite.
 
+* Development Cycle:
+  * Use bin/start_simple_bash_with_redhawk_in_pythonpath.sh
+  * Run nosetests from redhawk/ as root. Ensure tests pass.
+  * Make changes.
+  * Submit a pull request to the project on github.
 
 Installing
 ----------
