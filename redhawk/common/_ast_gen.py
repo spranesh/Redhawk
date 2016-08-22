@@ -8,7 +8,7 @@ import yaml
 
 FILES = [# (input config file, out file, header file)
            ("_node_cfg.yaml", "node.py", "_node_header.py")
-          ,("_types_cfg.yaml", "types.py", "_types_header.py")]
+          ,("_type_cfg.yaml", "type.py", "_type_header.py")]
 
 def GetClasses(file_body):
   """ Get a generator of classes, given the string of the body.
@@ -235,7 +235,9 @@ def GetYAMLFileAsPythonCode(filename):
 
 def Main():
   for (ip_file, op_file, header_file) in FILES:
-    print(ip_file, op_file, header_file)
+    print("Generating ", op_file, "from ", ip_file,
+          "with header ", header_file)
+
     op = open(op_file, "w")
     op.write(open(header_file).read())
     op.write("\n")

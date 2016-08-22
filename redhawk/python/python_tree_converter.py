@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import redhawk.common.node as N
 import redhawk.common.node_position as NP
 import redhawk.common.tree_converter as tree_converter
-import redhawk.common.types as T
+import redhawk.common.type as T
 
 import ast
 

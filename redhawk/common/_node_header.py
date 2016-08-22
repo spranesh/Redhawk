@@ -1,4 +1,5 @@
 """ Node Classes.
+    DO NOT MANUALLY EDIT THIS FILE (node.py)
 
     This file is AUTO GENERATED from
       node_cfg.yaml using _ast_gen.py
@@ -165,3 +166,4 @@ class ExceptionsStatement(Node):
   def __init__(self):
     raise NotImplementedError("Base Class ExceptionsStatement not implemented!")
 
+# ------- BEGIN AUTOGEN BLOCK ------------

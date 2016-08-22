@@ -5,7 +5,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import redhawk.common.node as N
-import redhawk.common.types as T
+import redhawk.common.type as T
 import redhawk.utils.util as U
 from . import writer
 

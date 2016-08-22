@@ -8,7 +8,7 @@ import redhawk.common.get_ast as G
 import redhawk.common.xpath as X
 import redhawk.utils.util as U
 import redhawk.common.node as N
-import redhawk.common.types as T
+import redhawk.common.type as T
 
 import optparse
 import os
