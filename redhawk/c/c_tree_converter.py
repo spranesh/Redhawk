@@ -411,8 +411,7 @@ class CTreeConverter(tree_converter.TreeConverter):
     # ('edge', node) where edge is a string that denotes
     # the path taken down. In such a case, we want to
     # ignore the string, and simply convert the node.
-    self.Convert(tree[1])
-    return
+    return self.Convert(tree[1])
 
   def ConvertUnion(self, tree):
     # If the pycparser's union's decls is empty:
