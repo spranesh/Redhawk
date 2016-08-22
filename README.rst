@@ -88,13 +88,13 @@ Dependencies
 
 *Development Cycle*:
 
-  * Use bin/start_simple_bash_with_redhawk_in_pythonpath.sh
+* Use bin/start_simple_bash_with_redhawk_in_pythonpath.sh
 
-  * Run nosetests from redhawk/ as root. Ensure tests pass.
+* Run nosetests from redhawk/ as root. Ensure tests pass.
 
-  * Make awesome changes!
+* Make awesome changes!
 
-  * Submit a pull request to the project on github.
+* Submit a pull request to the project on github.
 
 Installing
 ----------
