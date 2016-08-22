@@ -304,12 +304,12 @@ Raise:
   sexp: ["raise-exception", exception_type]
   children: exception_type
 
-TryCatch:
-  docstring: "A Try-Catch block."
+Try:
+  docstring: "A Try block."
   super: ExceptionsStatement
-  args: position, body, exception_handlers, orelse
-  sexp: ["catch-exception", body, [_exception_handlers, exception_handlers], [_orelse, orelse]]
-  children: body, exception_handlers, orelse
+  args: position, body, exception_handlers, orelse, final_body
+  sexp: ["catch-exception", body, [_exception_handlers, exception_handlers], [_orelse, orelse], [_final_body, final_body]]
+  children: body, exception_handlers, orelse, final_body
 
 ExceptionHandler:
   docstring: "An exception handler block"
@@ -319,13 +319,6 @@ ExceptionHandler:
   sexp: ["exception-handler", [_name, name], [_type, type], body]
   children: name, type, body
 
-Finally:
-  docstring: "Final part of an exception try-catch."
-  super: ExceptionsStatement
-  args: position, body, final_body
-  sexp: ["finally", [_body, body], [_final_body, final_body]]
-  children: body, final_body
-  
 Delete:
   docstring: "The delete statement."
   args: position, targets

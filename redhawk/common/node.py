@@ -1,4 +1,5 @@
 """ Node Classes.
+    DO NOT MANUALLY EDIT THIS FILE (node.py)
 
     This file is AUTO GENERATED from
       node_cfg.yaml using _ast_gen.py
@@ -165,6 +166,7 @@ class ExceptionsStatement(Node):
   def __init__(self):
     raise NotImplementedError("Base Class ExceptionsStatement not implemented!")
 
+# ------- BEGIN AUTOGEN BLOCK ------------
 
 class Assert(Node):
   """The Assert statement."""
@@ -663,6 +665,7 @@ class Expression(Node):
     li.append(ALLOWED_OPERATORS[self.operator][0])
     li.extend(self.children)
     return li
+
 
 
 class For(ControlFlowStatement):
@@ -1183,13 +1186,14 @@ class Switch(ControlFlowStatement):
 
 
 class Try(ExceptionsStatement):
-  """In Python 3, there is no TryCatch/TryFinally; just Try"""
+  """A Try block."""
   def __init__(self, position, body, exception_handlers, orelse, final_body):
     self.position = position
     self.body = body
     self.exception_handlers = exception_handlers
     self.orelse = orelse
     self.final_body = final_body
+    return
 
   def GetChildren(self):
     li = []
@@ -1210,6 +1214,7 @@ class Try(ExceptionsStatement):
     if self.final_body:
       li.append([':final_body', self.final_body])
     return li
+
 
 
 class Tuple(Node):
