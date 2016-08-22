@@ -503,6 +503,13 @@ the source distribution.
 
 Change List
 ------------
+*v1.2.2*
+
+* Support for running Redhawk via Python 3. Great thanks to 
+bkabrda@ and ncoghlan@ for their changes!
+
+* Compatibility for new PyCParser changes.
+
 *v1.2.1*
 
 * The Lua source code written in ANSI-compliant C, can now be Redhawk-ed!
