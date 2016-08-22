@@ -239,9 +239,9 @@ class CTreeConverter(tree_converter.TreeConverter):
 
       # We could have a case of case of case of ...
       while isinstance(ct, N.CaseDefault):
-        t = t.stmt
-        ct = self.ConvertTree(t)
-        compound_items.append(ct)
+        t = t.stmts
+        ct = self.ConvertListOfStatements(t)
+        compound_items.extend(ct)
 
     # We should be using self.ConvertListOfStatements here,
     # but since the converted nodes are already in a list,
@@ -402,6 +402,9 @@ class CTreeConverter(tree_converter.TreeConverter):
     return N.SourceLabel(position = GetCoords(tree),
         name = tree.name,
         statements = [self.ConvertTree(tree.stmt)])
+
+  def ConvertInitlist(self, tree):
+    return self.ConvertExprlist(tree)
 
   def ConvertTuple(self, tree):
     # pycparser often returns nodes of the form:
