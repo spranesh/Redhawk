@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import os
 
-__version__ = '1.2.2'
+__version__ = '1.2.3'
 DB_NAME = '.redhawk_db'
 
 def GetVersion():

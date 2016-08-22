@@ -503,6 +503,11 @@ the source distribution.
 
 Change List
 ------------
+*v1.2.3*
+
+* Previous release introduced a regression in C where a top level node was
+returning an empty AST. This version contains this small but important fix.
+
 *v1.2.2*
 
 * Support for running Redhawk via Python 3. Great thanks to 
