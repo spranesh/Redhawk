@@ -26,4 +26,6 @@ if "show" in sys.argv:
 if "coord" in sys.argv:
   tree.show(showcoord=True)
 else:
-  U.StartShell(locals(), banner="Variables: tree, body, program, ShowObject")
+  U.StartShell(locals(),
+               banner="Variables: tree, body, program, ShowObject",
+               try_ipython = False)
